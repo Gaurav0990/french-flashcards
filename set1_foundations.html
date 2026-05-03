@@ -84,49 +84,44 @@ h1{font-size:20px;font-weight:500;margin-bottom:4px}
 <div id="area"></div>
 
 <script>
-
-
 const MASTER_KEY='$2a$10$MLLXGtaFKvyfGGEHs2tAbusHawh2S0D2.xC.nsi3Jnu3Yb4e0jLRW';
 const BIN_ID='69f75025aaba8821976775f0';
 const JAPI='https://api.jsonbin.io/v3/b/';
 let _saveTimer=null;
 function saveProgress(){
-  try{
-    const data={known:[...known],again:[...again],cur,dir:showFR};
-    clearTimeout(_saveTimer);
-    _saveTimer=setTimeout(async()=>{
-      try{
-        await fetch(JAPI+BIN_ID,{
-          method:'PUT',
-          headers:{'Content-Type':'application/json','X-Master-Key':MASTER_KEY},
-          body:JSON.stringify(data)
-        });
-        showSaved();
-      }catch(e){}
-    },1200);
-  }catch(e){}
+  clearTimeout(_saveTimer);
+  _saveTimer=setTimeout(async()=>{
+    try{
+      const data={known:[...known],again:[...again],cur,dir:showFR};
+      await fetch(JAPI+BIN_ID,{
+        method:'PUT',
+        headers:{'Content-Type':'application/json','X-Master-Key':MASTER_KEY},
+        body:JSON.stringify(data)
+      });
+      showSaved();
+    }catch(e){}
+  },1500);
 }
-async function loadProgress(){
-  try{
-    const res=await Promise.race([
-      fetch(JAPI+BIN_ID+'/latest',{headers:{'X-Master-Key':MASTER_KEY}}),
-      new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),5000))
-    ]);
-    const json=await res.json();
+function loadProgressInBackground(){
+  fetch(JAPI+BIN_ID+'/latest',{headers:{'X-Master-Key':MASTER_KEY}})
+  .then(r=>r.json())
+  .then(json=>{
     const d=json.record;
-    if(d&&d.known) known=new Set(d.known);
-    if(d&&d.again) again=new Set(d.again);
-    if(d&&typeof d.cur==='number') cur=d.cur;
-    if(d&&typeof d.dir==='boolean') showFR=d.dir;
-  }catch(e){
-    console.log('Progress load failed, starting fresh:',e);
-  }
+    if(!d) return;
+    let changed=false;
+    if(d.known){known=new Set(d.known);changed=true;}
+    if(d.again){again=new Set(d.again);changed=true;}
+    if(typeof d.cur==='number'){cur=d.cur;changed=true;}
+    if(typeof d.dir==='boolean'){showFR=d.dir;changed=true;}
+    if(changed) build();
+  })
+  .catch(e=>console.log('Progress load failed:',e));
 }
+function loadProgress(){ return Promise.resolve(); }
 function confirmClear(){
   if(confirm('Clear all saved progress for this set?')){
     known=new Set();again=new Set();cur=0;showFR=true;
-    saveProgress();
-    build();
+    saveProgress();build();
   }
 }
 let _savedTimer=null;
@@ -242,48 +237,6 @@ const ALL=[
 ];
 
 let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
-
-catch(e){}
-}
-
-    const k=localStorage.getItem('fc_known_'+DECK_ID);
-    const a=localStorage.getItem('fc_again_'+DECK_ID);
-    const c=localStorage.getItem('fc_cur_'+DECK_ID);
-    const d=localStorage.getItem('fc_dir_'+DECK_ID);
-    if(k) known=new Set(JSON.parse(k));
-    if(a) again=new Set(JSON.parse(a));
-    if(c) cur=parseInt(c);
-    if(d!==null) showFR=d==='1';
-  }catch(e){}
-}
-catch(e){}
-  known=new Set();again=new Set();cur=0;showFR=true;
-}
-
-}
-let savedTimer=null;
-function showSaved(){
-  const b=document.getElementById('saved-badge');
-  b.style.display='inline';
-  if(savedTimer) clearTimeout(savedTimer);
-  savedTimer=setTimeout(()=>{b.style.display='none';},2000);
-}
-
-function build(){
-  const t=document.getElementById('ftopic').value;
-  deck=ALL.filter(c=>t==='all'||c.topic===t);
-  if(cur>=deck.length) cur=0;
-  flipped=false;
-  updateReviewBtn();render();updateStats();
-}
-function shuffle(){
-  for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
-  cur=0;flipped=false;saveProgress();render();updateStats();
-}
-function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
-
-  else{btn.style.display='none';}
-}
 
 function updateStats(){
   document.getElementById('st').textContent=deck.length;

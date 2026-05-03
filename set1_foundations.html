@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 1 — Beginner Foundations</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}
+.btn-clear:hover{background:#FAECE7}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{perspective:1000px;margin-bottom:10px}
+.card{width:100%;min-height:210px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform 0.4s ease}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;width:100%;min-height:210px;backface-visibility:hidden;border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
+.back{transform:rotateY(180deg)}
+.badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-beg{background:#EAF3DE;color:#27500A}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.card-word{font-size:22px;font-weight:500;color:#1a1a1a;flex:1;display:flex;align-items:center;line-height:1.3}
+.card-hint{font-size:12px;color:#aaa;margin-top:8px}
+.card-trans{font-size:18px;font-weight:500;color:#1a1a1a}
+.card-note{font-size:13px;color:#555;margin-top:6px}
+.card-ex{font-size:13px;color:#888;font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ee}
+.mark-row{display:none;gap:8px;margin-top:8px}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.dir-badge{font-size:11px;color:#888;text-align:right}
+</style>
+</head>
+<body>
+<h1>Set 1 — Beginner Foundations</h1>
+<p class="subtitle">Greetings · Numbers · Days · Months · Family · Question words · Common objects · Daily words</p>
+
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All topics</option>
+    <option value="greetings">Greetings</option>
+    <option value="numbers">Numbers</option>
+    <option value="days">Days & months</option>
+    <option value="family">Family</option>
+    <option value="questions">Question words</option>
+    <option value="objects">Common objects</option>
+    <option value="daily">Daily words</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="toggleDir()">Flip direction</button>
+  <button onclick="reviewAgainCards()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+
+<script>
+const DECK_ID='set1';
+const ALL=[
+{f:"bonjour",e:"hello / good morning",ex:"Bonjour, comment allez-vous ?",note:"formal & informal",topic:"greetings"},
+{f:"salut",e:"hi / bye (informal)",ex:"Salut ! Ça va ?",note:"informal only",topic:"greetings"},
+{f:"bonsoir",e:"good evening",ex:"Bonsoir, Madame Dupont.",note:"formal greeting after ~6pm",topic:"greetings"},
+{f:"au revoir",e:"goodbye",ex:"Au revoir, à demain !",note:"",topic:"greetings"},
+{f:"coucou",e:"hey! (very informal)",ex:"Coucou ! Tu vas bien ?",note:"close friends only",topic:"greetings"},
+{f:"ça va ?",e:"how are you? (informal)",ex:"Ça va ? — Oui, ça va bien, merci !",note:"",topic:"greetings"},
+{f:"comment allez-vous ?",e:"how are you? (formal)",ex:"Bonjour, comment allez-vous ?",note:"use with teachers, elders, strangers",topic:"greetings"},
+{f:"je vais bien, merci",e:"I'm fine, thank you",ex:"Je vais bien, merci. Et vous ?",note:"",topic:"greetings"},
+{f:"comme ci, comme ça",e:"so-so",ex:"Ça va ? — Comme ci, comme ça.",note:"",topic:"greetings"},
+{f:"pas très bien",e:"not very well",ex:"Pas très bien aujourd'hui.",note:"",topic:"greetings"},
+{f:"comment t'appelles-tu ?",e:"what's your name? (informal)",ex:"Comment t'appelles-tu ? — Je m'appelle Lucas.",note:"",topic:"greetings"},
+{f:"je m'appelle...",e:"my name is...",ex:"Bonjour, je m'appelle Marie. Enchanté !",note:"",topic:"greetings"},
+{f:"enchanté(e)",e:"nice to meet you",ex:"Je m'appelle Paul. Enchanté !",note:"add -e for feminine",topic:"greetings"},
+{f:"s'il vous plaît",e:"please (formal)",ex:"Un café, s'il vous plaît.",note:"s'il te plaît = informal",topic:"greetings"},
+{f:"merci beaucoup",e:"thank you very much",ex:"Merci beaucoup pour votre aide !",note:"",topic:"greetings"},
+{f:"de rien",e:"you're welcome",ex:"Merci ! — De rien, avec plaisir.",note:"",topic:"greetings"},
+{f:"un (1)",e:"one",ex:"J'ai un frère.",note:"une = feminine form",topic:"numbers"},
+{f:"deux (2)",e:"two",ex:"Elle a deux chats.",note:"",topic:"numbers"},
+{f:"trois (3)",e:"three",ex:"Il y a trois chambres.",note:"",topic:"numbers"},
+{f:"quatre (4)",e:"four",ex:"Nous avons quatre enfants.",note:"",topic:"numbers"},
+{f:"cinq (5)",e:"five",ex:"Il est cinq heures.",note:"",topic:"numbers"},
+{f:"six (6)",e:"six",ex:"J'habite au numéro six.",note:"",topic:"numbers"},
+{f:"sept (7)",e:"seven",ex:"Il y a sept jours dans une semaine.",note:"",topic:"numbers"},
+{f:"huit (8)",e:"eight",ex:"Je me lève à huit heures.",note:"",topic:"numbers"},
+{f:"neuf (9)",e:"nine",ex:"Il est neuf heures du soir.",note:"",topic:"numbers"},
+{f:"dix (10)",e:"ten",ex:"Il y a dix élèves.",note:"",topic:"numbers"},
+{f:"onze / douze / treize",e:"eleven / twelve / thirteen",ex:"Il est onze heures et demie.",note:"",topic:"numbers"},
+{f:"quatorze / quinze / seize",e:"fourteen / fifteen / sixteen",ex:"J'ai quinze ans.",note:"",topic:"numbers"},
+{f:"dix-sept / dix-huit / dix-neuf",e:"seventeen / eighteen / nineteen",ex:"Elle a dix-huit ans.",note:"compound: dix + sept etc.",topic:"numbers"},
+{f:"vingt (20)",e:"twenty",ex:"Il y a vingt élèves dans la classe.",note:"",topic:"numbers"},
+{f:"zéro (0)",e:"zero",ex:"La température est à zéro degré.",note:"",topic:"numbers"},
+{f:"lundi",e:"Monday",ex:"Je vais à l'école le lundi.",note:"days NOT capitalised in French",topic:"days"},
+{f:"mardi",e:"Tuesday",ex:"Le cours de français est le mardi.",note:"",topic:"days"},
+{f:"mercredi",e:"Wednesday",ex:"Pas d'école le mercredi après-midi.",note:"",topic:"days"},
+{f:"jeudi",e:"Thursday",ex:"On a un examen jeudi.",note:"",topic:"days"},
+{f:"vendredi",e:"Friday",ex:"Le vendredi, je sors avec mes amis.",note:"",topic:"days"},
+{f:"samedi",e:"Saturday",ex:"Le samedi, je fais du sport.",note:"",topic:"days"},
+{f:"dimanche",e:"Sunday",ex:"Le dimanche, on déjeune en famille.",note:"",topic:"days"},
+{f:"janvier",e:"January",ex:"Mon anniversaire est en janvier.",note:"months NOT capitalised in French",topic:"days"},
+{f:"février",e:"February",ex:"Il neige souvent en février.",note:"",topic:"days"},
+{f:"mars",e:"March",ex:"Le printemps commence en mars.",note:"",topic:"days"},
+{f:"avril",e:"April",ex:"En avril, il pleut souvent.",note:"",topic:"days"},
+{f:"mai",e:"May",ex:"Les fleurs poussent en mai.",note:"",topic:"days"},
+{f:"juin",e:"June",ex:"Les examens sont en juin.",note:"",topic:"days"},
+{f:"juillet",e:"July",ex:"Nous partons en vacances en juillet.",note:"",topic:"days"},
+{f:"août",e:"August",ex:"Il fait très chaud en août.",note:"pronounced: oot",topic:"days"},
+{f:"septembre",e:"September",ex:"La rentrée est en septembre.",note:"",topic:"days"},
+{f:"octobre",e:"October",ex:"Les feuilles tombent en octobre.",note:"",topic:"days"},
+{f:"novembre",e:"November",ex:"Il fait froid en novembre.",note:"",topic:"days"},
+{f:"décembre",e:"December",ex:"Noël est en décembre.",note:"",topic:"days"},
+{f:"le père",e:"the father",ex:"Mon père travaille dans un bureau.",note:"masculine",topic:"family"},
+{f:"la mère",e:"the mother",ex:"Ma mère prépare le dîner.",note:"feminine",topic:"family"},
+{f:"le frère",e:"the brother",ex:"J'ai un frère qui s'appelle Thomas.",note:"masculine",topic:"family"},
+{f:"la sœur",e:"the sister",ex:"Ma sœur étudie le français.",note:"feminine",topic:"family"},
+{f:"la famille",e:"the family",ex:"J'adore passer du temps avec ma famille.",note:"feminine",topic:"family"},
+{f:"le fils",e:"the son",ex:"C'est le fils de Madame Dupont.",note:"masculine — silent s",topic:"family"},
+{f:"la fille",e:"the daughter / the girl",ex:"Sa fille s'appelle Emma.",note:"two meanings",topic:"family"},
+{f:"le mari",e:"the husband",ex:"Son mari est médecin.",note:"masculine",topic:"family"},
+{f:"la femme",e:"the wife / the woman",ex:"Sa femme parle trois langues.",note:"two meanings",topic:"family"},
+{f:"qui ?",e:"who?",ex:"Qui est ton professeur de français ?",note:"",topic:"questions"},
+{f:"quoi ? / qu'est-ce que ?",e:"what?",ex:"Qu'est-ce que tu fais ? — Je lis.",note:"qu'est-ce que = more formal",topic:"questions"},
+{f:"où ?",e:"where?",ex:"Où habites-tu ? — J'habite à Paris.",note:"",topic:"questions"},
+{f:"quand ?",e:"when?",ex:"Quand est ton anniversaire ?",note:"",topic:"questions"},
+{f:"pourquoi ?",e:"why?",ex:"Pourquoi tu apprends le français ?",note:"answer with: parce que",topic:"questions"},
+{f:"comment ?",e:"how?",ex:"Comment ça va ? Comment tu t'appelles ?",note:"",topic:"questions"},
+{f:"combien ?",e:"how much / how many?",ex:"Combien ça coûte ? Combien d'élèves ?",note:"",topic:"questions"},
+{f:"quel / quelle ?",e:"which / what? (agrees with noun)",ex:"Quel âge as-tu ? Quelle couleur ?",note:"quel = masc, quelle = fem",topic:"questions"},
+{f:"est-ce que...?",e:"question marker (do/does/is)",ex:"Est-ce que tu aimes le chocolat ?",note:"add before any statement to make a question",topic:"questions"},
+{f:"le livre",e:"the book",ex:"J'ai un livre de français dans mon sac.",note:"masculine",topic:"objects"},
+{f:"la table",e:"the table",ex:"Le stylo est sur la table.",note:"feminine",topic:"objects"},
+{f:"la chaise",e:"the chair",ex:"Assieds-toi sur la chaise !",note:"feminine",topic:"objects"},
+{f:"la porte",e:"the door",ex:"Ferme la porte, s'il te plaît.",note:"feminine",topic:"objects"},
+{f:"la fenêtre",e:"the window",ex:"Ouvre la fenêtre, il fait chaud !",note:"feminine",topic:"objects"},
+{f:"le stylo",e:"the pen",ex:"Tu as un stylo ?",note:"masculine",topic:"objects"},
+{f:"le sac",e:"the bag",ex:"Mon sac est sous la table.",note:"masculine",topic:"objects"},
+{f:"le téléphone",e:"the phone",ex:"Mon téléphone est dans ma poche.",note:"masculine",topic:"objects"},
+{f:"l'ordinateur (m)",e:"the computer",ex:"Je fais mes devoirs sur l'ordinateur.",note:"masculine",topic:"objects"},
+{f:"la clé",e:"the key",ex:"J'ai oublié ma clé !",note:"feminine",topic:"objects"},
+{f:"oui / non",e:"yes / no",ex:"Tu aimes le café ? — Oui ! Non merci.",note:"",topic:"daily"},
+{f:"peut-être",e:"maybe",ex:"Tu viens ce soir ? — Peut-être.",note:"",topic:"daily"},
+{f:"toujours",e:"always",ex:"Il est toujours en retard !",note:"",topic:"daily"},
+{f:"souvent",e:"often",ex:"Je mange souvent de la pizza.",note:"",topic:"daily"},
+{f:"parfois",e:"sometimes",ex:"Parfois, je prends le bus.",note:"",topic:"daily"},
+{f:"jamais",e:"never",ex:"Je ne mange jamais de viande.",note:"used with ne for negation",topic:"daily"},
+{f:"aujourd'hui",e:"today",ex:"Aujourd'hui, il fait très beau.",note:"",topic:"daily"},
+{f:"demain",e:"tomorrow",ex:"Demain, j'ai un examen.",note:"",topic:"daily"},
+{f:"hier",e:"yesterday",ex:"Hier, je suis allé au cinéma.",note:"",topic:"daily"},
+{f:"la ville",e:"the city",ex:"J'habite dans une grande ville.",note:"feminine",topic:"daily"},
+{f:"le pays",e:"the country",ex:"Dans quel pays habites-tu ?",note:"masculine",topic:"daily"},
+{f:"l'école (f)",e:"the school",ex:"Je vais à l'école à pied.",note:"feminine — l' before vowel",topic:"daily"},
+{f:"l'ami / l'amie",e:"the friend (m/f)",ex:"Mon ami s'appelle Lucas.",note:"mon amie — not ma amie (vowel rule)",topic:"daily"},
+{f:"la maison",e:"the house",ex:"J'habite dans une grande maison.",note:"feminine",topic:"daily"},
+{f:"l'eau (f)",e:"the water",ex:"Je bois de l'eau tous les matins.",note:"feminine",topic:"daily"},
+{f:"le pain",e:"the bread",ex:"Je mange du pain avec du beurre.",note:"masculine",topic:"daily"},
+{f:"le temps",e:"the time / the weather",ex:"Quel temps fait-il ? / Je n'ai pas le temps.",note:"two meanings",topic:"daily"},
+];
+
+let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
+
+function saveProgress(){
+  try{
+    localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));
+    localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));
+    localStorage.setItem('fc_cur_'+DECK_ID,String(cur));
+    localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');
+    localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);
+    showSaved();
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const t=localStorage.getItem('fc_topic_'+DECK_ID);
+    if(t){document.getElementById('ftopic').value=t;}
+    const k=localStorage.getItem('fc_known_'+DECK_ID);
+    const a=localStorage.getItem('fc_again_'+DECK_ID);
+    const c=localStorage.getItem('fc_cur_'+DECK_ID);
+    const d=localStorage.getItem('fc_dir_'+DECK_ID);
+    if(k) known=new Set(JSON.parse(k));
+    if(a) again=new Set(JSON.parse(a));
+    if(c) cur=parseInt(c);
+    if(d!==null) showFR=d==='1';
+  }catch(e){}
+}
+function clearProgress(){
+  try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}
+  known=new Set();again=new Set();cur=0;showFR=true;
+}
+function confirmClear(){
+  if(confirm('Clear all saved progress for this set?')){clearProgress();build();}
+}
+let savedTimer=null;
+function showSaved(){
+  const b=document.getElementById('saved-badge');
+  b.style.display='inline';
+  if(savedTimer) clearTimeout(savedTimer);
+  savedTimer=setTimeout(()=>{b.style.display='none';},2000);
+}
+
+function build(){
+  const t=document.getElementById('ftopic').value;
+  deck=ALL.filter(c=>t==='all'||c.topic===t);
+  if(cur>=deck.length) cur=0;
+  flipped=false;
+  updateReviewBtn();render();updateStats();
+}
+function shuffle(){
+  for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+  cur=0;flipped=false;saveProgress();render();updateStats();
+}
+function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
+function updateReviewBtn(){
+  const btn=document.getElementById('btn-review');
+  if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}
+  else{btn.style.display='none';}
+}
+function reviewAgainCards(){
+  deck=ALL.filter((_,i)=>again.has(i));
+  cur=0;flipped=false;render();updateStats();
+}
+function updateStats(){
+  document.getElementById('st').textContent=deck.length;
+  document.getElementById('sk').textContent=known.size;
+  document.getElementById('sa').textContent=again.size;
+  document.getElementById('sl').textContent=Math.max(0,deck.length-cur);
+  const p=deck.length?Math.round((cur/deck.length)*100):0;
+  document.getElementById('prog').style.width=p+'%';
+  document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';
+  updateReviewBtn();
+}
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards for this filter.</p>';return;}
+  if(cur>=deck.length){
+    const k=known.size,ag=again.size;
+    a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} marked for practice.</div><button onclick="build()">Restart</button></div>`;
+    return;
+  }
+  const c=deck[cur];
+  const front=showFR?c.f:c.e;
+  const back=showFR?c.e:c.f;
+  const idx=ALL.indexOf(c);
+  const isKnown=known.has(idx);
+  const isAgain=again.has(idx);
+  const statusDot=isKnown?'<span style="font-size:11px;color:#0F6E56">✓ know it</span>':isAgain?'<span style="font-size:11px;color:#993C1D">↻ practice</span>':'';
+  a.innerHTML=`<div class="card-wrap"><div class="card" id="card" onclick="flip()">
+    <div class="face front">
+      <div>
+        <div class="badges"><span class="badge b-topic">${c.topic}</span><span class="badge b-beg">beginner</span>${statusDot}</div>
+        <div class="card-word">${front}</div>
+        <div class="card-hint">tap to reveal</div>
+      </div>
+      <div class="dir-badge">${showFR?'FR → EN':'EN → FR'}</div>
+    </div>
+    <div class="face back">
+      <div>
+        <div class="badges"><span class="badge b-topic">${c.topic}</span></div>
+        <div class="card-trans">${back}</div>
+        ${c.note?`<div class="card-note">${c.note}</div>`:''}
+        <div class="card-ex">${c.ex}</div>
+      </div>
+    </div>
+  </div></div>
+  <div class="mark-row" id="mr">
+    <button class="btn-a" onclick="markA()">Practice again</button>
+    <button class="btn-k" onclick="markK()">Know it</button>
+  </div>
+  <div class="nav-row">
+    <button onclick="prev()">← Back</button>
+    <button onclick="next()">Next →</button>
+  </div>`;
+  updateStats();
+}
+function flip(){
+  flipped=!flipped;
+  document.getElementById('card').classList.toggle('flipped',flipped);
+  document.getElementById('mr').style.display=flipped?'flex':'none';
+}
+function markK(){
+  const idx=ALL.indexOf(deck[cur]);
+  known.add(idx);again.delete(idx);
+  saveProgress();next();
+}
+function markA(){
+  const idx=ALL.indexOf(deck[cur]);
+  again.add(idx);known.delete(idx);
+  saveProgress();next();
+}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+
+document.getElementById('ftopic').addEventListener('change',()=>{
+  known=new Set();again=new Set();cur=0;
+  saveProgress();build();
+});
+
+loadProgress();
+build();
+</script>
+</body>
+</html>

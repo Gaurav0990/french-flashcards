@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 4 — Grammar Rules</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{perspective:1000px;margin-bottom:10px}
+.card{width:100%;min-height:220px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform 0.4s ease}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;width:100%;min-height:220px;backface-visibility:hidden;border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
+.back{transform:rotateY(180deg)}
+.badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-beg{background:#EAF3DE;color:#27500A}
+.b-int{background:#FAEEDA;color:#633806}
+.b-adv{background:#FAECE7;color:#712B13}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.card-word{font-size:20px;font-weight:500;color:#1a1a1a;flex:1;display:flex;align-items:center;line-height:1.4}
+.card-hint{font-size:12px;color:#aaa;margin-top:8px}
+.card-trans{font-size:17px;font-weight:500;color:#1a1a1a}
+.card-note{font-size:13px;color:#555;margin-top:8px;background:#f8f8f6;padding:8px 10px;border-radius:6px;line-height:1.6}
+.card-ex{font-size:13px;color:#888;font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ee}
+.mark-row{display:flex;gap:8px;margin-top:8px;display:none}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.dir-toggle{font-size:12px;color:#888;text-align:right;margin-top:4px}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none;margin-left:4px}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}
+.btn-clear:hover{background:#FAECE7}
+</style>
+</head>
+<body>
+<h1>Set 4 — Grammar Rules</h1>
+<p class="subtitle">Negation · Possessive adjectives · Demonstrative adjectives · Plural forms · Colour agreement · Articles</p>
+
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All grammar</option>
+    <option value="negation">Negation</option>
+    <option value="possessives">Possessive adjectives</option>
+    <option value="demonstratives">Demonstrative adjectives</option>
+    <option value="plurals">Plural forms</option>
+    <option value="colours">Colour agreement</option>
+    <option value="articles">Articles</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="toggleDir()">Flip direction</button>
+  <button onclick="reviewAgainCards()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+<div style="display:none">
+</div>
+
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+
+<script>
+const DECK_ID='set4';
+
+function saveProgress(){
+  try{
+    localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));
+    localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));
+    localStorage.setItem('fc_cur_'+DECK_ID,String(cur));
+    localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');
+    localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);
+    showSaved();
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const t=localStorage.getItem('fc_topic_'+DECK_ID);
+    if(t) document.getElementById('ftopic').value=t;
+    const k=localStorage.getItem('fc_known_'+DECK_ID);
+    const a=localStorage.getItem('fc_again_'+DECK_ID);
+    const c=localStorage.getItem('fc_cur_'+DECK_ID);
+    const d=localStorage.getItem('fc_dir_'+DECK_ID);
+    if(k) known=new Set(JSON.parse(k));
+    if(a) again=new Set(JSON.parse(a));
+    if(c) cur=parseInt(c);
+    if(d!==null) showFR=d==='1';
+  }catch(e){}
+}
+function confirmClear(){
+  if(confirm('Clear all saved progress for this set?')){
+    try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}
+    known=new Set();again=new Set();cur=0;showFR=true;build();
+  }
+}
+let _savedTimer=null;
+function showSaved(){
+  const b=document.getElementById('saved-badge');
+  if(b){b.style.display='inline';if(_savedTimer)clearTimeout(_savedTimer);_savedTimer=setTimeout(()=>{b.style.display='none';},2000);}
+}
+function updateReviewBtn(){
+  const btn=document.getElementById('btn-review');
+  if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}
+}
+function reviewAgainCards(){
+  const saved=deck.map((_,i)=>i).filter(i=>again.has(ALL.indexOf(deck[i])));
+  deck=ALL.filter(c=>again.has(ALL.indexOf(c)));
+  cur=0;flipped=false;render();updateStats();
+}
+
+const ALL=[
+{f:"ne...pas",e:"basic negation — not",ex:"Je ne parle pas anglais. Elle ne mange pas.",note:"Formula: Subject + ne/n' + verb + pas",topic:"negation",diff:"beginner"},
+{f:"n' before vowel/h",e:"ne → n' before a vowel or silent h",ex:"Il n'habite pas à Paris. Elle n'aime pas les chats.",note:"Avoid: il ne habite — WRONG. Use: il n'habite — RIGHT",topic:"negation",diff:"beginner"},
+{f:"ne...jamais",e:"never",ex:"Je ne regarde jamais la télé. Elle ne dort jamais tard.",note:"Replaces pas — do NOT say ne...jamais pas",topic:"negation",diff:"intermediate"},
+{f:"ne...plus",e:"no longer / not anymore",ex:"Nous ne parlons plus anglais. Il ne travaille plus ici.",note:"Replaces pas — do NOT add pas",topic:"negation",diff:"intermediate"},
+{f:"ne...rien",e:"nothing",ex:"Elle ne dit rien. Je n'entends rien.",note:"Replaces pas — do NOT add pas",topic:"negation",diff:"intermediate"},
+{f:"ne...pas encore",e:"not yet",ex:"Je n'ai pas encore fini mes devoirs.",note:"",topic:"negation",diff:"advanced"},
+{f:"des → de after negation",e:"des changes to de in negative sentences",ex:"Je mange des fruits. → Je ne mange pas de fruits.",note:"KEY RULE: un/une/des all become de after negation",topic:"negation",diff:"intermediate"},
+{f:"un/une → de after negation",e:"indefinite articles change to de after ne...pas",ex:"Il a un chien. → Il n'a pas de chien.",note:"Same rule as des → de",topic:"negation",diff:"intermediate"},
+{f:"mon / ma / mes",e:"my (masc / fem / plural)",ex:"Mon père, ma mère, mes parents.",note:"ma → mon before feminine vowel: mon amie (not ma amie)",topic:"possessives",diff:"beginner"},
+{f:"ton / ta / tes",e:"your informal (masc / fem / plural)",ex:"Ton livre, ta chambre, tes amis.",note:"ta → ton before feminine vowel: ton école",topic:"possessives",diff:"beginner"},
+{f:"son / sa / ses",e:"his / her / its (masc / fem / plural)",ex:"Son père, sa mère, ses enfants.",note:"sa → son before vowel: son amie. Agrees with NOUN, not owner",topic:"possessives",diff:"intermediate"},
+{f:"notre / nos",e:"our (singular / plural)",ex:"Notre maison est grande. Nos amis sont gentils.",note:"notre for sing masc & fem — nos for all plurals",topic:"possessives",diff:"intermediate"},
+{f:"votre / vos",e:"your formal or plural (sing / plural)",ex:"Votre idée est bonne. Vos devoirs sont excellents.",note:"",topic:"possessives",diff:"intermediate"},
+{f:"leur / leurs",e:"their (singular / plural noun)",ex:"Leur maison est grande. Leurs enfants jouent.",note:"leur = 1 thing; leurs = multiple things",topic:"possessives",diff:"intermediate"},
+{f:"ma/ta/sa → mon/ton/son before vowel",e:"feminine possessives change before vowel/h nouns",ex:"mon amie · ton armoire · son école",note:"To avoid two vowel sounds clashing — mon amie NOT ma amie",topic:"possessives",diff:"intermediate"},
+{f:"ce (masc. singular)",e:"this / that (before masculine noun)",ex:"Ce livre est intéressant. Ce garçon est mon ami.",note:"ce + consonant-start masculine noun",topic:"demonstratives",diff:"beginner"},
+{f:"cet (masc. singular + vowel/h)",e:"this / that (before masc. noun starting with vowel/h)",ex:"Cet homme est gentil. Cet arbre est grand. Cet hôtel est cher.",note:"ce → cet before vowel or silent h — same rule as mon/ton/son",topic:"demonstratives",diff:"intermediate"},
+{f:"cette (fem. singular)",e:"this / that (before feminine noun)",ex:"Cette maison est belle. Cette fille est intelligente.",note:"used for ALL feminine singular nouns",topic:"demonstratives",diff:"beginner"},
+{f:"ces (plural)",e:"these / those (plural, masc. & fem.)",ex:"Ces enfants jouent au football. Ces maisons sont jolies.",note:"used for ALL plural nouns — masc. and fem.",topic:"demonstratives",diff:"beginner"},
+{f:"ce/cet/cette vs c'est",e:"demonstrative adjective vs c'est (it is / this is)",ex:"Ce livre est bon. ✓   C'est mon frère. ✓   Ce est mon frère. ✗",note:"c'est is used ALONE — ce/cet/cette must be followed by a noun",topic:"demonstratives",diff:"intermediate"},
+{f:"-ci / -là",e:"here / there (added to noun for emphasis)",ex:"Ce livre-ci (this book here) · Ce livre-là (that book there)",note:"optional — adds proximity/distance emphasis",topic:"demonstratives",diff:"advanced"},
+{f:"regular plural: add -s",e:"most French nouns add -s in plural",ex:"le livre → les livres · la table → les tables · le stylo → les stylos",note:"The final -s is SILENT in French",topic:"plurals",diff:"beginner"},
+{f:"-al → -aux (irregular plural)",e:"nouns ending in -al change to -aux in plural",ex:"un animal → des animaux · un journal → des journaux · un cheval → des chevaux",note:"KEY irregular: animal/animaux · journal/journaux · cheval/chevaux · travail/travaux",topic:"plurals",diff:"intermediate"},
+{f:"-ou → -x (some nouns)",e:"certain -ou nouns add -x instead of -s",ex:"un bijou → des bijoux · un genou → des genoux · un hibou → des hiboux",note:"Mnemonic: bijou, caillou, chou, genou, hibou, joujou, pou add -x",topic:"plurals",diff:"advanced"},
+{f:"un œil → des yeux",e:"eye → eyes (completely irregular)",ex:"J'ai les yeux bleus.",note:"Completely irregular plural — must memorise",topic:"plurals",diff:"advanced"},
+{f:"le bureau → les bureaux",e:"nouns ending in -eau add -x in plural",ex:"un bureau → des bureaux · un gâteau → des gâteaux",note:"-au and -eau nouns: add -x not -s",topic:"plurals",diff:"intermediate"},
+{f:"un → des / le/la → les",e:"articles change in plural",ex:"un livre → des livres · la table → les tables",note:"un/une → des in plural; le/la → les in plural",topic:"articles",diff:"beginner"},
+{f:"le / la / l' / les",e:"definite articles (the)",ex:"le salon · la cuisine · l'armoire · les chambres",note:"l' before vowel/h; les for all plurals",topic:"articles",diff:"beginner"},
+{f:"un / une / des",e:"indefinite articles (a / some)",ex:"un livre · une table · des stylos",note:"un = masc, une = fem, des = plural",topic:"articles",diff:"beginner"},
+{f:"du / de la / de l' / des",e:"partitive articles (some — uncountable)",ex:"Je mange du pain. Elle boit de la limonade. Il boit de l'eau.",note:"used for things you can't count: food, drink, abstract things",topic:"articles",diff:"intermediate"},
+{f:"colour agreement — add -e for feminine",e:"most colours add -e in feminine",ex:"un pull vert → une robe verte · un stylo bleu → une jupe bleue",note:"If colour already ends in -e (rouge, jaune, rose) — NO change",topic:"colours",diff:"intermediate"},
+{f:"colour agreement — add -s for plural",e:"most colours add -s in plural",ex:"des pulls verts · des jupes bleues",note:"masculin plural -s, féminin plural -es",topic:"colours",diff:"intermediate"},
+{f:"invariable colours: orange, marron",e:"orange and marron NEVER change form",ex:"un sac orange · des sacs orange · une jupe marron · des jupes marron",note:"No -e, no -s ever added to these",topic:"colours",diff:"intermediate"},
+{f:"blanc / blanche",e:"white — irregular feminine",ex:"un mur blanc · une chemise blanche",note:"Irregular: blanc → blanche (not blance)",topic:"colours",diff:"intermediate"},
+{f:"violet / violette",e:"purple — double t in feminine",ex:"un livre violet · une jupe violette",note:"Double the t: violet → violette",topic:"colours",diff:"intermediate"},
+{f:"gris / grise",e:"grey (masc/fem)",ex:"un ciel gris · une voiture grise",note:"regular -e added for feminine",topic:"colours",diff:"beginner"},
+];
+
+let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
+function build(){const t=document.getElementById('ftopic').value;deck=ALL.filter(c=>t==='all'||c.topic===t);cur=0;flipped=false;known.clear();again.clear();render();updateStats();}
+function shuffle(){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}cur=0;flipped=false;saveProgress();render();updateStats();}
+function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
+function updateStats(){updateReviewBtn();document.getElementById('st').textContent=deck.length;document.getElementById('sk').textContent=known.size;document.getElementById('sa').textContent=again.size;document.getElementById('sl').textContent=Math.max(0,deck.length-cur);const p=deck.length?Math.round((cur/deck.length)*100):0;document.getElementById('prog').style.width=p+'%';document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';}
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards.</p>';return;}
+  if(cur>=deck.length){const k=known.size,ag=again.size;a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} to review.</div>${ag>0?`<button onclick="reviewAgain()">Review practice cards</button>`:''}&#32;<button onclick="build()">Restart</button></div>`;return;}
+  const c=deck[cur];const front=showFR?c.f:c.e;const back=showFR?c.e:c.f;const d=c.diff||'intermediate';
+  a.innerHTML=`<div class="card-wrap"><div class="card" id="card" onclick="flip()">
+    <div class="face front"><div><div class="badges"><span class="badge b-topic">${c.topic}</span><span class="badge b-${d}">${d}</span></div><div class="card-word">${front}</div><div class="card-hint">tap to reveal</div></div><div class="dir-toggle">${showFR?'FR → EN':'EN → FR'}</div></div>
+    <div class="face back"><div><div class="badges"><span class="badge b-topic">${c.topic}</span></div><div class="card-trans">${back}</div>${c.note?`<div class="card-note">${c.note}</div>`:''}<div class="card-ex">${c.ex}</div></div></div>
+  </div></div>
+  <div class="mark-row" id="mr"><button class="btn-a" onclick="markA()">Practice again</button><button class="btn-k" onclick="markK()">Know it</button></div>
+  <div class="nav-row"><button onclick="prev()">← Back</button><button onclick="next()">Next →</button></div>`;
+  updateStats();
+}
+function flip(){flipped=!flipped;document.getElementById('card').classList.toggle('flipped',flipped);document.getElementById('mr').style.display=flipped?'flex':'none';}
+function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
+function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+function reviewAgain(){const idx=[...again];deck=deck.filter((_,i)=>idx.includes(i));cur=0;flipped=false;known.clear();again.clear();render();updateStats();}
+document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();
+build();
+</script>
+</body>
+</html>

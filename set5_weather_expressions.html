@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 5 — Weather, Expressions & Sentences</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{perspective:1000px;margin-bottom:10px}
+.card{width:100%;min-height:210px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform 0.4s ease}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;width:100%;min-height:210px;backface-visibility:hidden;border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
+.back{transform:rotateY(180deg)}
+.badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-beg{background:#EAF3DE;color:#27500A}
+.b-int{background:#FAEEDA;color:#633806}
+.b-adv{background:#FAECE7;color:#712B13}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.card-word{font-size:21px;font-weight:500;color:#1a1a1a;flex:1;display:flex;align-items:center;line-height:1.4}
+.card-hint{font-size:12px;color:#aaa;margin-top:8px}
+.card-trans{font-size:17px;font-weight:500;color:#1a1a1a}
+.card-note{font-size:13px;color:#555;margin-top:6px}
+.card-ex{font-size:13px;color:#888;font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ee}
+.mark-row{display:flex;gap:8px;margin-top:8px;display:none}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.dir-toggle{font-size:12px;color:#888;text-align:right;margin-top:4px}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none;margin-left:4px}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}
+.btn-clear:hover{background:#FAECE7}
+</style>
+</head>
+<body>
+<h1>Set 5 — Weather, Expressions & Sentences</h1>
+<p class="subtitle">Weather phrases · Seasons · Useful expressions · Question forms · Key sentences</p>
+
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All topics</option>
+    <option value="weather">Weather</option>
+    <option value="seasons">Seasons & temperature</option>
+    <option value="expressions">Useful expressions</option>
+    <option value="questions">Asking questions</option>
+    <option value:"sentences">Key sentences</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="toggleDir()">Flip direction</button>
+  <button onclick="reviewAgainCards()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+<div style="display:none">
+</div>
+
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+
+<script>
+const DECK_ID='set5';
+
+function saveProgress(){
+  try{
+    localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));
+    localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));
+    localStorage.setItem('fc_cur_'+DECK_ID,String(cur));
+    localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');
+    localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);
+    showSaved();
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const t=localStorage.getItem('fc_topic_'+DECK_ID);
+    if(t) document.getElementById('ftopic').value=t;
+    const k=localStorage.getItem('fc_known_'+DECK_ID);
+    const a=localStorage.getItem('fc_again_'+DECK_ID);
+    const c=localStorage.getItem('fc_cur_'+DECK_ID);
+    const d=localStorage.getItem('fc_dir_'+DECK_ID);
+    if(k) known=new Set(JSON.parse(k));
+    if(a) again=new Set(JSON.parse(a));
+    if(c) cur=parseInt(c);
+    if(d!==null) showFR=d==='1';
+  }catch(e){}
+}
+function confirmClear(){
+  if(confirm('Clear all saved progress for this set?')){
+    try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}
+    known=new Set();again=new Set();cur=0;showFR=true;build();
+  }
+}
+let _savedTimer=null;
+function showSaved(){
+  const b=document.getElementById('saved-badge');
+  if(b){b.style.display='inline';if(_savedTimer)clearTimeout(_savedTimer);_savedTimer=setTimeout(()=>{b.style.display='none';},2000);}
+}
+function updateReviewBtn(){
+  const btn=document.getElementById('btn-review');
+  if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}
+}
+function reviewAgainCards(){
+  const saved=deck.map((_,i)=>i).filter(i=>again.has(ALL.indexOf(deck[i])));
+  deck=ALL.filter(c=>again.has(ALL.indexOf(c)));
+  cur=0;flipped=false;render();updateStats();
+}
+
+const ALL=[
+{f:"il fait beau",e:"the weather is nice",ex:"Il fait beau aujourd'hui, allons au parc !",note:"il fait = use for general weather descriptions",topic:"weather",diff:"beginner"},
+{f:"il fait chaud",e:"it's hot",ex:"En été, il fait très chaud en France.",note:"",topic:"weather",diff:"beginner"},
+{f:"il fait froid",e:"it's cold",ex:"Il fait froid ce matin — mets ton manteau !",note:"",topic:"weather",diff:"beginner"},
+{f:"il fait frais",e:"it's cool",ex:"Il fait frais ce soir, prends une veste.",note:"",topic:"weather",diff:"beginner"},
+{f:"il fait mauvais",e:"the weather is bad",ex:"Il fait mauvais — je reste à la maison.",note:"",topic:"weather",diff:"beginner"},
+{f:"il pleut",e:"it's raining",ex:"Il pleut, prends ton parapluie !",note:"from verb pleuvoir — irregular",topic:"weather",diff:"beginner"},
+{f:"il neige",e:"it's snowing",ex:"Il neige beaucoup en janvier dans les Alpes.",note:"from verb neiger",topic:"weather",diff:"beginner"},
+{f:"il gèle",e:"it's freezing",ex:"Il gèle cette nuit — les routes sont dangereuses.",note:"from verb geler",topic:"weather",diff:"intermediate"},
+{f:"il y a du soleil",e:"it's sunny",ex:"Il y a du soleil et il fait chaud aujourd'hui.",note:"il y a = use for specific conditions",topic:"weather",diff:"beginner"},
+{f:"il y a du vent",e:"it's windy",ex:"Il y a beaucoup de vent en automne.",note:"",topic:"weather",diff:"beginner"},
+{f:"il y a des nuages",e:"it's cloudy",ex:"Ce matin, il y a des nuages dans le ciel.",note:"",topic:"weather",diff:"beginner"},
+{f:"il y a de la pluie",e:"there is rain",ex:"Il y a de la pluie prévu pour demain.",note:"more formal than il pleut",topic:"weather",diff:"intermediate"},
+{f:"il y a de l'orage",e:"there's a storm",ex:"Il y a de l'orage ce soir — restez à l'intérieur.",note:"",topic:"weather",diff:"intermediate"},
+{f:"quel temps fait-il ?",e:"what's the weather like?",ex:"Quel temps fait-il aujourd'hui à Paris ?",note:"most common way to ask about weather",topic:"weather",diff:"beginner"},
+{f:"comment est le temps ?",e:"how is the weather?",ex:"Comment est le temps à Chicago en hiver ?",note:"alternative way to ask",topic:"weather",diff:"beginner"},
+{f:"le printemps",e:"spring",ex:"Au printemps, les fleurs poussent.",note:"en printemps → au printemps (exception)",topic:"seasons",diff:"beginner"},
+{f:"l'été (m)",e:"summer",ex:"En été, il fait très chaud et il y a du soleil.",note:"en été",topic:"seasons",diff:"beginner"},
+{f:"l'automne (m)",e:"autumn / fall",ex:"En automne, les feuilles tombent des arbres.",note:"en automne",topic:"seasons",diff:"beginner"},
+{f:"l'hiver (m)",e:"winter",ex:"En hiver, il fait froid et il neige souvent.",note:"en hiver",topic:"seasons",diff:"beginner"},
+{f:"en été / en hiver / en automne",e:"in summer / in winter / in autumn",ex:"En été il fait chaud. En hiver il fait froid.",note:"use en for all seasons EXCEPT printemps (au printemps)",topic:"seasons",diff:"intermediate"},
+{f:"la température est de... degrés",e:"the temperature is ... degrees",ex:"La température est de vingt degrés aujourd'hui.",note:"",topic:"seasons",diff:"intermediate"},
+{f:"il fait moins cinq",e:"it's minus five (degrees)",ex:"En hiver, il fait parfois moins cinq la nuit.",note:"",topic:"seasons",diff:"intermediate"},
+{f:"il y a... (there is/are)",e:"used to say something exists / is present",ex:"Il y a un jardin derrière la maison. Il y a des nuages.",note:"il y a = there is / there are — very common!",topic:"expressions",diff:"beginner"},
+{f:"il n'y a pas de...",e:"there is no... / there are no...",ex:"Il n'y a pas de jardin. Il n'y a pas de vent.",note:"negation of il y a — de replaces du/des/un/une",topic:"expressions",diff:"intermediate"},
+{f:"c'est / ce sont",e:"it is / they are",ex:"C'est mon frère. Ce sont mes parents.",note:"c'est for singular, ce sont for plural",topic:"expressions",diff:"intermediate"},
+{f:"j'habite dans...",e:"I live in...",ex:"J'habite dans une maison à la campagne.",note:"",topic:"expressions",diff:"beginner"},
+{f:"ma pièce préférée est...",e:"my favourite room is...",ex:"Ma pièce préférée est ma chambre.",note:"",topic:"expressions",diff:"beginner"},
+{f:"j'aime / je n'aime pas",e:"I like / I don't like",ex:"J'aime lire des livres. Je n'aime pas le froid.",note:"aimer + infinitive = like doing something",topic:"expressions",diff:"beginner"},
+{f:"j'adore / je déteste",e:"I love / I hate",ex:"J'adore le chocolat ! Je déteste les examens.",note:"stronger than aimer / ne pas aimer",topic:"expressions",diff:"beginner"},
+{f:"je préfère",e:"I prefer",ex:"Je préfère l'été au printemps.",note:"préférer: préfère/préfères/préfère/préférons...",topic:"expressions",diff:"intermediate"},
+{f:"surtout le soir",e:"especially in the evening",ex:"C'est la pièce où nous regardons la télé, surtout le soir.",note:"surtout = especially / above all",topic:"expressions",diff:"intermediate"},
+{f:"quand il fait beau",e:"when the weather is nice",ex:"Quand il fait beau, j'aime me promener.",note:"quand = when (conjunction)",topic:"expressions",diff:"intermediate"},
+{f:"en été, nous faisons souvent...",e:"in summer, we often...",ex:"En été, nous faisons souvent des barbecues en famille.",note:"faire du/de la = to do/play a sport or activity",topic:"expressions",diff:"intermediate"},
+{f:"est-ce que...?",e:"question form — adds no meaning, just makes a question",ex:"Est-ce que tu aimes le français ? Est-ce qu'il pleut ?",note:"Add est-ce que before any statement to form a question",topic:"questions",diff:"beginner"},
+{f:"inversion question",e:"swap verb and subject to ask a question",ex:"Tu aimes le chocolat → Aimes-tu le chocolat ?",note:"more formal — common in writing",topic:"questions",diff:"intermediate"},
+{f:"intonation question",e:"raise voice at end of statement",ex:"Tu parles français ? Il fait beau ?",note:"simplest question form — informal speech",topic:"questions",diff:"beginner"},
+{f:"où habites-tu ?",e:"where do you live?",ex:"Où habites-tu ? — J'habite à Chicago.",note:"",topic:"questions",diff:"beginner"},
+{f:"pourquoi apprends-tu le français ?",e:"why are you learning French?",ex:"Pourquoi apprends-tu le français ? — Parce que j'adore la culture française.",note:"answer with: parce que (because)",topic:"questions",diff:"intermediate"},
+{f:"à quelle heure... ?",e:"at what time...?",ex:"À quelle heure commence le cours ? — À neuf heures.",note:"",topic:"questions",diff:"beginner"},
+{f:"combien d'étages a la maison ?",e:"how many floors does the house have?",ex:"Combien d'étages a ta maison ? — Elle a deux étages.",note:"combien de = how many",topic:"questions",diff:"intermediate"},
+{f:"qu'est-ce qu'il y a dans... ?",e:"what is there in...?",ex:"Qu'est-ce qu'il y a dans le salon ? — Il y a un canapé et une télévision.",note:"",topic:"questions",diff:"intermediate"},
+{f:"je parle français à la maison",e:"I speak French at home",ex:"Je parle français à la maison avec ma famille.",note:"à la maison = at home",topic:"sentences",diff:"beginner"},
+{f:"nous mangeons tous ensemble",e:"we all eat together",ex:"C'est là que nous mangeons tous ensemble.",note:"tous = all (masc.); toutes = all (fem.)",topic:"sentences",diff:"intermediate"},
+{f:"c'est mon refuge / mon endroit préféré",e:"it's my refuge / my favourite place",ex:"Ma maison, c'est mon refuge, mon endroit préféré dans le monde.",note:"",topic:"sentences",diff:"intermediate"},
+{f:"il y a beaucoup de souvenirs",e:"there are many memories",ex:"Cette maison est pleine de souvenirs.",note:"beaucoup de = a lot of (no article after)",topic:"sentences",diff:"intermediate"},
+{f:"c'est plus qu'un simple bâtiment",e:"it's more than a simple building",ex:"Pour moi, c'est plus qu'un simple bâtiment.",note:"plus que = more than",topic:"sentences",diff:"advanced"},
+];
+
+let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
+function build(){const t=document.getElementById('ftopic').value;deck=ALL.filter(c=>t==='all'||c.topic===t);cur=0;flipped=false;known.clear();again.clear();render();updateStats();}
+function shuffle(){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}cur=0;flipped=false;saveProgress();render();updateStats();}
+function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
+function updateStats(){updateReviewBtn();document.getElementById('st').textContent=deck.length;document.getElementById('sk').textContent=known.size;document.getElementById('sa').textContent=again.size;document.getElementById('sl').textContent=Math.max(0,deck.length-cur);const p=deck.length?Math.round((cur/deck.length)*100):0;document.getElementById('prog').style.width=p+'%';document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';}
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards.</p>';return;}
+  if(cur>=deck.length){const k=known.size,ag=again.size;a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} to review.</div>${ag>0?`<button onclick="reviewAgain()">Review practice cards</button>`:''}&#32;<button onclick="build()">Restart</button></div>`;return;}
+  const c=deck[cur];const front=showFR?c.f:c.e;const back=showFR?c.e:c.f;const d=c.diff||'intermediate';
+  a.innerHTML=`<div class="card-wrap"><div class="card" id="card" onclick="flip()">
+    <div class="face front"><div><div class="badges"><span class="badge b-topic">${c.topic}</span><span class="badge b-${d}">${d}</span></div><div class="card-word">${front}</div><div class="card-hint">tap to reveal</div></div><div class="dir-toggle">${showFR?'FR → EN':'EN → FR'}</div></div>
+    <div class="face back"><div><div class="badges"><span class="badge b-topic">${c.topic}</span></div><div class="card-trans">${back}</div>${c.note?`<div class="card-note">${c.note}</div>`:''}<div class="card-ex">${c.ex}</div></div></div>
+  </div></div>
+  <div class="mark-row" id="mr"><button class="btn-a" onclick="markA()">Practice again</button><button class="btn-k" onclick="markK()">Know it</button></div>
+  <div class="nav-row"><button onclick="prev()">← Back</button><button onclick="next()">Next →</button></div>`;
+  updateStats();
+}
+function flip(){flipped=!flipped;document.getElementById('card').classList.toggle('flipped',flipped);document.getElementById('mr').style.display=flipped?'flex':'none';}
+function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
+function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+function reviewAgain(){const idx=[...again];deck=deck.filter((_,i)=>idx.includes(i));cur=0;flipped=false;known.clear();again.clear();render();updateStats();}
+document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();
+build();
+</script>
+</body>
+</html>

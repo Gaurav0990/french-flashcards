@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 2 — Verbs</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{perspective:1000px;margin-bottom:10px}
+.card{width:100%;min-height:210px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform 0.4s ease}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;width:100%;min-height:210px;backface-visibility:hidden;border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
+.back{transform:rotateY(180deg)}
+.badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-beg{background:#EAF3DE;color:#27500A}
+.b-int{background:#FAEEDA;color:#633806}
+.b-adv{background:#FAECE7;color:#712B13}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.card-word{font-size:22px;font-weight:500;color:#1a1a1a;flex:1;display:flex;align-items:center;line-height:1.3}
+.card-hint{font-size:12px;color:#aaa;margin-top:8px}
+.card-trans{font-size:18px;font-weight:500;color:#1a1a1a}
+.card-note{font-size:13px;color:#555;margin-top:6px;background:#f8f8f6;padding:6px 10px;border-radius:6px;font-family:monospace;line-height:1.6}
+.card-ex{font-size:13px;color:#888;font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ee}
+.mark-row{display:flex;gap:8px;margin-top:8px;display:none}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.dir-toggle{font-size:12px;color:#888;text-align:right;margin-top:4px}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none;margin-left:4px}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}
+.btn-clear:hover{background:#FAECE7}
+</style>
+</head>
+<body>
+<h1>Set 2 — Verbs</h1>
+<p class="subtitle">Être · Avoir · Aller · -ER verbs · -IR verbs · -RE verbs · Conjugation tables</p>
+
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All verbs</option>
+    <option value="irregular">Irregular (être/avoir/aller)</option>
+    <option value="-er">-ER verbs</option>
+    <option value="-ir">-IR verbs</option>
+    <option value="-re">-RE verbs</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="toggleDir()">Flip direction</button>
+  <button onclick="reviewAgainCards()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+<div style="display:none">
+</div>
+
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+
+<script>
+const DECK_ID='set2';
+
+function saveProgress(){
+  try{
+    localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));
+    localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));
+    localStorage.setItem('fc_cur_'+DECK_ID,String(cur));
+    localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');
+    localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);
+    showSaved();
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const t=localStorage.getItem('fc_topic_'+DECK_ID);
+    if(t) document.getElementById('ftopic').value=t;
+    const k=localStorage.getItem('fc_known_'+DECK_ID);
+    const a=localStorage.getItem('fc_again_'+DECK_ID);
+    const c=localStorage.getItem('fc_cur_'+DECK_ID);
+    const d=localStorage.getItem('fc_dir_'+DECK_ID);
+    if(k) known=new Set(JSON.parse(k));
+    if(a) again=new Set(JSON.parse(a));
+    if(c) cur=parseInt(c);
+    if(d!==null) showFR=d==='1';
+  }catch(e){}
+}
+function confirmClear(){
+  if(confirm('Clear all saved progress for this set?')){
+    try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}
+    known=new Set();again=new Set();cur=0;showFR=true;build();
+  }
+}
+let _savedTimer=null;
+function showSaved(){
+  const b=document.getElementById('saved-badge');
+  if(b){b.style.display='inline';if(_savedTimer)clearTimeout(_savedTimer);_savedTimer=setTimeout(()=>{b.style.display='none';},2000);}
+}
+function updateReviewBtn(){
+  const btn=document.getElementById('btn-review');
+  if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}
+}
+function reviewAgainCards(){
+  const saved=deck.map((_,i)=>i).filter(i=>again.has(ALL.indexOf(deck[i])));
+  deck=ALL.filter(c=>again.has(ALL.indexOf(c)));
+  cur=0;flipped=false;render();updateStats();
+}
+
+const ALL=[
+{f:"être",e:"to be",ex:"Je suis étudiant. Tu es gentil. Il est médecin.",note:"suis · es · est · sommes · êtes · sont",topic:"irregular",diff:"beginner"},
+{f:"avoir",e:"to have",ex:"J'ai un frère. Tu as faim. Elle a raison.",note:"ai · as · a · avons · avez · ont",topic:"irregular",diff:"beginner"},
+{f:"aller",e:"to go",ex:"Je vais à l'école. Ils vont au marché.",note:"vais · vas · va · allons · allez · vont  ⚠ IRREGULAR",topic:"irregular",diff:"intermediate"},
+{f:"faire",e:"to do / to make",ex:"Qu'est-ce que tu fais ? Il fait du sport.",note:"fais · fais · fait · faisons · faites · font  ⚠ IRREGULAR",topic:"irregular",diff:"intermediate"},
+{f:"je suis / tu es / il est",e:"I am / you are / he is",ex:"Je suis fatigué. Tu es en retard. Elle est contente.",note:"singular forms of être",topic:"irregular",diff:"beginner"},
+{f:"nous sommes / vous êtes / ils sont",e:"we are / you are / they are",ex:"Nous sommes prêts. Ils sont contents.",note:"plural forms of être",topic:"irregular",diff:"beginner"},
+{f:"j'ai / tu as / il a",e:"I have / you have / he has",ex:"J'ai un stylo. Tu as faim. Il a un chien.",note:"singular forms of avoir",topic:"irregular",diff:"beginner"},
+{f:"nous avons / vous avez / ils ont",e:"we have / you have / they have",ex:"Nous avons un examen. Ils ont beaucoup de travail.",note:"plural forms of avoir",topic:"irregular",diff:"beginner"},
+{f:"je vais / tu vas / il va",e:"I go / you go / he goes",ex:"Je vais à l'école. Elle va au marché.",note:"singular forms of aller",topic:"irregular",diff:"intermediate"},
+{f:"ils vont (aller)",e:"they go",ex:"Ils vont au cinéma ce soir.",note:"⚠ common error: NOT ils alent — it's VONT",topic:"irregular",diff:"intermediate"},
+{f:"parler",e:"to speak",ex:"Je parle français à la maison.",note:"parl- · parle · parles · parle · parlons · parlez · parlent",topic:"-er",diff:"beginner"},
+{f:"aimer",e:"to like / to love",ex:"Tu aimes la musique ? — Oui, j'adore !",note:"aim- · aime · aimes · aime · aimons · aimez · aiment",topic:"-er",diff:"beginner"},
+{f:"regarder",e:"to watch",ex:"Elle regarde la télévision le soir.",note:"regard- · regarde · regardes · regarde...",topic:"-er",diff:"beginner"},
+{f:"écouter",e:"to listen",ex:"J'écoute de la musique dans le bus.",note:"écout- · écoute · écoutes · écoute...",topic:"-er",diff:"beginner"},
+{f:"chanter",e:"to sing",ex:"Nous chantons une chanson ensemble.",note:"chant- · chante · chantes · chante · chantons...",topic:"-er",diff:"beginner"},
+{f:"travailler",e:"to work",ex:"Vous travaillez beaucoup cette semaine.",note:"travaill- · travaille · travailles...",topic:"-er",diff:"beginner"},
+{f:"jouer",e:"to play",ex:"Ils jouent au football après l'école.",note:"jou- · joue · joues · joue · jouons · jouez · jouent",topic:"-er",diff:"beginner"},
+{f:"marcher",e:"to walk",ex:"Elles marchent à l'école tous les matins.",note:"march- · marche · marches · marche...",topic:"-er",diff:"beginner"},
+{f:"danser",e:"to dance",ex:"Nous dansons ensemble le samedi soir.",note:"dans- · danse · danses · danse...",topic:"-er",diff:"beginner"},
+{f:"étudier",e:"to study",ex:"J'étudie les maths et le français.",note:"étudi- · étudie · étudies · étudie...",topic:"-er",diff:"beginner"},
+{f:"habiter",e:"to live (somewhere)",ex:"J'habite à Chicago. Tu habites où ?",note:"habit- · habite · habites · habite...",topic:"-er",diff:"beginner"},
+{f:"manger",e:"to eat",ex:"Nous mangeons ensemble à midi.",note:"mang- · mange · manges · mange · mangeons · mangez · mangent",topic:"-er",diff:"beginner"},
+{f:"chercher",e:"to look for",ex:"Tu cherches ton stylo ?",note:"cherch- · cherche · cherches · cherche...",topic:"-er",diff:"beginner"},
+{f:"donner",e:"to give",ex:"Il donne un cadeau à sa mère.",note:"donn- · donne · donnes · donne...",topic:"-er",diff:"beginner"},
+{f:"-ER verb rule",e:"remove -ER, add: e·es·e·ons·ez·ent",ex:"parler → je parle, tu parles, il parle, nous parlons, vous parlez, ils parlent",note:"most common verb group in French",topic:"-er",diff:"beginner"},
+{f:"finir",e:"to finish",ex:"Je finis mes devoirs avant le dîner.",note:"fini- · finis · finis · finit · finissons · finissez · finissent",topic:"-ir",diff:"intermediate"},
+{f:"choisir",e:"to choose",ex:"Tu choisis un livre à la bibliothèque.",note:"choisi- · choisis · choisis · choisit · choisissons...",topic:"-ir",diff:"intermediate"},
+{f:"réussir",e:"to succeed / to pass",ex:"Il réussit à l'examen grâce à son travail.",note:"réussi- · réussis · réussis · réussit...",topic:"-ir",diff:"intermediate"},
+{f:"grandir",e:"to grow",ex:"Elle grandit vite — elle est très grande !",note:"grandi- · grandis · grandis · grandit...",topic:"-ir",diff:"intermediate"},
+{f:"rougir",e:"to blush",ex:"Nous rougissons souvent quand on nous complimente.",note:"rougi- · rougis · rougis · rougit · rougissons...",topic:"-ir",diff:"intermediate"},
+{f:"nourrir",e:"to feed",ex:"Vous nourrissez le chat deux fois par jour.",note:"nourri- · nourris · nourris · nourrit...",topic:"-ir",diff:"intermediate"},
+{f:"bâtir",e:"to build",ex:"Ils bâtissent une nouvelle maison.",note:"bâti- · bâtis · bâtis · bâtit · bâtissons...",topic:"-ir",diff:"intermediate"},
+{f:"obéir",e:"to obey",ex:"Elles obéissent toujours à leurs parents.",note:"obéi- · obéis · obéis · obéit...",topic:"-ir",diff:"intermediate"},
+{f:"remplir",e:"to fill",ex:"Je remplis la bouteille d'eau.",note:"rempli- · remplis · remplis · remplit · remplissons...",topic:"-ir",diff:"intermediate"},
+{f:"réfléchir",e:"to think / to reflect",ex:"Nous réfléchissons à la question avant de répondre.",note:"réfléchi- · réfléchis · réfléchis · réfléchit...",topic:"-ir",diff:"advanced"},
+{f:"-IR verb rule",e:"remove -IR, add: is·is·it·issons·issez·issent",ex:"finir → je finis, tu finis, il finit, nous finissons, vous finissez, ils finissent",note:"note the -iss- added in plural forms",topic:"-ir",diff:"intermediate"},
+{f:"vendre",e:"to sell",ex:"Il vend des fruits au marché le dimanche.",note:"vend- · vends · vends · vend · vendons · vendez · vendent",topic:"-re",diff:"intermediate"},
+{f:"attendre",e:"to wait",ex:"Elle attend ses amis devant l'école.",note:"attend- · attends · attends · attend · attendons...",topic:"-re",diff:"intermediate"},
+{f:"répondre",e:"to answer",ex:"Il répond au professeur avec confiance.",note:"répond- · réponds · réponds · répond...",topic:"-re",diff:"intermediate"},
+{f:"entendre",e:"to hear",ex:"Elle entend la musique depuis sa chambre.",note:"entend- · entends · entends · entend...",topic:"-re",diff:"intermediate"},
+{f:"perdre",e:"to lose",ex:"Nous perdons souvent nos clés !",note:"perd- · perds · perds · perd · perdons...",topic:"-re",diff:"intermediate"},
+{f:"descendre",e:"to go down",ex:"Vous descendez l'escalier lentement.",note:"descend- · descends · descends · descend...",topic:"-re",diff:"intermediate"},
+{f:"rendre",e:"to give back / to return",ex:"Ils rendent les livres à la bibliothèque.",note:"rend- · rends · rends · rend · rendons...",topic:"-re",diff:"intermediate"},
+{f:"défendre",e:"to defend",ex:"Elles défendent leurs idées avec passion.",note:"défend- · défends · défends · défend...",topic:"-re",diff:"advanced"},
+{f:"correspondre",e:"to correspond",ex:"Nous correspondons par e-mail chaque semaine.",note:"correspond- · corresponds · corresponds...",topic:"-re",diff:"advanced"},
+{f:"-RE verb rule",e:"remove -RE, add: s·s·(nothing)·ons·ez·ent",ex:"vendre → je vends, tu vends, il vend, nous vendons, vous vendez, ils vendent",note:"il/elle form has NO ending — just the stem",topic:"-re",diff:"intermediate"},
+{f:"avoir faim / soif",e:"to be hungry / thirsty",ex:"J'ai faim ! Tu as soif ?",note:"French uses avoir (have) not être (be) for hunger/thirst",topic:"irregular",diff:"intermediate"},
+{f:"avoir ... ans",e:"to be ... years old",ex:"J'ai vingt ans. Elle a dix-huit ans.",note:"French uses avoir not être for age",topic:"irregular",diff:"beginner"},
+{f:"avoir peur (de)",e:"to be afraid (of)",ex:"J'ai peur du noir. Elle a peur des araignées.",note:"",topic:"irregular",diff:"intermediate"},
+{f:"avoir besoin de",e:"to need",ex:"J'ai besoin d'aide. Nous avons besoin de temps.",note:"",topic:"irregular",diff:"intermediate"},
+{f:"avoir raison / tort",e:"to be right / wrong",ex:"Tu as raison ! Il a tort.",note:"",topic:"irregular",diff:"intermediate"},
+];
+
+let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
+
+function build(){
+  const t=document.getElementById('ftopic').value;
+  deck=ALL.filter(c=>t==='all'||c.topic===t);
+  cur=0;flipped=false;known.clear();again.clear();render();updateStats();
+}
+
+function shuffle(){
+  for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+  cur=0;flipped=false;render();updateStats();
+}
+
+function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
+
+function updateStats(){updateReviewBtn();
+  document.getElementById('st').textContent=deck.length;
+  document.getElementById('sk').textContent=known.size;
+  document.getElementById('sa').textContent=again.size;
+  document.getElementById('sl').textContent=Math.max(0,deck.length-cur);
+  const p=deck.length?Math.round((cur/deck.length)*100):0;
+  document.getElementById('prog').style.width=p+'%';
+  document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';
+}
+
+function getDiff(c){return c.diff||'intermediate';}
+
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards for this filter.</p>';return;}
+  if(cur>=deck.length){
+    const k=known.size,ag=again.size;
+    a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} to review.</div>${ag>0?`<button onclick="reviewAgain()">Review practice cards</button>`:''}&#32;<button onclick="build()">Restart</button></div>`;
+    return;
+  }
+  const c=deck[cur];
+  const front=showFR?c.f:c.e;
+  const back=showFR?c.e:c.f;
+  const d=getDiff(c);
+  a.innerHTML=`<div class="card-wrap"><div class="card" id="card" onclick="flip()">
+    <div class="face front">
+      <div>
+        <div class="badges"><span class="badge b-topic">${c.topic}</span><span class="badge b-${d}">${d}</span></div>
+        <div class="card-word">${front}</div>
+        <div class="card-hint">tap to reveal</div>
+      </div>
+      <div class="dir-toggle">${showFR?'FR → EN':'EN → FR'}</div>
+    </div>
+    <div class="face back">
+      <div>
+        <div class="badges"><span class="badge b-topic">${c.topic}</span></div>
+        <div class="card-trans">${back}</div>
+        ${c.note?`<div class="card-note">${c.note}</div>`:''}
+        <div class="card-ex">${c.ex}</div>
+      </div>
+    </div>
+  </div></div>
+  <div class="mark-row" id="mr">
+    <button class="btn-a" onclick="markA()">Practice again</button>
+    <button class="btn-k" onclick="markK()">Know it</button>
+  </div>
+  <div class="nav-row">
+    <button onclick="prev()">← Back</button>
+    <button onclick="next()">Next →</button>
+  </div>`;
+  updateStats();
+}
+
+function flip(){
+  flipped=!flipped;
+  document.getElementById('card').classList.toggle('flipped',flipped);
+  document.getElementById('mr').style.display=flipped?'flex':'none';
+}
+function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
+function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+function reviewAgain(){
+  const idx=[...again];
+  deck=deck.filter((_,i)=>idx.includes(i));
+  cur=0;flipped=false;known.clear();again.clear();render();updateStats();
+}
+
+document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();
+build();
+</script>
+</body>
+</html>

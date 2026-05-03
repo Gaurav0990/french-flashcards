@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 3 — Home, Daily Routine & Time</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{perspective:1000px;margin-bottom:10px}
+.card{width:100%;min-height:210px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform 0.4s ease}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;width:100%;min-height:210px;backface-visibility:hidden;border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
+.back{transform:rotateY(180deg)}
+.badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-beg{background:#EAF3DE;color:#27500A}
+.b-int{background:#FAEEDA;color:#633806}
+.b-adv{background:#FAECE7;color:#712B13}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.card-word{font-size:22px;font-weight:500;color:#1a1a1a;flex:1;display:flex;align-items:center;line-height:1.3}
+.card-hint{font-size:12px;color:#aaa;margin-top:8px}
+.card-trans{font-size:18px;font-weight:500;color:#1a1a1a}
+.card-note{font-size:13px;color:#555;margin-top:6px}
+.card-ex{font-size:13px;color:#888;font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ee}
+.mark-row{display:flex;gap:8px;margin-top:8px;display:none}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.dir-toggle{font-size:12px;color:#888;text-align:right;margin-top:4px}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none;margin-left:4px}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}
+.btn-clear:hover{background:#FAECE7}
+</style>
+</head>
+<body>
+<h1>Set 3 — Home, Daily Routine & Time</h1>
+<p class="subtitle">House vocabulary · Rooms · Furniture · Prepositions of place · Daily routine · Telling time</p>
+
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All topics</option>
+    <option value="house">House & rooms</option>
+    <option value="furniture">Furniture & objects</option>
+    <option value="prepositions">Prepositions of place</option>
+    <option value="routine">Daily routine</option>
+    <option value="time">Telling time</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="toggleDir()">Flip direction</button>
+  <button onclick="reviewAgainCards()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+<div style="display:none">
+</div>
+
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+
+<script>
+const DECK_ID='set3';
+
+function saveProgress(){
+  try{
+    localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));
+    localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));
+    localStorage.setItem('fc_cur_'+DECK_ID,String(cur));
+    localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');
+    localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);
+    showSaved();
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const t=localStorage.getItem('fc_topic_'+DECK_ID);
+    if(t) document.getElementById('ftopic').value=t;
+    const k=localStorage.getItem('fc_known_'+DECK_ID);
+    const a=localStorage.getItem('fc_again_'+DECK_ID);
+    const c=localStorage.getItem('fc_cur_'+DECK_ID);
+    const d=localStorage.getItem('fc_dir_'+DECK_ID);
+    if(k) known=new Set(JSON.parse(k));
+    if(a) again=new Set(JSON.parse(a));
+    if(c) cur=parseInt(c);
+    if(d!==null) showFR=d==='1';
+  }catch(e){}
+}
+function confirmClear(){
+  if(confirm('Clear all saved progress for this set?')){
+    try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}
+    known=new Set();again=new Set();cur=0;showFR=true;build();
+  }
+}
+let _savedTimer=null;
+function showSaved(){
+  const b=document.getElementById('saved-badge');
+  if(b){b.style.display='inline';if(_savedTimer)clearTimeout(_savedTimer);_savedTimer=setTimeout(()=>{b.style.display='none';},2000);}
+}
+function updateReviewBtn(){
+  const btn=document.getElementById('btn-review');
+  if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}
+}
+function reviewAgainCards(){
+  const saved=deck.map((_,i)=>i).filter(i=>again.has(ALL.indexOf(deck[i])));
+  deck=ALL.filter(c=>again.has(ALL.indexOf(c)));
+  cur=0;flipped=false;render();updateStats();
+}
+
+const ALL=[
+{f:"la maison",e:"the house",ex:"J'habite dans une grande maison à la campagne.",note:"feminine",topic:"house",diff:"beginner"},
+{f:"l'appartement (m)",e:"the apartment",ex:"Elle habite dans un appartement en ville.",note:"masculine — l' before vowel",topic:"house",diff:"beginner"},
+{f:"à la campagne",e:"in the countryside",ex:"Ma maison est à la campagne, loin de la ville.",note:"",topic:"house",diff:"beginner"},
+{f:"en ville",e:"in the city",ex:"Il préfère vivre en ville.",note:"",topic:"house",diff:"beginner"},
+{f:"le rez-de-chaussée",e:"the ground floor",ex:"La cuisine est au rez-de-chaussée.",note:"",topic:"house",diff:"intermediate"},
+{f:"l'étage (m)",e:"the floor / storey",ex:"Il y a trois chambres à l'étage.",note:"au premier étage = on the first floor",topic:"house",diff:"intermediate"},
+{f:"le salon",e:"the living room",ex:"Nous regardons la télé dans le salon le soir.",note:"masculine",topic:"house",diff:"beginner"},
+{f:"la cuisine",e:"the kitchen",ex:"Ma mère prépare de délicieux plats dans la cuisine.",note:"feminine",topic:"house",diff:"beginner"},
+{f:"la salle à manger",e:"the dining room",ex:"C'est là que nous mangeons tous ensemble.",note:"feminine",topic:"house",diff:"beginner"},
+{f:"la chambre",e:"the bedroom",ex:"Ma chambre est ma pièce préférée.",note:"feminine",topic:"house",diff:"beginner"},
+{f:"la salle de bains",e:"the bathroom",ex:"La salle de bains est à l'étage.",note:"feminine",topic:"house",diff:"beginner"},
+{f:"le jardin",e:"the garden",ex:"Derrière la maison, il y a un joli jardin.",note:"masculine",topic:"house",diff:"beginner"},
+{f:"la terrasse",e:"the terrace",ex:"En été, nous mangeons sur la terrasse.",note:"feminine",topic:"house",diff:"beginner"},
+{f:"le garage",e:"the garage",ex:"La voiture est dans le garage.",note:"masculine",topic:"house",diff:"beginner"},
+{f:"une pièce",e:"a room",ex:"Notre appartement a quatre pièces.",note:"feminine",topic:"house",diff:"beginner"},
+{f:"les murs (m)",e:"the walls",ex:"Les murs sont blancs et les volets sont bleus.",note:"plural of le mur",topic:"house",diff:"beginner"},
+{f:"le canapé",e:"the sofa",ex:"Il y a un grand canapé gris dans le salon.",note:"masculine",topic:"furniture",diff:"beginner"},
+{f:"la télévision",e:"the television",ex:"Je regarde la télévision après le dîner.",note:"feminine — also: la télé",topic:"furniture",diff:"beginner"},
+{f:"la bibliothèque",e:"the bookshelf / library",ex:"Il y a une grande bibliothèque dans le salon.",note:"feminine — two meanings: shelf or library",topic:"furniture",diff:"beginner"},
+{f:"la table basse",e:"the coffee table",ex:"Le livre est sur la table basse.",note:"feminine",topic:"furniture",diff:"beginner"},
+{f:"le bureau",e:"the desk",ex:"Je fais mes devoirs à mon bureau.",note:"masculine — also means 'office'",topic:"furniture",diff:"beginner"},
+{f:"une armoire",e:"a wardrobe",ex:"Il y a une grande armoire dans ma chambre.",note:"feminine — mon armoire (not ma — vowel rule!)",topic:"furniture",diff:"intermediate"},
+{f:"une affiche",e:"a poster",ex:"J'ai beaucoup d'affiches sur les murs de ma chambre.",note:"feminine",topic:"furniture",diff:"intermediate"},
+{f:"un lit",e:"a bed",ex:"J'ai un lit confortable dans ma chambre.",note:"masculine",topic:"furniture",diff:"beginner"},
+{f:"une baignoire",e:"a bathtub",ex:"Il y a une baignoire et une douche dans la salle de bains.",note:"feminine",topic:"furniture",diff:"intermediate"},
+{f:"un lavabo",e:"a sink",ex:"Le lavabo est à côté de la baignoire.",note:"masculine — NOT la salle de bains",topic:"furniture",diff:"intermediate"},
+{f:"un miroir",e:"a mirror",ex:"Il y a un grand miroir dans la salle de bains.",note:"masculine",topic:"furniture",diff:"intermediate"},
+{f:"le potager",e:"the vegetable garden",ex:"Ma grand-mère a un petit potager derrière sa maison.",note:"masculine — easy to forget!",topic:"furniture",diff:"intermediate"},
+{f:"la balançoire",e:"the swing",ex:"Les enfants jouent sur la balançoire.",note:"feminine — tricky vocab!",topic:"furniture",diff:"intermediate"},
+{f:"à côté de",e:"next to / beside",ex:"La cuisine est à côté de la salle à manger.",note:"",topic:"prepositions",diff:"beginner"},
+{f:"en face de",e:"facing / across from",ex:"L'école est en face de la mairie.",note:"",topic:"prepositions",diff:"beginner"},
+{f:"derrière",e:"behind",ex:"Derrière la maison, il y a un jardin.",note:"",topic:"prepositions",diff:"beginner"},
+{f:"devant",e:"in front of",ex:"Elle attend ses amis devant l'école.",note:"",topic:"prepositions",diff:"beginner"},
+{f:"sur / sous",e:"on / under",ex:"Le livre est sur la table. Le chat est sous le lit.",note:"",topic:"prepositions",diff:"beginner"},
+{f:"dans",e:"in / inside",ex:"Mes clés sont dans mon sac.",note:"",topic:"prepositions",diff:"beginner"},
+{f:"entre",e:"between",ex:"La salle de bains est entre les deux chambres.",note:"",topic:"prepositions",diff:"beginner"},
+{f:"près de",e:"near (to)",ex:"J'habite près de l'école.",note:"",topic:"prepositions",diff:"beginner"},
+{f:"loin de",e:"far from",ex:"Ma maison est loin du centre-ville.",note:"",topic:"prepositions",diff:"beginner"},
+{f:"au coin de",e:"in the corner of",ex:"Il y a une lampe au coin de la chambre.",note:"",topic:"prepositions",diff:"intermediate"},
+{f:"au-dessus de",e:"above / higher than",ex:"La chambre est au-dessus du salon.",note:"",topic:"prepositions",diff:"intermediate"},
+{f:"au-dessous de",e:"below / underneath",ex:"Le sous-sol est au-dessous du rez-de-chaussée.",note:"",topic:"prepositions",diff:"intermediate"},
+{f:"à droite de",e:"to the right of",ex:"La cuisine est à droite de l'entrée.",note:"",topic:"prepositions",diff:"intermediate"},
+{f:"à gauche de",e:"to the left of",ex:"Le salon est à gauche du couloir.",note:"",topic:"prepositions",diff:"intermediate"},
+{f:"à l'intérieur de",e:"inside (of)",ex:"À l'intérieur de la maison, il fait chaud.",note:"",topic:"prepositions",diff:"intermediate"},
+{f:"à l'extérieur de",e:"outside (of)",ex:"À l'extérieur de la maison, il y a un jardin.",note:"",topic:"prepositions",diff:"intermediate"},
+{f:"autour de",e:"around",ex:"Il y a des fleurs autour de la maison.",note:"",topic:"prepositions",diff:"intermediate"},
+{f:"se réveiller",e:"to wake up",ex:"Je me réveille à sept heures du matin.",note:"reflexive verb — se réveille, te réveilles...",topic:"routine",diff:"beginner"},
+{f:"se lever",e:"to get up",ex:"Elle se lève juste après le réveil.",note:"reflexive — se lève, te lèves...",topic:"routine",diff:"beginner"},
+{f:"se laver",e:"to wash oneself",ex:"Je me lave avant le petit déjeuner.",note:"reflexive",topic:"routine",diff:"beginner"},
+{f:"se brosser les dents",e:"to brush teeth",ex:"Il se brosse les dents deux fois par jour.",note:"reflexive",topic:"routine",diff:"beginner"},
+{f:"prendre une douche",e:"to take a shower",ex:"Je prends une douche chaque matin.",note:"prendre is irregular: prends/prends/prend/prenons/prenez/prennent",topic:"routine",diff:"beginner"},
+{f:"prendre le petit déjeuner",e:"to have breakfast",ex:"Je prends le petit déjeuner à sept heures et demie.",note:"",topic:"routine",diff:"beginner"},
+{f:"aller à l'école",e:"to go to school",ex:"Je vais à l'école en bus.",note:"aller is irregular — vais/vas/va/allons/allez/vont",topic:"routine",diff:"beginner"},
+{f:"travailler / étudier",e:"to work / to study",ex:"Je travaille dans un bureau. J'étudie le français.",note:"-er verbs",topic:"routine",diff:"beginner"},
+{f:"déjeuner",e:"to have lunch",ex:"Nous déjeunons à midi et demi.",note:"-er verb — also a noun: le déjeuner",topic:"routine",diff:"beginner"},
+{f:"rentrer à la maison",e:"to return home",ex:"Je rentre à la maison à dix-huit heures.",note:"-er verb",topic:"routine",diff:"beginner"},
+{f:"dîner",e:"to have dinner",ex:"Nous dînons ensemble à vingt heures.",note:"-er verb — also: le dîner = dinner",topic:"routine",diff:"beginner"},
+{f:"se coucher",e:"to go to bed",ex:"Je me couche à dix heures et demie.",note:"reflexive verb",topic:"routine",diff:"beginner"},
+{f:"dormir",e:"to sleep",ex:"Je dors huit heures par nuit.",note:"irregular: dors/dors/dort/dormons/dormez/dorment",topic:"routine",diff:"intermediate"},
+{f:"mettre le réveil",e:"to set the alarm",ex:"Je mets le réveil à six heures et demie.",note:"mettre is irregular",topic:"routine",diff:"intermediate"},
+{f:"quelle heure est-il ?",e:"what time is it?",ex:"Quelle heure est-il ? — Il est trois heures.",note:"always use il est + heure(s)",topic:"time",diff:"beginner"},
+{f:"il est + [heure]",e:"it is [time]",ex:"Il est deux heures. Il est midi. Il est minuit.",note:"ALWAYS use heure(s) after the number",topic:"time",diff:"beginner"},
+{f:"il est une heure",e:"it is 1 o'clock",ex:"Il est une heure de l'après-midi.",note:"une (not un) — heure is feminine",topic:"time",diff:"beginner"},
+{f:"et quart",e:"quarter past",ex:"Il est trois heures et quart. (3:15)",note:"",topic:"time",diff:"beginner"},
+{f:"et demie",e:"half past",ex:"Il est six heures et demie. (6:30)",note:"",topic:"time",diff:"beginner"},
+{f:"moins le quart",e:"quarter to",ex:"Il est huit heures moins le quart. (7:45)",note:"use next hour + moins + minutes",topic:"time",diff:"intermediate"},
+{f:"du matin / de l'après-midi / du soir",e:"AM / PM (afternoon) / PM (evening)",ex:"Il est huit heures du matin. Il est trois heures de l'après-midi.",note:"12-hour clock — add time of day",topic:"time",diff:"intermediate"},
+{f:"il est midi / minuit",e:"it is noon / midnight",ex:"Il est midi — on mange ! Il est minuit — bonne nuit !",note:"no heure(s) needed for midi/minuit",topic:"time",diff:"beginner"},
+{f:"à quelle heure... ?",e:"at what time...?",ex:"À quelle heure commence le cours ? — À neuf heures.",note:"",topic:"time",diff:"intermediate"},
+{f:"en retard / en avance / à l'heure",e:"late / early / on time",ex:"Je suis en retard ! Le train est à l'heure.",note:"",topic:"time",diff:"intermediate"},
+];
+
+let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
+
+function build(){
+  const t=document.getElementById('ftopic').value;
+  deck=ALL.filter(c=>t==='all'||c.topic===t);
+  cur=0;flipped=false;known.clear();again.clear();render();updateStats();
+}
+function shuffle(){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}cur=0;flipped=false;saveProgress();render();updateStats();}
+function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
+function updateStats(){updateReviewBtn();
+  document.getElementById('st').textContent=deck.length;
+  document.getElementById('sk').textContent=known.size;
+  document.getElementById('sa').textContent=again.size;
+  document.getElementById('sl').textContent=Math.max(0,deck.length-cur);
+  const p=deck.length?Math.round((cur/deck.length)*100):0;
+  document.getElementById('prog').style.width=p+'%';
+  document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';
+}
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards for this filter.</p>';return;}
+  if(cur>=deck.length){
+    const k=known.size,ag=again.size;
+    a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} to review.</div>${ag>0?`<button onclick="reviewAgain()">Review practice cards</button>`:''}&#32;<button onclick="build()">Restart</button></div>`;return;
+  }
+  const c=deck[cur];
+  const front=showFR?c.f:c.e;
+  const back=showFR?c.e:c.f;
+  const d=c.diff||'beginner';
+  a.innerHTML=`<div class="card-wrap"><div class="card" id="card" onclick="flip()">
+    <div class="face front">
+      <div><div class="badges"><span class="badge b-topic">${c.topic}</span><span class="badge b-${d}">${d}</span></div>
+      <div class="card-word">${front}</div><div class="card-hint">tap to reveal</div></div>
+      <div class="dir-toggle">${showFR?'FR → EN':'EN → FR'}</div>
+    </div>
+    <div class="face back">
+      <div><div class="badges"><span class="badge b-topic">${c.topic}</span></div>
+      <div class="card-trans">${back}</div>
+      ${c.note?`<div class="card-note">${c.note}</div>`:''}
+      <div class="card-ex">${c.ex}</div></div>
+    </div>
+  </div></div>
+  <div class="mark-row" id="mr"><button class="btn-a" onclick="markA()">Practice again</button><button class="btn-k" onclick="markK()">Know it</button></div>
+  <div class="nav-row"><button onclick="prev()">← Back</button><button onclick="next()">Next →</button></div>`;
+  updateStats();
+}
+function flip(){flipped=!flipped;document.getElementById('card').classList.toggle('flipped',flipped);document.getElementById('mr').style.display=flipped?'flex':'none';}
+function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
+function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+function reviewAgain(){const idx=[...again];deck=deck.filter((_,i)=>idx.includes(i));cur=0;flipped=false;known.clear();again.clear();render();updateStats();}
+document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();
+build();
+</script>
+</body>
+</html>

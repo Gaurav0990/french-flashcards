@@ -50,11 +50,33 @@ h1{font-size:20px;font-weight:500;margin-bottom:4px}
 .saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none;margin-left:4px}
 .btn-clear{color:#993C1D;border-color:#F5C4B3}
 .btn-clear:hover{background:#FAECE7}
+
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:100}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:20px;max-width:340px;width:90%;box-shadow:0 4px 24px rgba(0,0,0,0.12)}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:12px}
+.modal textarea{width:100%;height:80px;font-size:13px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;resize:none}
+.modal .modal-btns{display:flex;gap:8px;margin-top:10px}
+.modal .modal-btns button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.modal .modal-btns button:hover{background:#f0f0ee}
+.btn-import-apply{background:#EAF3DE!important;color:#27500A;border-color:#9FE1CB!important}
 </style>
 </head>
 <body>
 <h1>Set 3 — Home, Daily Routine & Time</h1>
 <p class="subtitle">House vocabulary · Rooms · Furniture · Prepositions of place · Daily routine · Telling time</p>
+
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Export progress</h3>
+    <textarea id="modal-text" placeholder="Paste your code here..."></textarea>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Cancel</button>
+      <button id="modal-action-btn" onclick="modalAction()">Copy code</button>
+    </div>
+  </div>
+</div>
 
 <div class="controls">
   <select id="ftopic">
@@ -68,6 +90,8 @@ h1{font-size:20px;font-weight:500;margin-bottom:4px}
   <button onclick="shuffle()">Shuffle</button>
   <button onclick="toggleDir()">Flip direction</button>
   <button onclick="reviewAgainCards()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button onclick="openExport()">Export</button>
+  <button onclick="openImport()">Import</button>
   <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
 </div>
 <span class="saved-badge" id="saved-badge">Progress saved</span>
@@ -86,46 +110,36 @@ h1{font-size:20px;font-weight:500;margin-bottom:4px}
 <div id="area"></div>
 
 <script>
+const DECK_ID='set3';
 
-
-const MASTER_KEY='$2a$10$MLLXGtaFKvyfGGEHs2tAbusHawh2S0D2.xC.nsi3Jnu3Yb4e0jLRW';
-const BIN_ID='69f75097856a6821899f845f';
-const JAPI='https://api.jsonbin.io/v3/b/';
-let _saveTimer=null;
 function saveProgress(){
-  clearTimeout(_saveTimer);
-  _saveTimer=setTimeout(async()=>{
-    try{
-      const data={known:[...known],again:[...again],cur,dir:showFR};
-      await fetch(JAPI+BIN_ID,{
-        method:'PUT',
-        headers:{'Content-Type':'application/json','X-Master-Key':MASTER_KEY},
-        body:JSON.stringify(data)
-      });
-      showSaved();
-    }catch(e){}
-  },1500);
+  try{
+    localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));
+    localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));
+    localStorage.setItem('fc_cur_'+DECK_ID,String(cur));
+    localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');
+    localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);
+    showSaved();
+  }catch(e){}
 }
-function loadProgressInBackground(){
-  fetch(JAPI+BIN_ID+'/latest',{headers:{'X-Master-Key':MASTER_KEY}})
-  .then(r=>r.json())
-  .then(json=>{
-    const d=json.record;
-    if(!d) return;
-    let changed=false;
-    if(d.known){known=new Set(d.known);changed=true;}
-    if(d.again){again=new Set(d.again);changed=true;}
-    if(typeof d.cur==='number'){cur=d.cur;changed=true;}
-    if(typeof d.dir==='boolean'){showFR=d.dir;changed=true;}
-    if(changed) build();
-  })
-  .catch(e=>console.log('Progress load failed:',e));
+function loadProgress(){
+  try{
+    const t=localStorage.getItem('fc_topic_'+DECK_ID);
+    if(t) document.getElementById('ftopic').value=t;
+    const k=localStorage.getItem('fc_known_'+DECK_ID);
+    const a=localStorage.getItem('fc_again_'+DECK_ID);
+    const c=localStorage.getItem('fc_cur_'+DECK_ID);
+    const d=localStorage.getItem('fc_dir_'+DECK_ID);
+    if(k) known=new Set(JSON.parse(k));
+    if(a) again=new Set(JSON.parse(a));
+    if(c) cur=parseInt(c);
+    if(d!==null) showFR=d==='1';
+  }catch(e){}
 }
-function loadProgress(){ return Promise.resolve(); }
 function confirmClear(){
   if(confirm('Clear all saved progress for this set?')){
-    known=new Set();again=new Set();cur=0;showFR=true;
-    saveProgress();build();
+    try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}
+    known=new Set();again=new Set();cur=0;showFR=true;build();
   }
 }
 let _savedTimer=null;
@@ -138,6 +152,7 @@ function updateReviewBtn(){
   if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}
 }
 function reviewAgainCards(){
+  const saved=deck.map((_,i)=>i).filter(i=>again.has(ALL.indexOf(deck[i])));
   deck=ALL.filter(c=>again.has(ALL.indexOf(c)));
   cur=0;flipped=false;render();updateStats();
 }
@@ -268,8 +283,55 @@ function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();ren
 function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
 function reviewAgain(){const idx=[...again];deck=deck.filter((_,i)=>idx.includes(i));cur=0;flipped=false;known.clear();again.clear();render();updateStats();}
 document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();
 build();
-loadProgressInBackground();
+
+let _modalMode='export';
+function openExport(){
+  _modalMode='export';
+  const data={known:[...known],again:[...again],cur,dir:showFR};
+  const code=btoa(JSON.stringify(data));
+  document.getElementById('modal-title').textContent='Export progress';
+  document.getElementById('modal-text').value=code;
+  document.getElementById('modal-text').readOnly=true;
+  document.getElementById('modal-action-btn').textContent='Copy code';
+  document.getElementById('modal-action-btn').className='';
+  document.getElementById('modal-bg').classList.add('open');
+}
+function openImport(){
+  _modalMode='import';
+  document.getElementById('modal-title').textContent='Import progress';
+  document.getElementById('modal-text').value='';
+  document.getElementById('modal-text').readOnly=false;
+  document.getElementById('modal-text').placeholder='Paste your code here...';
+  document.getElementById('modal-action-btn').textContent='Apply code';
+  document.getElementById('modal-action-btn').className='btn-import-apply';
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+function modalAction(){
+  if(_modalMode==='export'){
+    const t=document.getElementById('modal-text');
+    t.select();
+    try{navigator.clipboard.writeText(t.value).then(()=>{
+      document.getElementById('modal-action-btn').textContent='Copied!';
+      setTimeout(closeModal,1000);
+    });}catch(e){document.execCommand('copy');document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);}
+  } else {
+    const code=document.getElementById('modal-text').value.trim();
+    try{
+      const data=JSON.parse(atob(code));
+      if(data.known) known=new Set(data.known);
+      if(data.again) again=new Set(data.again);
+      if(typeof data.cur==='number') cur=data.cur;
+      if(typeof data.dir==='boolean') showFR=data.dir;
+      saveProgress();
+      closeModal();
+      build();
+    }catch(e){alert('Invalid code — please check and try again.');}
+  }
+}
+
 </script>
 </body>
 </html>

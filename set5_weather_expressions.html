@@ -86,36 +86,60 @@ h1{font-size:20px;font-weight:500;margin-bottom:4px}
 <div id="area"></div>
 
 <script>
-const DECK_ID='set5';
 
+
+catch(e){}
+}
+catch(e){}
+}
+catch(e){}
+    known=new Set();again=new Set();cur=0;showFR=true;build();
+  }
+}
+,2000);}
+}
+else{btn.style.display='none';}}
+}
+
+
+
+const MASTER_KEY='$2a$10$MLLXGtaFKvyfGGEHs2tAbusHawh2S0D2.xC.nsi3Jnu3Yb4e0jLRW';
+const BIN_ID='69f750c3856a6821899f84ed';
+const JAPI='https://api.jsonbin.io/v3/b/';
+let _saveTimer=null;
 function saveProgress(){
   try{
-    localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));
-    localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));
-    localStorage.setItem('fc_cur_'+DECK_ID,String(cur));
-    localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');
-    localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);
-    showSaved();
+    const data={known:[...known],again:[...again],cur,dir:showFR};
+    clearTimeout(_saveTimer);
+    _saveTimer=setTimeout(async()=>{
+      try{
+        await fetch(JAPI+BIN_ID,{
+          method:'PUT',
+          headers:{'Content-Type':'application/json','X-Master-Key':MASTER_KEY},
+          body:JSON.stringify(data)
+        });
+        showSaved();
+      }catch(e){}
+    },1200);
   }catch(e){}
 }
-function loadProgress(){
+async function loadProgress(){
   try{
-    const t=localStorage.getItem('fc_topic_'+DECK_ID);
-    if(t) document.getElementById('ftopic').value=t;
-    const k=localStorage.getItem('fc_known_'+DECK_ID);
-    const a=localStorage.getItem('fc_again_'+DECK_ID);
-    const c=localStorage.getItem('fc_cur_'+DECK_ID);
-    const d=localStorage.getItem('fc_dir_'+DECK_ID);
-    if(k) known=new Set(JSON.parse(k));
-    if(a) again=new Set(JSON.parse(a));
-    if(c) cur=parseInt(c);
-    if(d!==null) showFR=d==='1';
+    document.getElementById('area').innerHTML='<p style="color:#888;padding:2rem 0;text-align:center">Loading progress...</p>';
+    const res=await fetch(JAPI+BIN_ID+'/latest',{headers:{'X-Master-Key':MASTER_KEY}});
+    const json=await res.json();
+    const d=json.record;
+    if(d&&d.known) known=new Set(d.known);
+    if(d&&d.again) again=new Set(d.again);
+    if(d&&typeof d.cur==='number') cur=d.cur;
+    if(d&&typeof d.dir==='boolean') showFR=d.dir;
   }catch(e){}
 }
 function confirmClear(){
   if(confirm('Clear all saved progress for this set?')){
-    try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}
-    known=new Set();again=new Set();cur=0;showFR=true;build();
+    known=new Set();again=new Set();cur=0;showFR=true;
+    saveProgress();
+    build();
   }
 }
 let _savedTimer=null;
@@ -128,7 +152,6 @@ function updateReviewBtn(){
   if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}
 }
 function reviewAgainCards(){
-  const saved=deck.map((_,i)=>i).filter(i=>again.has(ALL.indexOf(deck[i])));
   deck=ALL.filter(c=>again.has(ALL.indexOf(c)));
   cur=0;flipped=false;render();updateStats();
 }
@@ -207,8 +230,7 @@ function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();ren
 function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
 function reviewAgain(){const idx=[...again];deck=deck.filter((_,i)=>idx.includes(i));cur=0;flipped=false;known.clear();again.clear();render();updateStats();}
 document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
-loadProgress();
-build();
+loadProgress().then(()=>build());
 </script>
 </body>
 </html>

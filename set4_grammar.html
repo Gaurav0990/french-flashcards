@@ -126,15 +126,19 @@ function saveProgress(){
 }
 async function loadProgress(){
   try{
-    document.getElementById('area').innerHTML='<p style="color:#888;padding:2rem 0;text-align:center">Loading progress...</p>';
-    const res=await fetch(JAPI+BIN_ID+'/latest',{headers:{'X-Master-Key':MASTER_KEY}});
+    const res=await Promise.race([
+      fetch(JAPI+BIN_ID+'/latest',{headers:{'X-Master-Key':MASTER_KEY}}),
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),5000))
+    ]);
     const json=await res.json();
     const d=json.record;
     if(d&&d.known) known=new Set(d.known);
     if(d&&d.again) again=new Set(d.again);
     if(d&&typeof d.cur==='number') cur=d.cur;
     if(d&&typeof d.dir==='boolean') showFR=d.dir;
-  }catch(e){}
+  }catch(e){
+    console.log('Progress load failed, starting fresh:',e);
+  }
 }
 function confirmClear(){
   if(confirm('Clear all saved progress for this set?')){

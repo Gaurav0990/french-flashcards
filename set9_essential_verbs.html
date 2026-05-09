@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 9 — All Verbs</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}.btn-clear:hover{background:#FAECE7}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{perspective:1000px;margin-bottom:10px}
+.card{width:100%;min-height:260px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform 0.4s ease}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;width:100%;min-height:260px;backface-visibility:hidden;border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
+.back{transform:rotateY(180deg)}
+.badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-beg{background:#EAF3DE;color:#27500A}
+.b-int{background:#FEF3C7;color:#92400E}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.card-word{font-size:26px;font-weight:500;color:#1a1a1a;flex:1;display:flex;align-items:center;line-height:1.3}
+.card-hint{font-size:12px;color:#aaa;margin-top:8px}
+.card-trans{font-size:17px;font-weight:600;color:#1a1a1a;margin-bottom:8px}
+.conj-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;font-size:13px;border:1px solid #e8e8e5;border-radius:8px;overflow:hidden}
+.conj-cell{padding:5px 10px;border-bottom:1px solid #f0f0ee}
+.conj-cell:nth-child(odd){background:#fafaf8;color:#888}
+.conj-cell:nth-child(even){font-weight:500;color:#1a1a1a;border-left:1px solid #f0f0ee}
+.conj-cell:nth-last-child(-n+2){border-bottom:none}
+.card-ex{font-size:13px;color:#888;font-style:italic;margin-top:8px;padding-top:8px;border-top:1px solid #f0f0ee}
+.card-note{font-size:12px;color:#993C1D;background:#FAECE7;padding:4px 8px;border-radius:6px;margin-top:6px}
+.mark-row{display:none;gap:8px;margin-top:8px}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.dir-badge{font-size:11px;color:#888;text-align:right}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:100}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:20px;max-width:340px;width:90%;box-shadow:0 4px 24px rgba(0,0,0,0.12)}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:12px}
+.modal textarea{width:100%;height:80px;font-size:13px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;resize:none}
+.modal .modal-btns{display:flex;gap:8px;margin-top:10px}
+.modal .modal-btns button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.modal .modal-btns button:hover{background:#f0f0ee}
+.btn-import-apply{background:#EAF3DE!important;color:#27500A;border-color:#9FE1CB!important}
+</style>
+</head>
+<body>
+<h1>Set 9 — All Verbs</h1>
+<p class="subtitle">Complete A1 verb reference · Full conjugation table on every card</p>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Export progress</h3>
+    <textarea id="modal-text" placeholder="Paste your code here..."></textarea>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Cancel</button>
+      <button id="modal-action-btn" onclick="modalAction()">Copy code</button>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All verbs</option>
+    <option value="key-irreg">Key irregulars — être / avoir / aller / faire</option>
+    <option value="modal">Modal — vouloir / pouvoir / devoir / savoir</option>
+    <option value="motion">Motion verbs — venir / partir / sortir...</option>
+    <option value="irreg-other">Other irregulars — prendre / voir / dire...</option>
+    <option value="-er">-ER verbs (regular + spelling changes)</option>
+    <option value="-ir">-IR verbs</option>
+    <option value="-re">-RE verbs</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="toggleDir()">Flip direction</button>
+  <button onclick="reviewAgain()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button onclick="openExport()">Export</button>
+  <button onclick="openImport()">Import</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+
+<script>
+const DECK_ID='set9';
+const ALL=[
+// KEY IRREGULARS
+{f:"être",e:"to be",topic:"key-irreg",diff:"beginner",conj:[["je","suis"],["tu","es"],["il/elle","est"],["nous","sommes"],["vous","êtes"],["ils/elles","sont"]],ex:"Je suis étudiant. Tu es gentil. Nous sommes prêts.",note:"PC: avoir + été — être uses avoir as its auxiliary!"},
+{f:"avoir",e:"to have",topic:"key-irreg",diff:"beginner",conj:[["je","ai"],["tu","as"],["il/elle","a"],["nous","avons"],["vous","avez"],["ils/elles","ont"]],ex:"J'ai un frère. Elle a faim. Ils ont raison.",note:"PC: avoir + eu · avoir faim / soif / peur / besoin / raison / tort / ...ans"},
+{f:"aller",e:"to go",topic:"key-irreg",diff:"beginner",conj:[["je","vais"],["tu","vas"],["il/elle","va"],["nous","allons"],["vous","allez"],["ils/elles","vont"]],ex:"Je vais à l'école. Ils vont au marché.",note:"PC: être + allé(e) · ils vont — NOT ils alent!"},
+{f:"faire",e:"to do / to make",topic:"key-irreg",diff:"beginner",conj:[["je","fais"],["tu","fais"],["il/elle","fait"],["nous","faisons"],["vous","faites"],["ils/elles","font"]],ex:"Qu'est-ce que tu fais ? Il fait du sport.",note:"PC: avoir + fait · vous faites — NOT faisez!"},
+// MODAL VERBS
+{f:"vouloir",e:"to want",topic:"modal",diff:"intermediate",conj:[["je","veux"],["tu","veux"],["il/elle","veut"],["nous","voulons"],["vous","voulez"],["ils/elles","veulent"]],ex:"Je veux un café. Tu veux venir ? Ils veulent partir.",note:"PC: avoir + voulu · Always + infinitive for 'want to do'"},
+{f:"pouvoir",e:"to be able to / can",topic:"modal",diff:"intermediate",conj:[["je","peux"],["tu","peux"],["il/elle","peut"],["nous","pouvons"],["vous","pouvez"],["ils/elles","peuvent"]],ex:"Je peux t'aider. Il peut venir demain.",note:"PC: avoir + pu · Always + infinitive"},
+{f:"devoir",e:"to have to / must",topic:"modal",diff:"intermediate",conj:[["je","dois"],["tu","dois"],["il/elle","doit"],["nous","devons"],["vous","devez"],["ils/elles","doivent"]],ex:"Je dois partir. Tu dois finir tes devoirs.",note:"PC: avoir + dû · Always + infinitive"},
+{f:"savoir",e:"to know (a fact or skill)",topic:"modal",diff:"intermediate",conj:[["je","sais"],["tu","sais"],["il/elle","sait"],["nous","savons"],["vous","savez"],["ils/elles","savent"]],ex:"Je sais nager. Tu sais où il est ?",note:"PC: avoir + su · savoir = fact/skill. connaître = person/place"},
+// MOTION VERBS
+{f:"venir",e:"to come",topic:"motion",diff:"intermediate",conj:[["je","viens"],["tu","viens"],["il/elle","vient"],["nous","venons"],["vous","venez"],["ils/elles","viennent"]],ex:"Tu viens avec moi ? Ils viennent demain.",note:"PC: être + venu(e) · venir de + inf. = to have just done"},
+{f:"partir",e:"to leave",topic:"motion",diff:"intermediate",conj:[["je","pars"],["tu","pars"],["il/elle","part"],["nous","partons"],["vous","partez"],["ils/elles","partent"]],ex:"Je pars à huit heures. Elle part en vacances.",note:"PC: être + parti(e)"},
+{f:"sortir",e:"to go out",topic:"motion",diff:"intermediate",conj:[["je","sors"],["tu","sors"],["il/elle","sort"],["nous","sortons"],["vous","sortez"],["ils/elles","sortent"]],ex:"Je sors ce soir. Vous sortez souvent ?",note:"PC: être + sorti(e)"},
+{f:"revenir",e:"to come back",topic:"motion",diff:"intermediate",conj:[["je","reviens"],["tu","reviens"],["il/elle","revient"],["nous","revenons"],["vous","revenez"],["ils/elles","reviennent"]],ex:"Je reviens dans cinq minutes. Il revient de Paris.",note:"PC: être + revenu(e) · Same pattern as venir"},
+{f:"devenir",e:"to become",topic:"motion",diff:"intermediate",conj:[["je","deviens"],["tu","deviens"],["il/elle","devient"],["nous","devenons"],["vous","devenez"],["ils/elles","deviennent"]],ex:"Il devient médecin. Elle devient célèbre.",note:"PC: être + devenu(e) · Same pattern as venir"},
+{f:"rentrer",e:"to go back home",topic:"motion",diff:"beginner",conj:[["je","rentre"],["tu","rentres"],["il/elle","rentre"],["nous","rentrons"],["vous","rentrez"],["ils/elles","rentrent"]],ex:"Je rentre à la maison à dix-huit heures.",note:"PC: être + rentré(e) · Regular -ER but uses être in PC!"},
+{f:"retourner",e:"to return / go back",topic:"motion",diff:"intermediate",conj:[["je","retourne"],["tu","retournes"],["il/elle","retourne"],["nous","retournons"],["vous","retournez"],["ils/elles","retournent"]],ex:"Je retourne en France cet été.",note:"PC: être + retourné(e) · Regular -ER"},
+{f:"arriver",e:"to arrive",topic:"motion",diff:"beginner",conj:[["je","arrive"],["tu","arrives"],["il/elle","arrive"],["nous","arrivons"],["vous","arrivez"],["ils/elles","arrivent"]],ex:"J'arrive à dix heures. Le train arrive à midi.",note:"PC: être + arrivé(e) · Regular -ER"},
+{f:"entrer",e:"to enter / go in",topic:"motion",diff:"beginner",conj:[["je","entre"],["tu","entres"],["il/elle","entre"],["nous","entrons"],["vous","entrez"],["ils/elles","entrent"]],ex:"J'entre dans la salle. Elle entre dans le magasin.",note:"PC: être + entré(e) · Regular -ER"},
+{f:"tomber",e:"to fall",topic:"motion",diff:"beginner",conj:[["je","tombe"],["tu","tombes"],["il/elle","tombe"],["nous","tombons"],["vous","tombez"],["ils/elles","tombent"]],ex:"Il tombe dans l'escalier. Attention, tu vas tomber !",note:"PC: être + tombé(e) · Regular -ER"},
+{f:"monter",e:"to go up / get on",topic:"motion",diff:"beginner",conj:[["je","monte"],["tu","montes"],["il/elle","monte"],["nous","montons"],["vous","montez"],["ils/elles","montent"]],ex:"Je monte au premier étage. Elle monte dans le bus.",note:"PC: être + monté(e) · Regular -ER"},
+{f:"descendre",e:"to go down / get off",topic:"motion",diff:"beginner",conj:[["je","descends"],["tu","descends"],["il/elle","descend"],["nous","descendons"],["vous","descendez"],["ils/elles","descendent"]],ex:"Je descends à la cave. Il descend du bus.",note:"PC: être + descendu(e) · -RE verb"},
+{f:"rester",e:"to stay",topic:"motion",diff:"beginner",conj:[["je","reste"],["tu","restes"],["il/elle","reste"],["nous","restons"],["vous","restez"],["ils/elles","restent"]],ex:"Je reste à la maison ce soir. Elle reste avec moi.",note:"PC: être + resté(e) · Regular -ER"},
+// OTHER IRREGULARS
+{f:"prendre",e:"to take",topic:"irreg-other",diff:"intermediate",conj:[["je","prends"],["tu","prends"],["il/elle","prend"],["nous","prenons"],["vous","prenez"],["ils/elles","prennent"]],ex:"Je prends le bus. Tu prends un café ? Ils prennent leurs affaires.",note:"PC: avoir + pris · prennent has double-n"},
+{f:"apprendre",e:"to learn",topic:"irreg-other",diff:"intermediate",conj:[["je","apprends"],["tu","apprends"],["il/elle","apprend"],["nous","apprenons"],["vous","apprenez"],["ils/elles","apprennent"]],ex:"J'apprends le français. Tu apprends vite !",note:"PC: avoir + appris · Same pattern as prendre"},
+{f:"comprendre",e:"to understand",topic:"irreg-other",diff:"intermediate",conj:[["je","comprends"],["tu","comprends"],["il/elle","comprend"],["nous","comprenons"],["vous","comprenez"],["ils/elles","comprennent"]],ex:"Je comprends bien. Tu comprends la question ?",note:"PC: avoir + compris · Same pattern as prendre"},
+{f:"mettre",e:"to put / put on / wear",topic:"irreg-other",diff:"intermediate",conj:[["je","mets"],["tu","mets"],["il/elle","met"],["nous","mettons"],["vous","mettez"],["ils/elles","mettent"]],ex:"Je mets mon manteau. Il met la table.",note:"PC: avoir + mis"},
+{f:"voir",e:"to see",topic:"irreg-other",diff:"intermediate",conj:[["je","vois"],["tu","vois"],["il/elle","voit"],["nous","voyons"],["vous","voyez"],["ils/elles","voient"]],ex:"Je vois mes amis. Vous voyez le problème ?",note:"PC: avoir + vu · voyons / voient — stem changes"},
+{f:"lire",e:"to read",topic:"irreg-other",diff:"intermediate",conj:[["je","lis"],["tu","lis"],["il/elle","lit"],["nous","lisons"],["vous","lisez"],["ils/elles","lisent"]],ex:"Je lis un livre. Elle lit beaucoup.",note:"PC: avoir + lu"},
+{f:"écrire",e:"to write",topic:"irreg-other",diff:"intermediate",conj:[["je","écris"],["tu","écris"],["il/elle","écrit"],["nous","écrivons"],["vous","écrivez"],["ils/elles","écrivent"]],ex:"J'écris une lettre. Nous écrivons en français.",note:"PC: avoir + écrit"},
+{f:"boire",e:"to drink",topic:"irreg-other",diff:"intermediate",conj:[["je","bois"],["tu","bois"],["il/elle","boit"],["nous","buvons"],["vous","buvez"],["ils/elles","boivent"]],ex:"Je bois de l'eau. Ils boivent du café.",note:"PC: avoir + bu · buvons / boivent — stem changes"},
+{f:"dire",e:"to say / to tell",topic:"irreg-other",diff:"intermediate",conj:[["je","dis"],["tu","dis"],["il/elle","dit"],["nous","disons"],["vous","dites"],["ils/elles","disent"]],ex:"Je dis la vérité. Qu'est-ce que tu dis ?",note:"PC: avoir + dit · vous dites — NOT disez!"},
+{f:"connaître",e:"to know (person / place)",topic:"irreg-other",diff:"intermediate",conj:[["je","connais"],["tu","connais"],["il/elle","connaît"],["nous","connaissons"],["vous","connaissez"],["ils/elles","connaissent"]],ex:"Je connais Paris. Tu connais Marie ?",note:"PC: avoir + connu · connaître = person/place. savoir = fact/skill"},
+{f:"ouvrir",e:"to open",topic:"irreg-other",diff:"intermediate",conj:[["je","ouvre"],["tu","ouvres"],["il/elle","ouvre"],["nous","ouvrons"],["vous","ouvrez"],["ils/elles","ouvrent"]],ex:"J'ouvre la fenêtre. Le magasin ouvre à neuf heures.",note:"PC: avoir + ouvert · Irregular -IR conjugated like -ER"},
+{f:"dormir",e:"to sleep",topic:"irreg-other",diff:"intermediate",conj:[["je","dors"],["tu","dors"],["il/elle","dort"],["nous","dormons"],["vous","dormez"],["ils/elles","dorment"]],ex:"Je dors huit heures. Tu dors bien ?",note:"PC: avoir + dormi · Irregular -IR"},
+{f:"tenir",e:"to hold / to keep",topic:"irreg-other",diff:"intermediate",conj:[["je","tiens"],["tu","tiens"],["il/elle","tient"],["nous","tenons"],["vous","tenez"],["ils/elles","tiennent"]],ex:"Il tient la porte. Ils tiennent leurs promesses.",note:"PC: avoir + tenu · Same stem pattern as venir"},
+{f:"recevoir",e:"to receive / to get",topic:"irreg-other",diff:"intermediate",conj:[["je","reçois"],["tu","reçois"],["il/elle","reçoit"],["nous","recevons"],["vous","recevez"],["ils/elles","reçoivent"]],ex:"Je reçois un cadeau. Ils reçoivent des amis.",note:"PC: avoir + reçu · cedilla: reçois / reçoit / reçoivent"},
+{f:"offrir",e:"to offer / to give (a gift)",topic:"irreg-other",diff:"intermediate",conj:[["je","offre"],["tu","offres"],["il/elle","offre"],["nous","offrons"],["vous","offrez"],["ils/elles","offrent"]],ex:"J'offre des fleurs. Il offre un cadeau à sa mère.",note:"PC: avoir + offert · Irregular -IR conjugated like -ER"},
+{f:"courir",e:"to run",topic:"irreg-other",diff:"intermediate",conj:[["je","cours"],["tu","cours"],["il/elle","court"],["nous","courons"],["vous","courez"],["ils/elles","courent"]],ex:"Je cours tous les matins. Elle court vite.",note:"PC: avoir + couru"},
+{f:"suivre",e:"to follow",topic:"irreg-other",diff:"intermediate",conj:[["je","suis"],["tu","suis"],["il/elle","suit"],["nous","suivons"],["vous","suivez"],["ils/elles","suivent"]],ex:"Je suis un cours de français. Il suit les instructions.",note:"PC: avoir + suivi · je suis = I follow OR I am (être) — context decides!"},
+// -ER VERBS
+{f:"parler",e:"to speak / to talk",topic:"-er",diff:"beginner",conj:[["je","parle"],["tu","parles"],["il/elle","parle"],["nous","parlons"],["vous","parlez"],["ils/elles","parlent"]],ex:"Je parle français. Tu parles anglais aussi ?",note:"PC: avoir + parlé · Regular -ER"},
+{f:"aimer",e:"to like / to love",topic:"-er",diff:"beginner",conj:[["je","aime"],["tu","aimes"],["il/elle","aime"],["nous","aimons"],["vous","aimez"],["ils/elles","aiment"]],ex:"J'aime le français. Tu aimes la musique ?",note:"PC: avoir + aimé · Regular -ER"},
+{f:"regarder",e:"to watch / to look at",topic:"-er",diff:"beginner",conj:[["je","regarde"],["tu","regardes"],["il/elle","regarde"],["nous","regardons"],["vous","regardez"],["ils/elles","regardent"]],ex:"Elle regarde la télé. Je regarde par la fenêtre.",note:"PC: avoir + regardé · Regular -ER"},
+{f:"écouter",e:"to listen (to)",topic:"-er",diff:"beginner",conj:[["je","écoute"],["tu","écoutes"],["il/elle","écoute"],["nous","écoutons"],["vous","écoutez"],["ils/elles","écoutent"]],ex:"J'écoute de la musique. Tu écoutes le professeur ?",note:"PC: avoir + écouté · Regular -ER"},
+{f:"travailler",e:"to work",topic:"-er",diff:"beginner",conj:[["je","travaille"],["tu","travailles"],["il/elle","travaille"],["nous","travaillons"],["vous","travaillez"],["ils/elles","travaillent"]],ex:"Je travaille beaucoup. Vous travaillez où ?",note:"PC: avoir + travaillé · Regular -ER"},
+{f:"habiter",e:"to live (somewhere)",topic:"-er",diff:"beginner",conj:[["je","habite"],["tu","habites"],["il/elle","habite"],["nous","habitons"],["vous","habitez"],["ils/elles","habitent"]],ex:"J'habite à Chicago. Tu habites où ?",note:"PC: avoir + habité · Regular -ER"},
+{f:"jouer",e:"to play",topic:"-er",diff:"beginner",conj:[["je","joue"],["tu","joues"],["il/elle","joue"],["nous","jouons"],["vous","jouez"],["ils/elles","jouent"]],ex:"Ils jouent au football. Je joue de la guitare.",note:"PC: avoir + joué · jouer à = sport / jouer de = instrument"},
+{f:"chanter",e:"to sing",topic:"-er",diff:"beginner",conj:[["je","chante"],["tu","chantes"],["il/elle","chante"],["nous","chantons"],["vous","chantez"],["ils/elles","chantent"]],ex:"Nous chantons ensemble. Elle chante très bien.",note:"PC: avoir + chanté · Regular -ER"},
+{f:"danser",e:"to dance",topic:"-er",diff:"beginner",conj:[["je","danse"],["tu","danses"],["il/elle","danse"],["nous","dansons"],["vous","dansez"],["ils/elles","dansent"]],ex:"J'aime danser. Vous dansez bien !",note:"PC: avoir + dansé · Regular -ER"},
+{f:"marcher",e:"to walk",topic:"-er",diff:"beginner",conj:[["je","marche"],["tu","marches"],["il/elle","marche"],["nous","marchons"],["vous","marchez"],["ils/elles","marchent"]],ex:"Je marche à l'école. Nous marchons dans le parc.",note:"PC: avoir + marché · Regular -ER"},
+{f:"chercher",e:"to look for / search",topic:"-er",diff:"beginner",conj:[["je","cherche"],["tu","cherches"],["il/elle","cherche"],["nous","cherchons"],["vous","cherchez"],["ils/elles","cherchent"]],ex:"Je cherche mon stylo. Tu cherches quoi ?",note:"PC: avoir + cherché · Regular -ER"},
+{f:"donner",e:"to give",topic:"-er",diff:"beginner",conj:[["je","donne"],["tu","donnes"],["il/elle","donne"],["nous","donnons"],["vous","donnez"],["ils/elles","donnent"]],ex:"Il donne un cadeau. Tu me donnes ton numéro ?",note:"PC: avoir + donné · Regular -ER"},
+{f:"étudier",e:"to study",topic:"-er",diff:"beginner",conj:[["je","étudie"],["tu","étudies"],["il/elle","étudie"],["nous","étudions"],["vous","étudiez"],["ils/elles","étudient"]],ex:"J'étudie le français. Vous étudiez quoi ?",note:"PC: avoir + étudié · Regular -ER"},
+{f:"manger",e:"to eat",topic:"-er",diff:"beginner",conj:[["je","mange"],["tu","manges"],["il/elle","mange"],["nous","mangeons"],["vous","mangez"],["ils/elles","mangent"]],ex:"Nous mangeons à midi. Tu manges quoi ce soir ?",note:"PC: avoir + mangé · nous mangeons — spelling change to keep soft g"},
+{f:"commencer",e:"to start / begin",topic:"-er",diff:"beginner",conj:[["je","commence"],["tu","commences"],["il/elle","commence"],["nous","commençons"],["vous","commencez"],["ils/elles","commencent"]],ex:"Le cours commence à neuf heures. Nous commençons maintenant.",note:"PC: avoir + commencé · nous commençons — cedilla keeps soft c"},
+{f:"acheter",e:"to buy",topic:"-er",diff:"intermediate",conj:[["je","achète"],["tu","achètes"],["il/elle","achète"],["nous","achetons"],["vous","achetez"],["ils/elles","achètent"]],ex:"J'achète du pain. Qu'est-ce que tu achètes ?",note:"PC: avoir + acheté · è spelling change in je/tu/il/ils forms"},
+{f:"appeler",e:"to call",topic:"-er",diff:"intermediate",conj:[["je","appelle"],["tu","appelles"],["il/elle","appelle"],["nous","appelons"],["vous","appelez"],["ils/elles","appellent"]],ex:"Je t'appelle ce soir. Comment tu t'appelles ?",note:"PC: avoir + appelé · double-l in je/tu/il/ils forms"},
+{f:"préférer",e:"to prefer",topic:"-er",diff:"intermediate",conj:[["je","préfère"],["tu","préfères"],["il/elle","préfère"],["nous","préférons"],["vous","préférez"],["ils/elles","préfèrent"]],ex:"Je préfère le thé. Tu préfères quoi ?",note:"PC: avoir + préféré · é to è in je/tu/il/ils forms"},
+{f:"payer",e:"to pay",topic:"-er",diff:"intermediate",conj:[["je","paie"],["tu","paies"],["il/elle","paie"],["nous","payons"],["vous","payez"],["ils/elles","paient"]],ex:"Je paie par carte. Tu paies combien ?",note:"PC: avoir + payé · y to i in je/tu/il/ils forms"},
+{f:"essayer",e:"to try",topic:"-er",diff:"intermediate",conj:[["je","essaie"],["tu","essaies"],["il/elle","essaie"],["nous","essayons"],["vous","essayez"],["ils/elles","essaient"]],ex:"J'essaie de parler français. Tu essaies cette robe ?",note:"PC: avoir + essayé · y to i in je/tu/il/ils forms"},
+{f:"porter",e:"to wear / carry",topic:"-er",diff:"beginner",conj:[["je","porte"],["tu","portes"],["il/elle","porte"],["nous","portons"],["vous","portez"],["ils/elles","portent"]],ex:"Elle porte une robe rouge. Je porte mon sac.",note:"PC: avoir + porté · Regular -ER"},
+{f:"demander",e:"to ask (for)",topic:"-er",diff:"beginner",conj:[["je","demande"],["tu","demandes"],["il/elle","demande"],["nous","demandons"],["vous","demandez"],["ils/elles","demandent"]],ex:"Je demande l'addition. Il demande son chemin.",note:"PC: avoir + demandé · Regular -ER"},
+{f:"trouver",e:"to find",topic:"-er",diff:"beginner",conj:[["je","trouve"],["tu","trouves"],["il/elle","trouve"],["nous","trouvons"],["vous","trouvez"],["ils/elles","trouvent"]],ex:"Je trouve ça intéressant. Tu trouves ton stylo ?",note:"PC: avoir + trouvé · Regular -ER"},
+{f:"penser",e:"to think",topic:"-er",diff:"beginner",conj:[["je","pense"],["tu","penses"],["il/elle","pense"],["nous","pensons"],["vous","pensez"],["ils/elles","pensent"]],ex:"Je pense que c'est bien. Tu penses quoi ?",note:"PC: avoir + pensé · Regular -ER"},
+{f:"visiter",e:"to visit (a place)",topic:"-er",diff:"beginner",conj:[["je","visite"],["tu","visites"],["il/elle","visite"],["nous","visitons"],["vous","visitez"],["ils/elles","visitent"]],ex:"Je visite Paris. Nous visitons le musée.",note:"PC: avoir + visité · For visiting a person, use rendre visite à"},
+// -IR VERBS
+{f:"finir",e:"to finish",topic:"-ir",diff:"beginner",conj:[["je","finis"],["tu","finis"],["il/elle","finit"],["nous","finissons"],["vous","finissez"],["ils/elles","finissent"]],ex:"Je finis mes devoirs. Le film finit à vingt-deux heures.",note:"PC: avoir + fini · Regular -IR: -iss- added in plural forms"},
+{f:"choisir",e:"to choose",topic:"-ir",diff:"beginner",conj:[["je","choisis"],["tu","choisis"],["il/elle","choisit"],["nous","choisissons"],["vous","choisissez"],["ils/elles","choisissent"]],ex:"Tu choisis quoi ? Je choisis le menu du jour.",note:"PC: avoir + choisi · Regular -IR"},
+{f:"réussir",e:"to succeed / pass (an exam)",topic:"-ir",diff:"intermediate",conj:[["je","réussis"],["tu","réussis"],["il/elle","réussit"],["nous","réussissons"],["vous","réussissez"],["ils/elles","réussissent"]],ex:"Il réussit à l'examen. Nous réussissons ensemble.",note:"PC: avoir + réussi · Regular -IR"},
+{f:"grandir",e:"to grow (up)",topic:"-ir",diff:"intermediate",conj:[["je","grandis"],["tu","grandis"],["il/elle","grandit"],["nous","grandissons"],["vous","grandissez"],["ils/elles","grandissent"]],ex:"Elle grandit vite. Les enfants grandissent.",note:"PC: avoir + grandi · Regular -IR"},
+{f:"remplir",e:"to fill",topic:"-ir",diff:"intermediate",conj:[["je","remplis"],["tu","remplis"],["il/elle","remplit"],["nous","remplissons"],["vous","remplissez"],["ils/elles","remplissent"]],ex:"Je remplis le formulaire. Il remplit sa bouteille.",note:"PC: avoir + rempli · Regular -IR"},
+{f:"obéir",e:"to obey",topic:"-ir",diff:"intermediate",conj:[["je","obéis"],["tu","obéis"],["il/elle","obéit"],["nous","obéissons"],["vous","obéissez"],["ils/elles","obéissent"]],ex:"Il obéit toujours. Elles obéissent à leurs parents.",note:"PC: avoir + obéi · Regular -IR"},
+{f:"réfléchir",e:"to think / reflect",topic:"-ir",diff:"intermediate",conj:[["je","réfléchis"],["tu","réfléchis"],["il/elle","réfléchit"],["nous","réfléchissons"],["vous","réfléchissez"],["ils/elles","réfléchissent"]],ex:"Réfléchis avant de répondre ! Nous réfléchissons à la question.",note:"PC: avoir + réfléchi · Regular -IR"},
+{f:"nourrir",e:"to feed",topic:"-ir",diff:"intermediate",conj:[["je","nourris"],["tu","nourris"],["il/elle","nourrit"],["nous","nourrissons"],["vous","nourrissez"],["ils/elles","nourrissent"]],ex:"Je nourris le chat deux fois par jour.",note:"PC: avoir + nourri · Regular -IR"},
+{f:"bâtir",e:"to build",topic:"-ir",diff:"intermediate",conj:[["je","bâtis"],["tu","bâtis"],["il/elle","bâtit"],["nous","bâtissons"],["vous","bâtissez"],["ils/elles","bâtissent"]],ex:"Ils bâtissent une nouvelle maison.",note:"PC: avoir + bâti · Regular -IR"},
+// -RE VERBS
+{f:"vendre",e:"to sell",topic:"-re",diff:"intermediate",conj:[["je","vends"],["tu","vends"],["il/elle","vend"],["nous","vendons"],["vous","vendez"],["ils/elles","vendent"]],ex:"Il vend des fruits au marché. Vous vendez quoi ?",note:"PC: avoir + vendu · il vend — no ending on il/elle form"},
+{f:"attendre",e:"to wait (for)",topic:"-re",diff:"intermediate",conj:[["je","attends"],["tu","attends"],["il/elle","attend"],["nous","attendons"],["vous","attendez"],["ils/elles","attendent"]],ex:"J'attends le bus. Tu attends depuis longtemps ?",note:"PC: avoir + attendu · Regular -RE"},
+{f:"répondre",e:"to answer / reply",topic:"-re",diff:"intermediate",conj:[["je","réponds"],["tu","réponds"],["il/elle","répond"],["nous","répondons"],["vous","répondez"],["ils/elles","répondent"]],ex:"Il répond au professeur. Tu réponds à mes messages ?",note:"PC: avoir + répondu · Regular -RE"},
+{f:"entendre",e:"to hear",topic:"-re",diff:"intermediate",conj:[["je","entends"],["tu","entends"],["il/elle","entend"],["nous","entendons"],["vous","entendez"],["ils/elles","entendent"]],ex:"J'entends de la musique. Tu entends ce bruit ?",note:"PC: avoir + entendu · Regular -RE"},
+{f:"perdre",e:"to lose",topic:"-re",diff:"intermediate",conj:[["je","perds"],["tu","perds"],["il/elle","perd"],["nous","perdons"],["vous","perdez"],["ils/elles","perdent"]],ex:"Je perds toujours mes clés. Il perd patience.",note:"PC: avoir + perdu · Regular -RE"},
+{f:"rendre",e:"to give back / return",topic:"-re",diff:"intermediate",conj:[["je","rends"],["tu","rends"],["il/elle","rend"],["nous","rendons"],["vous","rendez"],["ils/elles","rendent"]],ex:"Je rends le livre à la bibliothèque. Il rend la monnaie.",note:"PC: avoir + rendu · Regular -RE"},
+{f:"rendre visite à",e:"to visit (a person)",topic:"-re",diff:"intermediate",conj:[["je","rends visite à"],["tu","rends visite à"],["il/elle","rend visite à"],["nous","rendons visite à"],["vous","rendez visite à"],["ils/elles","rendent visite à"]],ex:"Je rends visite à mes grands-parents. Tu rends visite à Marie ?",note:"For people only. Use visiter for places."},
+];
+
+let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
+function saveProgress(){try{localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));localStorage.setItem('fc_cur_'+DECK_ID,String(cur));localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);showSaved();}catch(e){}}
+function loadProgress(){try{const t=localStorage.getItem('fc_topic_'+DECK_ID);if(t)document.getElementById('ftopic').value=t;const k=localStorage.getItem('fc_known_'+DECK_ID);const a=localStorage.getItem('fc_again_'+DECK_ID);const c=localStorage.getItem('fc_cur_'+DECK_ID);const d=localStorage.getItem('fc_dir_'+DECK_ID);if(k)known=new Set(JSON.parse(k));if(a)again=new Set(JSON.parse(a));if(c)cur=parseInt(c);if(d!==null)showFR=d==='1';}catch(e){}}
+function confirmClear(){if(confirm('Clear all saved progress for this set?')){try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}known=new Set();again=new Set();cur=0;showFR=true;build();}}
+let savedTimer=null;
+function showSaved(){const b=document.getElementById('saved-badge');if(b){b.style.display='inline';if(savedTimer)clearTimeout(savedTimer);savedTimer=setTimeout(()=>{b.style.display='none';},2000);}}
+function build(){const t=document.getElementById('ftopic').value;deck=ALL.filter(c=>t==='all'||c.topic===t);if(cur>=deck.length)cur=0;flipped=false;updateReviewBtn();render();updateStats();}
+function shuffle(){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}cur=0;flipped=false;saveProgress();render();updateStats();}
+function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
+function updateReviewBtn(){const btn=document.getElementById('btn-review');if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}}
+function reviewAgain(){deck=ALL.filter(c=>again.has(ALL.indexOf(c)));cur=0;flipped=false;render();updateStats();}
+function updateStats(){document.getElementById('st').textContent=deck.length;document.getElementById('sk').textContent=known.size;document.getElementById('sa').textContent=again.size;document.getElementById('sl').textContent=Math.max(0,deck.length-cur);const p=deck.length?Math.round((cur/deck.length)*100):0;document.getElementById('prog').style.width=p+'%';document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';updateReviewBtn();}
+function buildConjGrid(conj){return '<div class="conj-grid">'+conj.map(r=>`<div class="conj-cell">${r[0]}</div><div class="conj-cell">${r[1]}</div>`).join('')+'</div>';}
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards for this filter.</p>';return;}
+  if(cur>=deck.length){const k=known.size,ag=again.size;a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} marked for practice.</div><button onclick="build()">Restart</button></div>`;return;}
+  const c=deck[cur];
+  const idx=ALL.indexOf(c);
+  const isKnown=known.has(idx);const isAgain=again.has(idx);
+  const statusDot=isKnown?'<span style="font-size:11px;color:#0F6E56">✓ know it</span>':isAgain?'<span style="font-size:11px;color:#993C1D">↻ practice</span>':'';
+  const diffClass=c.diff==='intermediate'?'b-int':'b-beg';
+  const frontText=showFR?c.f:c.e;
+  const backMeaning=showFR?c.e:c.f;
+  a.innerHTML=`<div class="card-wrap"><div class="card" id="card" onclick="flip()">
+    <div class="face front">
+      <div><div class="badges"><span class="badge b-topic">${c.topic}</span><span class="badge ${diffClass}">${c.diff}</span>${statusDot}</div><div class="card-word">${frontText}</div><div class="card-hint">tap to see conjugation</div></div>
+      <div class="dir-badge">${showFR?'FR → EN':'EN → FR'}</div>
+    </div>
+    <div class="face back">
+      <div><div class="badges"><span class="badge b-topic">${c.topic}</span></div><div class="card-trans">${backMeaning}</div>${buildConjGrid(c.conj)}${c.note?`<div class="card-note">⚠ ${c.note}</div>`:''}<div class="card-ex">${c.ex}</div></div>
+    </div>
+  </div></div>
+  <div class="mark-row" id="mr"><button class="btn-a" onclick="markA()">Practice again</button><button class="btn-k" onclick="markK()">Know it</button></div>
+  <div class="nav-row"><button onclick="prev()">&#8592; Back</button><button onclick="next()">Next &#8594;</button></div>`;
+  updateStats();
+}
+function flip(){flipped=!flipped;document.getElementById('card').classList.toggle('flipped',flipped);document.getElementById('mr').style.display=flipped?'flex':'none';}
+function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
+function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();build();
+let _modalMode='export';
+function openExport(){_modalMode='export';const data={known:[...known],again:[...again],cur,dir:showFR};const code=btoa(JSON.stringify(data));document.getElementById('modal-title').textContent='Export progress';document.getElementById('modal-text').value=code;document.getElementById('modal-text').readOnly=true;document.getElementById('modal-action-btn').textContent='Copy code';document.getElementById('modal-action-btn').className='';document.getElementById('modal-bg').classList.add('open');}
+function openImport(){_modalMode='import';document.getElementById('modal-title').textContent='Import progress';document.getElementById('modal-text').value='';document.getElementById('modal-text').readOnly=false;document.getElementById('modal-text').placeholder='Paste your code here...';document.getElementById('modal-action-btn').textContent='Apply code';document.getElementById('modal-action-btn').className='btn-import-apply';document.getElementById('modal-bg').classList.add('open');}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+function modalAction(){
+  if(_modalMode==='export'){const t=document.getElementById('modal-text');t.select();try{navigator.clipboard.writeText(t.value).then(()=>{document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);});}catch(e){document.execCommand('copy');document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);}}
+  else{const code=document.getElementById('modal-text').value.trim();try{const data=JSON.parse(atob(code));if(data.known)known=new Set(data.known);if(data.again)again=new Set(data.again);if(typeof data.cur==='number')cur=data.cur;if(typeof data.dir==='boolean')showFR=data.dir;saveProgress();closeModal();build();}catch(e){alert('Invalid code — please check and try again.');}}
+}
+</script>
+</body>
+</html>

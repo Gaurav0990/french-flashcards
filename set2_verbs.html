@@ -88,7 +88,7 @@ h1{font-size:20px;font-weight:500;margin-bottom:4px}
   </select>
   <button onclick="shuffle()">Shuffle</button>
   <button onclick="toggleDir()">Flip direction</button>
-  <button onclick="reviewAgainCards()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button onclick="reviewAgain()" id="btn-review" style="display:none">Review practice (0)</button>
   <button onclick="openExport()">Export</button>
   <button onclick="openImport()">Import</button>
   <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
@@ -146,16 +146,6 @@ function showSaved(){
   const b=document.getElementById('saved-badge');
   if(b){b.style.display='inline';if(_savedTimer)clearTimeout(_savedTimer);_savedTimer=setTimeout(()=>{b.style.display='none';},2000);}
 }
-function updateReviewBtn(){
-  const btn=document.getElementById('btn-review');
-  if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}
-}
-function reviewAgainCards(){
-  const saved=deck.map((_,i)=>i).filter(i=>again.has(ALL.indexOf(deck[i])));
-  deck=ALL.filter(c=>again.has(ALL.indexOf(c)));
-  cur=0;flipped=false;render();updateStats();
-}
-
 const ALL=[
 {f:"être",e:"to be",ex:"Je suis étudiant. Tu es gentil. Il est médecin.",note:"suis · es · est · sommes · êtes · sont",topic:"irregular",diff:"beginner"},
 {f:"avoir",e:"to have",ex:"J'ai un frère. Tu as faim. Elle a raison.",note:"ai · as · a · avons · avez · ont",topic:"irregular",diff:"beginner"},
@@ -210,12 +200,45 @@ const ALL=[
 {f:"avoir raison / tort",e:"to be right / wrong",ex:"Tu as raison ! Il a tort.",note:"",topic:"irregular",diff:"intermediate"},
 ];
 
+const DECK_ID='set2';
 let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
+
+function saveProgress(){
+  try{
+    localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));
+    localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));
+    localStorage.setItem('fc_cur_'+DECK_ID,String(cur));
+    localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');
+    localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);
+    showSaved();
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const t=localStorage.getItem('fc_topic_'+DECK_ID);
+    if(t) document.getElementById('ftopic').value=t;
+    const k=localStorage.getItem('fc_known_'+DECK_ID);
+    const a=localStorage.getItem('fc_again_'+DECK_ID);
+    const c=localStorage.getItem('fc_cur_'+DECK_ID);
+    const d=localStorage.getItem('fc_dir_'+DECK_ID);
+    if(k) known=new Set(JSON.parse(k));
+    if(a) again=new Set(JSON.parse(a));
+    if(c) cur=parseInt(c);
+    if(d!==null) showFR=d==='1';
+  }catch(e){}
+}
+let savedTimer=null;
+function showSaved(){
+  const b=document.getElementById('saved-badge');
+  if(b){b.style.display='inline';if(savedTimer)clearTimeout(savedTimer);savedTimer=setTimeout(()=>{b.style.display='none';},2000);}
+}
 
 function build(){
   const t=document.getElementById('ftopic').value;
   deck=ALL.filter(c=>t==='all'||c.topic===t);
-  cur=0;flipped=false;known.clear();again.clear();render();updateStats();
+  if(cur>=deck.length) cur=0;
+  flipped=false;
+  updateReviewBtn();render();updateStats();
 }
 
 function shuffle(){
@@ -287,10 +310,13 @@ function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(id
 function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
 function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
 function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+function updateReviewBtn(){
+  const btn=document.getElementById('btn-review');
+  if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}
+}
 function reviewAgain(){
-  const idx=[...again];
-  deck=deck.filter((_,i)=>idx.includes(i));
-  cur=0;flipped=false;known.clear();again.clear();render();updateStats();
+  deck=ALL.filter(c=>again.has(ALL.indexOf(c)));
+  cur=0;flipped=false;render();updateStats();
 }
 
 document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});

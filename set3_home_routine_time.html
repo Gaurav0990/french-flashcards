@@ -235,7 +235,7 @@ let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
 function build(){
   const t=document.getElementById('ftopic').value;
   deck=ALL.filter(c=>t==='all'||c.topic===t);
-  cur=0;flipped=false;known.clear();again.clear();render();updateStats();
+  cur=0;flipped=false;render();updateStats();
 }
 function shuffle(){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}cur=0;flipped=false;saveProgress();render();updateStats();}
 function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
@@ -281,7 +281,7 @@ function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(id
 function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
 function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
 function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
-function reviewAgain(){const idx=[...again];deck=deck.filter((_,i)=>idx.includes(i));cur=0;flipped=false;known.clear();again.clear();render();updateStats();}
+function reviewAgain(){deck=ALL.filter(c=>again.has(ALL.indexOf(c)));cur=0;flipped=false;render();updateStats();}
 document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
 loadProgress();
 build();

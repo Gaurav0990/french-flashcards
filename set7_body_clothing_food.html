@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 7 — Body, Clothing &amp; Food</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}
+.btn-clear:hover{background:#FAECE7}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{perspective:1000px;margin-bottom:10px}
+.card{width:100%;min-height:210px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform 0.4s ease}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;width:100%;min-height:210px;backface-visibility:hidden;border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
+.back{transform:rotateY(180deg)}
+.badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-beg{background:#EAF3DE;color:#27500A}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.card-word{font-size:22px;font-weight:500;color:#1a1a1a;flex:1;display:flex;align-items:center;line-height:1.3}
+.card-hint{font-size:12px;color:#aaa;margin-top:8px}
+.card-trans{font-size:18px;font-weight:500;color:#1a1a1a}
+.card-note{font-size:13px;color:#555;margin-top:6px}
+.card-ex{font-size:13px;color:#888;font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ee}
+.mark-row{display:none;gap:8px;margin-top:8px}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.dir-badge{font-size:11px;color:#888;text-align:right}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:100}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:20px;max-width:340px;width:90%;box-shadow:0 4px 24px rgba(0,0,0,0.12)}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:12px}
+.modal textarea{width:100%;height:80px;font-size:13px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;resize:none}
+.modal .modal-btns{display:flex;gap:8px;margin-top:10px}
+.modal .modal-btns button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.modal .modal-btns button:hover{background:#f0f0ee}
+.btn-import-apply{background:#EAF3DE!important;color:#27500A;border-color:#9FE1CB!important}
+</style>
+</head>
+<body>
+<h1>Set 7 — Body, Clothing &amp; Food</h1>
+<p class="subtitle">Les parties du corps · Les vêtements · La nourriture et les boissons</p>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Export progress</h3>
+    <textarea id="modal-text" placeholder="Paste your code here..."></textarea>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Cancel</button>
+      <button id="modal-action-btn" onclick="modalAction()">Copy code</button>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All topics</option>
+    <option value="body">Body parts</option>
+    <option value="clothing">Clothing</option>
+    <option value="food">Food</option>
+    <option value="drink">Drinks</option>
+    <option value="meals">Meals &amp; eating</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="toggleDir()">Flip direction</button>
+  <button onclick="reviewAgainCards()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button onclick="openExport()">Export</button>
+  <button onclick="openImport()">Import</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+
+<script>
+const DECK_ID='set7';
+const ALL=[
+// BODY PARTS
+{f:"la tête",e:"the head",ex:"J'ai mal à la tête.",note:"feminine",topic:"body"},
+{f:"le visage",e:"the face",ex:"Elle a un joli visage.",note:"masculine",topic:"body"},
+{f:"les yeux (m)",e:"the eyes",ex:"Il a les yeux bleus.",note:"plural of l'oeil — irregular: un oeil → les yeux",topic:"body"},
+{f:"l'oreille (f)",e:"the ear",ex:"J'ai mal à l'oreille.",note:"feminine — les oreilles (plural)",topic:"body"},
+{f:"le nez",e:"the nose",ex:"Il a le nez rouge.",note:"masculine — nez is the same in singular and plural",topic:"body"},
+{f:"la bouche",e:"the mouth",ex:"Ferme la bouche quand tu manges !",note:"feminine",topic:"body"},
+{f:"la dent",e:"the tooth",ex:"Je me brosse les dents deux fois par jour.",note:"feminine — les dents (plural)",topic:"body"},
+{f:"la langue",e:"the tongue / the language",ex:"Tire la langue ! / J'apprends une nouvelle langue.",note:"two meanings — feminine",topic:"body"},
+{f:"le cou",e:"the neck",ex:"Elle porte un collier autour du cou.",note:"masculine",topic:"body"},
+{f:"l'épaule (f)",e:"the shoulder",ex:"Il a mal à l'épaule droite.",note:"feminine — les épaules",topic:"body"},
+{f:"le bras",e:"the arm",ex:"Je me suis cassé le bras.",note:"masculine — same in singular and plural",topic:"body"},
+{f:"la main",e:"the hand",ex:"Lève la main si tu sais !",note:"feminine — les mains",topic:"body"},
+{f:"le doigt",e:"the finger",ex:"Il a dix doigts.",note:"masculine — les doigts",topic:"body"},
+{f:"la jambe",e:"the leg",ex:"Elle a mal à la jambe.",note:"feminine — les jambes",topic:"body"},
+{f:"le genou",e:"the knee",ex:"Je me suis blessé le genou.",note:"masculine — les genoux (irregular plural: -ou → -oux)",topic:"body"},
+{f:"le pied",e:"the foot",ex:"J'ai mal aux pieds.",note:"masculine — les pieds",topic:"body"},
+{f:"le dos",e:"the back",ex:"J'ai mal au dos.",note:"masculine",topic:"body"},
+{f:"le ventre",e:"the stomach / belly",ex:"J'ai mal au ventre.",note:"masculine — more informal than l'estomac",topic:"body"},
+{f:"le cœur",e:"the heart",ex:"Elle a le cœur qui bat vite.",note:"masculine",topic:"body"},
+{f:"avoir mal à...",e:"to have a pain in... / to hurt",ex:"J'ai mal à la tête. Il a mal aux dents.",note:"à + definite article: mal à la, au, à l', aux",topic:"body"},
+// CLOTHING
+{f:"les vêtements (m)",e:"clothes / clothing",ex:"Je mets mes vêtements avant de sortir.",note:"always plural in this meaning",topic:"clothing"},
+{f:"le pantalon",e:"the trousers / pants",ex:"Il porte un pantalon noir.",note:"masculine — singular in French even though two legs",topic:"clothing"},
+{f:"la jupe",e:"the skirt",ex:"Elle porte une jupe rouge.",note:"feminine",topic:"clothing"},
+{f:"la robe",e:"the dress",ex:"Elle porte une belle robe bleue.",note:"feminine",topic:"clothing"},
+{f:"le pull",e:"the jumper / sweater",ex:"Il fait froid — mets ton pull !",note:"masculine",topic:"clothing"},
+{f:"la veste",e:"the jacket",ex:"Il a mis sa veste pour sortir.",note:"feminine — lighter than un manteau",topic:"clothing"},
+{f:"le manteau",e:"the coat",ex:"En hiver, je porte toujours mon manteau.",note:"masculine — les manteaux (plural -eau → -eaux)",topic:"clothing"},
+{f:"la chemise",e:"the shirt (button-up)",ex:"Il porte une chemise blanche.",note:"feminine — for men's dress shirts too",topic:"clothing"},
+{f:"le t-shirt",e:"the T-shirt",ex:"Je porte un t-shirt bleu et un jean.",note:"masculine",topic:"clothing"},
+{f:"le jean",e:"the jeans",ex:"Elle aime porter son jean préféré.",note:"masculine — singular in French",topic:"clothing"},
+{f:"les chaussures (f)",e:"the shoes",ex:"Ces chaussures sont très confortables.",note:"always plural — feminine",topic:"clothing"},
+{f:"les chaussettes (f)",e:"the socks",ex:"Je mets mes chaussettes avant mes chaussures.",note:"always plural — feminine",topic:"clothing"},
+{f:"le chapeau",e:"the hat",ex:"Il porte un chapeau en été.",note:"masculine — les chapeaux (-eau → -eaux)",topic:"clothing"},
+{f:"l'écharpe (f)",e:"the scarf",ex:"Elle porte une écharpe rouge en hiver.",note:"feminine",topic:"clothing"},
+{f:"porter",e:"to wear / to carry",ex:"Elle porte une robe verte. Il porte son sac.",note:"regular -ER verb — two meanings",topic:"clothing"},
+{f:"mettre",e:"to put on / to wear",ex:"Je mets mon manteau. Tu mets tes chaussures.",note:"irregular: je mets, tu mets, il met, nous mettons, vous mettez, ils mettent",topic:"clothing"},
+// FOOD
+{f:"la nourriture",e:"the food",ex:"La nourriture française est délicieuse.",note:"feminine — general word for food",topic:"food"},
+{f:"le pain",e:"the bread",ex:"Je mange du pain avec du beurre.",note:"masculine — du pain (partitive article)",topic:"food"},
+{f:"le fromage",e:"the cheese",ex:"La France produit beaucoup de fromages.",note:"masculine — du fromage",topic:"food"},
+{f:"le beurre",e:"the butter",ex:"Je mets du beurre sur mon pain.",note:"masculine",topic:"food"},
+{f:"l'œuf (m)",e:"the egg",ex:"Je mange deux œufs le matin.",note:"masculine — les œufs (plural)",topic:"food"},
+{f:"la viande",e:"the meat",ex:"Il mange de la viande tous les jours.",note:"feminine — de la viande (partitive)",topic:"food"},
+{f:"le poulet",e:"the chicken",ex:"On mange du poulet rôti ce soir.",note:"masculine",topic:"food"},
+{f:"le poisson",e:"the fish",ex:"Elle préfère le poisson à la viande.",note:"masculine",topic:"food"},
+{f:"les légumes (m)",e:"the vegetables",ex:"Je mange des légumes tous les jours.",note:"always plural — masculine",topic:"food"},
+{f:"les fruits (m)",e:"the fruit",ex:"Je mange des fruits frais le matin.",note:"always plural in this meaning — masculine",topic:"food"},
+{f:"la pomme",e:"the apple",ex:"Une pomme par jour, c'est bon pour la santé !",note:"feminine",topic:"food"},
+{f:"la tomate",e:"the tomato",ex:"Il mange une salade avec des tomates.",note:"feminine",topic:"food"},
+{f:"la salade",e:"the salad / lettuce",ex:"Je mange une salade avec du poulet.",note:"feminine — two meanings",topic:"food"},
+{f:"le riz",e:"the rice",ex:"On mange du riz avec du poulet.",note:"masculine — du riz (partitive)",topic:"food"},
+{f:"les pâtes (f)",e:"the pasta",ex:"J'adore les pâtes à la carbonara.",note:"always plural — feminine",topic:"food"},
+{f:"le sucre",e:"the sugar",ex:"Tu veux du sucre dans ton café ?",note:"masculine",topic:"food"},
+{f:"le sel",e:"the salt",ex:"Il faut ajouter du sel.",note:"masculine",topic:"food"},
+// DRINKS
+{f:"l'eau (f)",e:"the water",ex:"Je bois de l'eau toute la journée.",note:"feminine — de l'eau (partitive)",topic:"drink"},
+{f:"le café",e:"the coffee",ex:"Je prends un café le matin.",note:"masculine",topic:"drink"},
+{f:"le thé",e:"the tea",ex:"Elle préfère le thé au café.",note:"masculine",topic:"drink"},
+{f:"le jus d'orange",e:"the orange juice",ex:"Je bois un verre de jus d'orange.",note:"masculine",topic:"drink"},
+{f:"le lait",e:"the milk",ex:"Il boit du lait le matin.",note:"masculine — du lait (partitive)",topic:"drink"},
+{f:"la bière",e:"the beer",ex:"Il boit une bière avec ses amis.",note:"feminine",topic:"drink"},
+{f:"le vin",e:"the wine",ex:"En France, on boit souvent du vin avec le repas.",note:"masculine",topic:"drink"},
+{f:"boire",e:"to drink",ex:"Je bois de l'eau. Tu bois quoi ?",note:"irregular: je bois, tu bois, il boit, nous buvons, vous buvez, ils boivent",topic:"drink"},
+// MEALS AND EATING
+{f:"le petit-déjeuner",e:"breakfast",ex:"Je prends mon petit-déjeuner à sept heures.",note:"masculine — literally 'small lunch'",topic:"meals"},
+{f:"le déjeuner",e:"lunch",ex:"On déjeune à midi.",note:"masculine — also used as a verb: déjeuner",topic:"meals"},
+{f:"le dîner",e:"dinner",ex:"Le dîner est servi à vingt heures.",note:"masculine — also used as a verb: dîner",topic:"meals"},
+{f:"manger",e:"to eat",ex:"Je mange une pomme. Qu'est-ce que tu manges ?",note:"regular -ER verb — note: nous mangeons (spelling change)",topic:"meals"},
+{f:"avoir faim",e:"to be hungry",ex:"J'ai faim ! On peut manger ?",note:"literally 'to have hunger' — never use être with faim",topic:"meals"},
+{f:"avoir soif",e:"to be thirsty",ex:"J'ai très soif — je veux de l'eau.",note:"literally 'to have thirst'",topic:"meals"},
+{f:"le repas",e:"the meal",ex:"Le repas en famille est une tradition française.",note:"masculine — les repas",topic:"meals"},
+{f:"la recette",e:"the recipe",ex:"Tu as une bonne recette de crêpes ?",note:"feminine",topic:"meals"},
+{f:"le restaurant",e:"the restaurant",ex:"On va au restaurant ce soir ?",note:"masculine",topic:"meals"},
+{f:"commander",e:"to order (in a restaurant)",ex:"Vous avez choisi ? Je voudrais commander.",note:"regular -ER verb",topic:"meals"},
+{f:"l'addition (f)",e:"the bill (restaurant)",ex:"L'addition, s'il vous plaît !",note:"feminine — la note also used",topic:"meals"},
+{f:"partitive article — du / de la / de l' / des",e:"some — used with food and drink",ex:"Je mange du pain, de la viande, de l'eau, des légumes.",note:"du = masc · de la = fem · de l' = vowel · des = plural. All become de after negation.",topic:"meals"},
+];
+
+let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
+
+function saveProgress(){
+  try{
+    localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));
+    localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));
+    localStorage.setItem('fc_cur_'+DECK_ID,String(cur));
+    localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');
+    localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);
+    showSaved();
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const t=localStorage.getItem('fc_topic_'+DECK_ID);
+    if(t) document.getElementById('ftopic').value=t;
+    const k=localStorage.getItem('fc_known_'+DECK_ID);
+    const a=localStorage.getItem('fc_again_'+DECK_ID);
+    const c=localStorage.getItem('fc_cur_'+DECK_ID);
+    const d=localStorage.getItem('fc_dir_'+DECK_ID);
+    if(k) known=new Set(JSON.parse(k));
+    if(a) again=new Set(JSON.parse(a));
+    if(c) cur=parseInt(c);
+    if(d!==null) showFR=d==='1';
+  }catch(e){}
+}
+function confirmClear(){
+  if(confirm('Clear all saved progress for this set?')){
+    try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}
+    known=new Set();again=new Set();cur=0;showFR=true;build();
+  }
+}
+let savedTimer=null;
+function showSaved(){
+  const b=document.getElementById('saved-badge');
+  if(b){b.style.display='inline';if(savedTimer)clearTimeout(savedTimer);savedTimer=setTimeout(()=>{b.style.display='none';},2000);}
+}
+function build(){
+  const t=document.getElementById('ftopic').value;
+  deck=ALL.filter(c=>t==='all'||c.topic===t);
+  if(cur>=deck.length) cur=0;
+  flipped=false;
+  updateReviewBtn();render();updateStats();
+}
+function shuffle(){
+  for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+  cur=0;flipped=false;saveProgress();render();updateStats();
+}
+function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
+function updateReviewBtn(){
+  const btn=document.getElementById('btn-review');
+  if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}
+}
+function reviewAgainCards(){
+  deck=ALL.filter(c=>again.has(ALL.indexOf(c)));
+  cur=0;flipped=false;render();updateStats();
+}
+function updateStats(){
+  document.getElementById('st').textContent=deck.length;
+  document.getElementById('sk').textContent=known.size;
+  document.getElementById('sa').textContent=again.size;
+  document.getElementById('sl').textContent=Math.max(0,deck.length-cur);
+  const p=deck.length?Math.round((cur/deck.length)*100):0;
+  document.getElementById('prog').style.width=p+'%';
+  document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';
+  updateReviewBtn();
+}
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards for this filter.</p>';return;}
+  if(cur>=deck.length){
+    const k=known.size,ag=again.size;
+    a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} marked for practice.</div><button onclick="build()">Restart</button></div>`;
+    return;
+  }
+  const c=deck[cur];
+  const front=showFR?c.f:c.e;
+  const back=showFR?c.e:c.f;
+  const idx=ALL.indexOf(c);
+  const isKnown=known.has(idx);
+  const isAgain=again.has(idx);
+  const statusDot=isKnown?'<span style="font-size:11px;color:#0F6E56">✓ know it</span>':isAgain?'<span style="font-size:11px;color:#993C1D">↻ practice</span>':'';
+  a.innerHTML=`<div class="card-wrap"><div class="card" id="card" onclick="flip()">
+    <div class="face front">
+      <div>
+        <div class="badges"><span class="badge b-topic">${c.topic}</span><span class="badge b-beg">beginner</span>${statusDot}</div>
+        <div class="card-word">${front}</div>
+        <div class="card-hint">tap to reveal</div>
+      </div>
+      <div class="dir-badge">${showFR?'FR → EN':'EN → FR'}</div>
+    </div>
+    <div class="face back">
+      <div>
+        <div class="badges"><span class="badge b-topic">${c.topic}</span></div>
+        <div class="card-trans">${back}</div>
+        ${c.note?`<div class="card-note">${c.note}</div>`:''}
+        <div class="card-ex">${c.ex}</div>
+      </div>
+    </div>
+  </div></div>
+  <div class="mark-row" id="mr">
+    <button class="btn-a" onclick="markA()">Practice again</button>
+    <button class="btn-k" onclick="markK()">Know it</button>
+  </div>
+  <div class="nav-row">
+    <button onclick="prev()">&#8592; Back</button>
+    <button onclick="next()">Next &#8594;</button>
+  </div>`;
+  updateStats();
+}
+function flip(){
+  flipped=!flipped;
+  document.getElementById('card').classList.toggle('flipped',flipped);
+  document.getElementById('mr').style.display=flipped?'flex':'none';
+}
+function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
+function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();
+build();
+let _modalMode='export';
+function openExport(){
+  _modalMode='export';
+  const data={known:[...known],again:[...again],cur,dir:showFR};
+  const code=btoa(JSON.stringify(data));
+  document.getElementById('modal-title').textContent='Export progress';
+  document.getElementById('modal-text').value=code;
+  document.getElementById('modal-text').readOnly=true;
+  document.getElementById('modal-action-btn').textContent='Copy code';
+  document.getElementById('modal-action-btn').className='';
+  document.getElementById('modal-bg').classList.add('open');
+}
+function openImport(){
+  _modalMode='import';
+  document.getElementById('modal-title').textContent='Import progress';
+  document.getElementById('modal-text').value='';
+  document.getElementById('modal-text').readOnly=false;
+  document.getElementById('modal-text').placeholder='Paste your code here...';
+  document.getElementById('modal-action-btn').textContent='Apply code';
+  document.getElementById('modal-action-btn').className='btn-import-apply';
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+function modalAction(){
+  if(_modalMode==='export'){
+    const t=document.getElementById('modal-text');
+    t.select();
+    try{navigator.clipboard.writeText(t.value).then(()=>{document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);});}catch(e){document.execCommand('copy');document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);}
+  } else {
+    const code=document.getElementById('modal-text').value.trim();
+    try{
+      const data=JSON.parse(atob(code));
+      if(data.known) known=new Set(data.known);
+      if(data.again) again=new Set(data.again);
+      if(typeof data.cur==='number') cur=data.cur;
+      if(typeof data.dir==='boolean') showFR=data.dir;
+      saveProgress();closeModal();build();
+    }catch(e){alert('Invalid code — please check and try again.');}
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 6 — Passé Composé & Reflexive Verbs</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}
+.btn-clear:hover{background:#FAECE7}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{perspective:1000px;margin-bottom:10px}
+.card{width:100%;min-height:210px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform 0.4s ease}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;width:100%;min-height:210px;backface-visibility:hidden;border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
+.back{transform:rotateY(180deg)}
+.badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-beg{background:#EAF3DE;color:#27500A}
+.b-int{background:#FEF3C7;color:#92400E}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.card-word{font-size:22px;font-weight:500;color:#1a1a1a;flex:1;display:flex;align-items:center;line-height:1.3}
+.card-hint{font-size:12px;color:#aaa;margin-top:8px}
+.card-trans{font-size:18px;font-weight:500;color:#1a1a1a}
+.card-note{font-size:13px;color:#555;margin-top:6px}
+.card-ex{font-size:13px;color:#888;font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ee}
+.mark-row{display:none;gap:8px;margin-top:8px}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.dir-badge{font-size:11px;color:#888;text-align:right}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:100}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:20px;max-width:340px;width:90%;box-shadow:0 4px 24px rgba(0,0,0,0.12)}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:12px}
+.modal textarea{width:100%;height:80px;font-size:13px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;resize:none}
+.modal .modal-btns{display:flex;gap:8px;margin-top:10px}
+.modal .modal-btns button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.modal .modal-btns button:hover{background:#f0f0ee}
+.btn-import-apply{background:#EAF3DE!important;color:#27500A;border-color:#9FE1CB!important}
+</style>
+</head>
+<body>
+<h1>Set 6 — Passé Composé &amp; Reflexive Verbs</h1>
+<p class="subtitle">Passé composé formation · avoir / être auxiliaries · Past participles · Reflexive verbs</p>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Export progress</h3>
+    <textarea id="modal-text" placeholder="Paste your code here..."></textarea>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Cancel</button>
+      <button id="modal-action-btn" onclick="modalAction()">Copy code</button>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All topics</option>
+    <option value="pc-structure">PC structure</option>
+    <option value="pc-avoir">PC with avoir</option>
+    <option value="pc-etre">PC with être</option>
+    <option value="pc-participles">Past participles</option>
+    <option value="pc-negation">PC negation</option>
+    <option value="reflexive">Reflexive verbs</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="toggleDir()">Flip direction</button>
+  <button onclick="reviewAgainCards()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button onclick="openExport()">Export</button>
+  <button onclick="openImport()">Import</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+
+<script>
+const DECK_ID='set6';
+const ALL=[
+// PC STRUCTURE
+{f:"passé composé — formula",e:"auxiliary (avoir/être) + past participle",ex:"J'ai mangé. / Il est parti.",note:"Two-part tense for completed past actions",topic:"pc-structure",diff:"beginner"},
+{f:"avoir auxiliary — present tense",e:"j'ai · tu as · il/elle a · nous avons · vous avez · ils/elles ont",ex:"J'ai mangé une pomme.",note:"Used with MOST verbs in passé composé",topic:"pc-structure",diff:"beginner"},
+{f:"être auxiliary — present tense",e:"je suis · tu es · il/elle est · nous sommes · vous êtes · ils/elles sont",ex:"Elle est allée au marché.",note:"Used with DR MRS VANDERTRAMP verbs + all reflexive verbs",topic:"pc-structure",diff:"intermediate"},
+{f:"DR MRS VANDERTRAMP",e:"verbs that use être: Devenir Revenir · Monter Rester Sortir · Venir Aller Naître · Descendre Entrer Rentrer · Tomber Retourner Arriver · Mourir Partir",ex:"Il est venu. Elle est partie. Nous sommes allés.",note:"All motion/state-change verbs — agreement required with subject",topic:"pc-structure",diff:"intermediate"},
+{f:"past participle agreement with être",e:"past participle agrees with subject in gender and number",ex:"Il est allé. · Elle est allée. · Ils sont allés. · Elles sont allées.",note:"Add -e for feminine, -s for plural, -es for feminine plural",topic:"pc-structure",diff:"intermediate"},
+{f:"past participle — NO agreement with avoir",e:"avoir verbs: no agreement unless direct object comes BEFORE verb",ex:"Elle a mangé la pizza. (no agreement) · La pizza qu'elle a mangée. (agreement)",note:"A1 rule: with avoir, do NOT add -e or -s to participle",topic:"pc-structure",diff:"intermediate"},
+// PC WITH AVOIR
+{f:"parler → parlé",e:"to speak → spoken (avoir verb)",ex:"J'ai parlé avec mon professeur hier.",note:"-ER verbs: drop -er, add -é",topic:"pc-avoir",diff:"beginner"},
+{f:"manger → mangé",e:"to eat → eaten (avoir verb)",ex:"Tu as mangé du pain ce matin ?",note:"-ER pattern: stem + é",topic:"pc-avoir",diff:"beginner"},
+{f:"regarder → regardé",e:"to watch → watched (avoir verb)",ex:"Il a regardé un film hier soir.",note:"-ER pattern",topic:"pc-avoir",diff:"beginner"},
+{f:"finir → fini",e:"to finish → finished (avoir verb)",ex:"Nous avons fini nos devoirs.",note:"-IR verbs: drop -ir, add -i",topic:"pc-avoir",diff:"beginner"},
+{f:"choisir → choisi",e:"to choose → chosen (avoir verb)",ex:"Vous avez choisi le menu ?",note:"-IR pattern: stem + i",topic:"pc-avoir",diff:"beginner"},
+{f:"vendre → vendu",e:"to sell → sold (avoir verb)",ex:"Ils ont vendu leur maison.",note:"-RE verbs: drop -re, add -u",topic:"pc-avoir",diff:"beginner"},
+{f:"attendre → attendu",e:"to wait → waited (avoir verb)",ex:"J'ai attendu le bus vingt minutes.",note:"-RE pattern: stem + u",topic:"pc-avoir",diff:"beginner"},
+{f:"avoir → eu",e:"to have → had (irregular participle)",ex:"Elle a eu une bonne note.",note:"IRREGULAR — must memorise",topic:"pc-avoir",diff:"intermediate"},
+{f:"être → été",e:"to be → been (irregular, uses avoir!)",ex:"Il a été malade hier.",note:"IRREGULAR — être uses avoir as auxiliary",topic:"pc-avoir",diff:"intermediate"},
+{f:"faire → fait",e:"to do/make → done/made (irregular participle)",ex:"Tu as fait tes devoirs ?",note:"IRREGULAR — must memorise",topic:"pc-avoir",diff:"intermediate"},
+{f:"prendre → pris",e:"to take → taken (irregular participle)",ex:"J'ai pris le bus ce matin.",note:"IRREGULAR — must memorise",topic:"pc-avoir",diff:"intermediate"},
+{f:"voir → vu",e:"to see → seen (irregular participle)",ex:"Nous avons vu un beau film.",note:"IRREGULAR — must memorise",topic:"pc-avoir",diff:"intermediate"},
+{f:"boire → bu",e:"to drink → drunk (irregular participle)",ex:"Elle a bu un verre d'eau.",note:"IRREGULAR — must memorise",topic:"pc-avoir",diff:"intermediate"},
+{f:"lire → lu",e:"to read → read (irregular participle)",ex:"J'ai lu un livre intéressant.",note:"IRREGULAR — must memorise",topic:"pc-avoir",diff:"intermediate"},
+{f:"écrire → écrit",e:"to write → written (irregular participle)",ex:"Il a écrit une lettre.",note:"IRREGULAR — must memorise",topic:"pc-avoir",diff:"intermediate"},
+// PC WITH ÊTRE
+{f:"aller → allé(e)",e:"to go → went (être verb)",ex:"Je suis allé au cinéma. / Elle est allée à Paris.",note:"être verb — agree with subject",topic:"pc-etre",diff:"beginner"},
+{f:"venir → venu(e)",e:"to come → came (être verb)",ex:"Il est venu à la fête. / Elles sont venues aussi.",note:"être verb — agree with subject",topic:"pc-etre",diff:"beginner"},
+{f:"partir → parti(e)",e:"to leave → left (être verb)",ex:"Elle est partie à huit heures.",note:"être verb — agree with subject",topic:"pc-etre",diff:"beginner"},
+{f:"arriver → arrivé(e)",e:"to arrive → arrived (être verb)",ex:"Nous sommes arrivés en retard.",note:"être verb — agree with subject",topic:"pc-etre",diff:"beginner"},
+{f:"entrer → entré(e)",e:"to enter → entered (être verb)",ex:"Il est entré dans la salle.",note:"être verb — agree with subject",topic:"pc-etre",diff:"beginner"},
+{f:"sortir → sorti(e)",e:"to go out → went out (être verb)",ex:"Vous êtes sortis hier soir ?",note:"être verb — agree with subject",topic:"pc-etre",diff:"beginner"},
+{f:"naître → né(e)",e:"to be born → was born (être verb)",ex:"Je suis né(e) en 2000.",note:"être verb — common in biography sentences",topic:"pc-etre",diff:"intermediate"},
+{f:"mourir → mort(e)",e:"to die → died (être verb)",ex:"Il est mort en 1945.",note:"être verb — IRREGULAR participle",topic:"pc-etre",diff:"intermediate"},
+{f:"rester → resté(e)",e:"to stay → stayed (être verb)",ex:"Elle est restée à la maison.",note:"être verb",topic:"pc-etre",diff:"beginner"},
+{f:"tomber → tombé(e)",e:"to fall → fell (être verb)",ex:"Il est tombé dans l'escalier.",note:"être verb",topic:"pc-etre",diff:"beginner"},
+{f:"monter → monté(e)",e:"to go up → went up (être verb)",ex:"Elle est montée au premier étage.",note:"être verb",topic:"pc-etre",diff:"beginner"},
+{f:"descendre → descendu(e)",e:"to go down → went down (être verb)",ex:"Nous sommes descendus à la cave.",note:"être verb",topic:"pc-etre",diff:"beginner"},
+// PARTICIPLES SUMMARY
+{f:"-ER verb participle rule",e:"remove -er, add -é",ex:"parler → parlé · manger → mangé · regarder → regardé",note:"All regular -ER verbs follow this pattern",topic:"pc-participles",diff:"beginner"},
+{f:"-IR verb participle rule",e:"remove -ir, add -i",ex:"finir → fini · choisir → choisi · remplir → rempli",note:"All regular -IR verbs follow this pattern",topic:"pc-participles",diff:"beginner"},
+{f:"-RE verb participle rule",e:"remove -re, add -u",ex:"vendre → vendu · attendre → attendu · répondre → répondu",note:"All regular -RE verbs follow this pattern",topic:"pc-participles",diff:"beginner"},
+{f:"irregular participles to memorise",e:"avoir→eu · être→été · faire→fait · prendre→pris · voir→vu · boire→bu · lire→lu · écrire→écrit · mourir→mort",ex:"J'ai fait, tu as pris, elle a vu...",note:"These do NOT follow the regular patterns — learn by heart",topic:"pc-participles",diff:"intermediate"},
+// PC NEGATION
+{f:"negation in passé composé",e:"ne goes before auxiliary, pas goes after auxiliary",ex:"Je n'ai pas mangé. Il n'est pas allé.",note:"Formula: subject + ne + auxiliary + pas + participle",topic:"pc-negation",diff:"intermediate"},
+{f:"des / un / une → de in PC negation",e:"indefinite articles become de after negation",ex:"J'ai mangé des fruits. → Je n'ai pas mangé de fruits.",note:"Same rule as present tense negation",topic:"pc-negation",diff:"intermediate"},
+{f:"ne...jamais in passé composé",e:"never — jamais replaces pas after auxiliary",ex:"Je n'ai jamais vu ce film. Il n'est jamais venu.",note:"Do NOT use ne...jamais pas",topic:"pc-negation",diff:"intermediate"},
+// REFLEXIVE VERBS
+{f:"reflexive verb — formula",e:"subject + reflexive pronoun + verb",ex:"Je me lave. Tu te lèves. Il se couche.",note:"Reflexive pronouns: me, te, se, nous, vous, se",topic:"reflexive",diff:"beginner"},
+{f:"reflexive pronouns",e:"me · te · se · nous · vous · se",ex:"Je me lève. / Tu te laves. / Elle se couche. / Nous nous habillons.",note:"Pronoun matches subject — always before verb",topic:"reflexive",diff:"beginner"},
+{f:"se lever",e:"to get up",ex:"Je me lève à sept heures.",note:"e→è spelling change: je me lève, tu te lèves, il se lève",topic:"reflexive",diff:"beginner"},
+{f:"se laver",e:"to wash (oneself)",ex:"Il se lave les mains avant le dîner.",note:"Regular reflexive -ER verb",topic:"reflexive",diff:"beginner"},
+{f:"se coucher",e:"to go to bed",ex:"Je me couche à dix heures du soir.",note:"Regular reflexive -ER verb",topic:"reflexive",diff:"beginner"},
+{f:"s'habiller",e:"to get dressed",ex:"Elle s'habille vite le matin.",note:"s' before vowel — regular reflexive",topic:"reflexive",diff:"beginner"},
+{f:"se réveiller",e:"to wake up",ex:"Je me réveille à six heures et demie.",note:"Regular reflexive -ER verb",topic:"reflexive",diff:"beginner"},
+{f:"s'appeler",e:"to be called / one's name is",ex:"Je m'appelle Lucas. Comment tu t'appelles ?",note:"ll spelling change: je m'appelle, tu t'appelles, il s'appelle",topic:"reflexive",diff:"beginner"},
+{f:"se brosser les dents",e:"to brush one's teeth",ex:"Je me brosse les dents après le repas.",note:"Common daily routine phrase",topic:"reflexive",diff:"beginner"},
+{f:"negation with reflexive verbs",e:"ne before pronoun, pas after verb",ex:"Je ne me lève pas tôt. Il ne se couche pas tard.",note:"Formula: subject + ne + reflexive pronoun + verb + pas",topic:"reflexive",diff:"intermediate"},
+{f:"reflexive verbs in PC — always use être",e:"all reflexive verbs use être in passé composé",ex:"Je me suis levé(e). Elle s'est habillée. Nous nous sommes couchés.",note:"Participle agrees with subject",topic:"reflexive",diff:"intermediate"},
+{f:"se lever — PC",e:"je me suis levé(e) · tu t'es levé(e) · il s'est levé · elle s'est levée",ex:"Ce matin, je me suis levé à sept heures.",note:"être auxiliary + agreement",topic:"reflexive",diff:"intermediate"},
+];
+
+let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
+
+function saveProgress(){
+  try{
+    localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));
+    localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));
+    localStorage.setItem('fc_cur_'+DECK_ID,String(cur));
+    localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');
+    localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);
+    showSaved();
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const t=localStorage.getItem('fc_topic_'+DECK_ID);
+    if(t) document.getElementById('ftopic').value=t;
+    const k=localStorage.getItem('fc_known_'+DECK_ID);
+    const a=localStorage.getItem('fc_again_'+DECK_ID);
+    const c=localStorage.getItem('fc_cur_'+DECK_ID);
+    const d=localStorage.getItem('fc_dir_'+DECK_ID);
+    if(k) known=new Set(JSON.parse(k));
+    if(a) again=new Set(JSON.parse(a));
+    if(c) cur=parseInt(c);
+    if(d!==null) showFR=d==='1';
+  }catch(e){}
+}
+function confirmClear(){
+  if(confirm('Clear all saved progress for this set?')){
+    try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}
+    known=new Set();again=new Set();cur=0;showFR=true;build();
+  }
+}
+let savedTimer=null;
+function showSaved(){
+  const b=document.getElementById('saved-badge');
+  if(b){b.style.display='inline';if(savedTimer)clearTimeout(savedTimer);savedTimer=setTimeout(()=>{b.style.display='none';},2000);}
+}
+function build(){
+  const t=document.getElementById('ftopic').value;
+  deck=ALL.filter(c=>t==='all'||c.topic===t);
+  if(cur>=deck.length) cur=0;
+  flipped=false;
+  updateReviewBtn();render();updateStats();
+}
+function shuffle(){
+  for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+  cur=0;flipped=false;saveProgress();render();updateStats();
+}
+function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
+function updateReviewBtn(){
+  const btn=document.getElementById('btn-review');
+  if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}
+}
+function reviewAgainCards(){
+  deck=ALL.filter(c=>again.has(ALL.indexOf(c)));
+  cur=0;flipped=false;render();updateStats();
+}
+function updateStats(){
+  document.getElementById('st').textContent=deck.length;
+  document.getElementById('sk').textContent=known.size;
+  document.getElementById('sa').textContent=again.size;
+  document.getElementById('sl').textContent=Math.max(0,deck.length-cur);
+  const p=deck.length?Math.round((cur/deck.length)*100):0;
+  document.getElementById('prog').style.width=p+'%';
+  document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';
+  updateReviewBtn();
+}
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards for this filter.</p>';return;}
+  if(cur>=deck.length){
+    const k=known.size,ag=again.size;
+    a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} marked for practice.</div><button onclick="build()">Restart</button></div>`;
+    return;
+  }
+  const c=deck[cur];
+  const front=showFR?c.f:c.e;
+  const back=showFR?c.e:c.f;
+  const idx=ALL.indexOf(c);
+  const isKnown=known.has(idx);
+  const isAgain=again.has(idx);
+  const statusDot=isKnown?'<span style="font-size:11px;color:#0F6E56">✓ know it</span>':isAgain?'<span style="font-size:11px;color:#993C1D">↻ practice</span>':'';
+  const diffClass=c.diff==='intermediate'?'b-int':'b-beg';
+  a.innerHTML=`<div class="card-wrap"><div class="card" id="card" onclick="flip()">
+    <div class="face front">
+      <div>
+        <div class="badges"><span class="badge b-topic">${c.topic}</span><span class="badge ${diffClass}">${c.diff}</span>${statusDot}</div>
+        <div class="card-word">${front}</div>
+        <div class="card-hint">tap to reveal</div>
+      </div>
+      <div class="dir-badge">${showFR?'FR → EN':'EN → FR'}</div>
+    </div>
+    <div class="face back">
+      <div>
+        <div class="badges"><span class="badge b-topic">${c.topic}</span></div>
+        <div class="card-trans">${back}</div>
+        ${c.note?`<div class="card-note">${c.note}</div>`:''}
+        <div class="card-ex">${c.ex}</div>
+      </div>
+    </div>
+  </div></div>
+  <div class="mark-row" id="mr">
+    <button class="btn-a" onclick="markA()">Practice again</button>
+    <button class="btn-k" onclick="markK()">Know it</button>
+  </div>
+  <div class="nav-row">
+    <button onclick="prev()">&#8592; Back</button>
+    <button onclick="next()">Next &#8594;</button>
+  </div>`;
+  updateStats();
+}
+function flip(){
+  flipped=!flipped;
+  document.getElementById('card').classList.toggle('flipped',flipped);
+  document.getElementById('mr').style.display=flipped?'flex':'none';
+}
+function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
+function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();
+build();
+let _modalMode='export';
+function openExport(){
+  _modalMode='export';
+  const data={known:[...known],again:[...again],cur,dir:showFR};
+  const code=btoa(JSON.stringify(data));
+  document.getElementById('modal-title').textContent='Export progress';
+  document.getElementById('modal-text').value=code;
+  document.getElementById('modal-text').readOnly=true;
+  document.getElementById('modal-action-btn').textContent='Copy code';
+  document.getElementById('modal-action-btn').className='';
+  document.getElementById('modal-bg').classList.add('open');
+}
+function openImport(){
+  _modalMode='import';
+  document.getElementById('modal-title').textContent='Import progress';
+  document.getElementById('modal-text').value='';
+  document.getElementById('modal-text').readOnly=false;
+  document.getElementById('modal-text').placeholder='Paste your code here...';
+  document.getElementById('modal-action-btn').textContent='Apply code';
+  document.getElementById('modal-action-btn').className='btn-import-apply';
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+function modalAction(){
+  if(_modalMode==='export'){
+    const t=document.getElementById('modal-text');
+    t.select();
+    try{navigator.clipboard.writeText(t.value).then(()=>{document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);});}catch(e){document.execCommand('copy');document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);}
+  } else {
+    const code=document.getElementById('modal-text').value.trim();
+    try{
+      const data=JSON.parse(atob(code));
+      if(data.known) known=new Set(data.known);
+      if(data.again) again=new Set(data.again);
+      if(typeof data.cur==='number') cur=data.cur;
+      if(typeof data.dir==='boolean') showFR=data.dir;
+      saveProgress();closeModal();build();
+    }catch(e){alert('Invalid code — please check and try again.');}
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 8 — Numbers, Adjectives &amp; Time Prepositions</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}
+.btn-clear:hover{background:#FAECE7}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{perspective:1000px;margin-bottom:10px}
+.card{width:100%;min-height:210px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform 0.4s ease}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;width:100%;min-height:210px;backface-visibility:hidden;border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
+.back{transform:rotateY(180deg)}
+.badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-beg{background:#EAF3DE;color:#27500A}
+.b-int{background:#FEF3C7;color:#92400E}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.card-word{font-size:22px;font-weight:500;color:#1a1a1a;flex:1;display:flex;align-items:center;line-height:1.3}
+.card-hint{font-size:12px;color:#aaa;margin-top:8px}
+.card-trans{font-size:18px;font-weight:500;color:#1a1a1a}
+.card-note{font-size:13px;color:#555;margin-top:6px}
+.card-ex{font-size:13px;color:#888;font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ee}
+.mark-row{display:none;gap:8px;margin-top:8px}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.dir-badge{font-size:11px;color:#888;text-align:right}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:100}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:20px;max-width:340px;width:90%;box-shadow:0 4px 24px rgba(0,0,0,0.12)}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:12px}
+.modal textarea{width:100%;height:80px;font-size:13px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;resize:none}
+.modal .modal-btns{display:flex;gap:8px;margin-top:10px}
+.modal .modal-btns button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.modal .modal-btns button:hover{background:#f0f0ee}
+.btn-import-apply{background:#EAF3DE!important;color:#27500A;border-color:#9FE1CB!important}
+</style>
+</head>
+<body>
+<h1>Set 8 — Numbers, Adjectives &amp; Time Prepositions</h1>
+<p class="subtitle">Numbers 21–100 · Common adjectives · Prepositions of time</p>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Export progress</h3>
+    <textarea id="modal-text" placeholder="Paste your code here..."></textarea>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Cancel</button>
+      <button id="modal-action-btn" onclick="modalAction()">Copy code</button>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All topics</option>
+    <option value="numbers">Numbers 21–100</option>
+    <option value="adj-size">Adjectives — size &amp; age</option>
+    <option value="adj-quality">Adjectives — quality</option>
+    <option value="adj-rules">Adjective agreement rules</option>
+    <option value="time-prep">Time prepositions</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="toggleDir()">Flip direction</button>
+  <button onclick="reviewAgainCards()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button onclick="openExport()">Export</button>
+  <button onclick="openImport()">Import</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+
+<script>
+const DECK_ID='set8';
+const ALL=[
+// NUMBERS 21-100
+{f:"vingt et un (21)",e:"twenty-one",ex:"Il a vingt et un ans.",note:"et used only for 21, 31, 41, 51, 61, 71 — not 81 or 91",topic:"numbers",diff:"beginner"},
+{f:"vingt-deux / vingt-trois... (22–29)",e:"twenty-two / twenty-three...",ex:"Elle a vingt-cinq ans.",note:"22–29: vingt + hyphen + number. No et.",topic:"numbers",diff:"beginner"},
+{f:"trente (30)",e:"thirty",ex:"Il y a trente jours en septembre.",note:"",topic:"numbers",diff:"beginner"},
+{f:"trente et un / trente-deux... (31–39)",e:"thirty-one / thirty-two...",ex:"J'ai trente-cinq euros.",note:"et for 31 only — then hyphen for 32–39",topic:"numbers",diff:"beginner"},
+{f:"quarante (40)",e:"forty",ex:"Ma mère a quarante ans.",note:"",topic:"numbers",diff:"beginner"},
+{f:"cinquante (50)",e:"fifty",ex:"Il y a cinquante États aux États-Unis.",note:"",topic:"numbers",diff:"beginner"},
+{f:"soixante (60)",e:"sixty",ex:"Il a soixante minutes pour finir.",note:"",topic:"numbers",diff:"beginner"},
+{f:"soixante-dix (70)",e:"seventy",ex:"Ma grand-mère a soixante-dix ans.",note:"literally 'sixty-ten' — no septante in standard French",topic:"numbers",diff:"intermediate"},
+{f:"soixante-onze / soixante-douze... (71–79)",e:"seventy-one / seventy-two...",ex:"Mon grand-père a soixante-quinze ans.",note:"60 + 11, 60 + 12... 60 + 19. No et.",topic:"numbers",diff:"intermediate"},
+{f:"quatre-vingts (80)",e:"eighty",ex:"Elle a quatre-vingts ans.",note:"literally 'four-twenties' — drops -s before another number",topic:"numbers",diff:"intermediate"},
+{f:"quatre-vingt-un / quatre-vingt-deux... (81–89)",e:"eighty-one / eighty-two...",ex:"Il a quatre-vingt-cinq euros.",note:"No -s on vingt when followed by a number. No et.",topic:"numbers",diff:"intermediate"},
+{f:"quatre-vingt-dix (90)",e:"ninety",ex:"Elle court quatre-vingt-dix mètres.",note:"literally 'four-twenty-ten' — no nonante in standard French",topic:"numbers",diff:"intermediate"},
+{f:"quatre-vingt-onze / quatre-vingt-douze... (91–99)",e:"ninety-one / ninety-two...",ex:"Il a quatre-vingt-quinze points.",note:"80 + 11, 80 + 12... 80 + 19",topic:"numbers",diff:"intermediate"},
+{f:"cent (100)",e:"one hundred",ex:"Il y a cent centimes dans un euro.",note:"cent takes -s when alone (deux cents) but not before another number (deux cent cinq)",topic:"numbers",diff:"beginner"},
+{f:"number pattern summary: 70–99",e:"70 = 60+10 · 80 = 4×20 · 90 = 4×20+10",ex:"70 = soixante-dix · 80 = quatre-vingts · 90 = quatre-vingt-dix",note:"French does NOT have single words for 70, 80, 90 — must calculate",topic:"numbers",diff:"intermediate"},
+// ADJECTIVES SIZE AND AGE
+{f:"grand / grande",e:"big / tall",ex:"Il est grand. La maison est grande.",note:"masc: grand · fem: grande (add -e)",topic:"adj-size",diff:"beginner"},
+{f:"petit / petite",e:"small / short",ex:"Un petit chat. Une petite fille.",note:"masc: petit · fem: petite",topic:"adj-size",diff:"beginner"},
+{f:"gros / grosse",e:"big / fat / thick",ex:"Un gros chat. Une grosse valise.",note:"masc: gros · fem: grosse (double consonant + e)",topic:"adj-size",diff:"beginner"},
+{f:"long / longue",e:"long",ex:"Une longue route. Un long voyage.",note:"masc: long · fem: longue",topic:"adj-size",diff:"beginner"},
+{f:"court / courte",e:"short (length)",ex:"Une robe courte. Un chemin court.",note:"masc: court · fem: courte",topic:"adj-size",diff:"beginner"},
+{f:"vieux / vieille / vieil",e:"old",ex:"Un vieux monsieur. Une vieille dame. Un vieil homme.",note:"vieil before masc vowel/h noun. Plural: vieux (m), vieilles (f)",topic:"adj-size",diff:"intermediate"},
+{f:"jeune",e:"young",ex:"Elle est très jeune.",note:"same form masc and fem — jeune / jeune",topic:"adj-size",diff:"beginner"},
+{f:"nouveau / nouvelle / nouvel",e:"new",ex:"Un nouveau livre. Une nouvelle maison. Un nouvel hôtel.",note:"nouvel before masc vowel/h noun. Like vieux/vieil pattern.",topic:"adj-size",diff:"intermediate"},
+// ADJECTIVES QUALITY
+{f:"beau / belle / bel",e:"beautiful / handsome",ex:"Un beau jardin. Une belle femme. Un bel arbre.",note:"bel before masc vowel/h noun. Plural: beaux (m), belles (f)",topic:"adj-quality",diff:"intermediate"},
+{f:"bon / bonne",e:"good",ex:"Un bon repas. Une bonne idée.",note:"masc: bon · fem: bonne (double n + e)",topic:"adj-quality",diff:"beginner"},
+{f:"mauvais / mauvaise",e:"bad",ex:"Un mauvais résultat. Une mauvaise idée.",note:"masc: mauvais · fem: mauvaise",topic:"adj-quality",diff:"beginner"},
+{f:"facile",e:"easy",ex:"C'est facile ! L'examen était facile.",note:"same form masc and fem",topic:"adj-quality",diff:"beginner"},
+{f:"difficile",e:"difficult / hard",ex:"C'est difficile. Le problème est difficile.",note:"same form masc and fem",topic:"adj-quality",diff:"beginner"},
+{f:"intéressant / intéressante",e:"interesting",ex:"Un livre intéressant. Une histoire intéressante.",topic:"adj-quality",diff:"beginner",note:"regular pattern: masc → add -e for fem"},
+{f:"ennuyeux / ennuyeuse",e:"boring",ex:"Ce film est ennuyeux. Cette leçon est ennuyeuse.",note:"-eux / -euse pattern — common ending",topic:"adj-quality",diff:"intermediate"},
+{f:"sympa (sympathique)",e:"nice / friendly",ex:"Il est très sympa. Elle est sympa.",note:"sympa is invariable (same for masc and fem). Sympathique adds -que.",topic:"adj-quality",diff:"beginner"},
+{f:"gentil / gentille",e:"kind / nice",ex:"Il est gentil. Elle est gentille.",note:"masc: gentil · fem: gentille (double l + e)",topic:"adj-quality",diff:"beginner"},
+{f:"rapide",e:"fast",ex:"Un train rapide. Une voiture rapide.",note:"same form masc and fem",topic:"adj-quality",diff:"beginner"},
+{f:"lent / lente",e:"slow",ex:"Un escargot lent. Une tortue lente.",note:"masc: lent · fem: lente",topic:"adj-quality",diff:"beginner"},
+{f:"chaud / chaude",e:"hot / warm",ex:"Un café chaud. Une soupe chaude.",note:"masc: chaud · fem: chaude",topic:"adj-quality",diff:"beginner"},
+{f:"froid / froide",e:"cold",ex:"Un vent froid. Une nuit froide.",note:"masc: froid · fem: froide",topic:"adj-quality",diff:"beginner"},
+// ADJECTIVE AGREEMENT RULES
+{f:"adjective agreement — basic rule",e:"adjective agrees in gender and number with the noun it describes",ex:"un homme grand → une femme grande · des hommes grands · des femmes grandes",note:"Add -e for feminine, -s for plural, -es for feminine plural",topic:"adj-rules",diff:"beginner"},
+{f:"adjectives ending in -e — no change",e:"adjectives already ending in -e are the same for masc and fem",ex:"facile → facile · rapide → rapide · jeune → jeune · sympa → sympa",note:"Only add -s for plural: faciles, rapides",topic:"adj-rules",diff:"beginner"},
+{f:"-eux → -euse (fem)",e:"adjectives ending in -eux change to -euse for feminine",ex:"ennuyeux → ennuyeuse · heureux → heureuse · sérieux → sérieuse",note:"Masc plural stays -eux. Fem plural: -euses.",topic:"adj-rules",diff:"intermediate"},
+{f:"BAGS adjectives — go BEFORE the noun",e:"Beauty Age Goodness Size: beau, vieux, bon, grand, petit, nouveau, jeune, mauvais",ex:"Un grand homme. Une belle femme. Un bon repas. Un petit chat.",note:"Most adjectives go AFTER the noun — BAGS are the main exceptions",topic:"adj-rules",diff:"intermediate"},
+{f:"most adjectives go AFTER the noun",e:"default position: noun + adjective",ex:"un livre intéressant · une robe rouge · un homme sympa · une idée mauvaise",note:"Only BAGS adjectives (and a few others) go before. When in doubt, put it after.",topic:"adj-rules",diff:"intermediate"},
+// TIME PREPOSITIONS
+{f:"avant",e:"before",ex:"Je me lève avant sept heures. Avant le dîner, je fais du sport.",note:"avant + noun / avant de + infinitive",topic:"time-prep",diff:"beginner"},
+{f:"après",e:"after",ex:"Après le travail, je rentre chez moi. Après le dîner, je regarde la télé.",note:"après + noun / après avoir + participle (advanced)",topic:"time-prep",diff:"beginner"},
+{f:"pendant",e:"during / for (a duration)",ex:"Pendant les vacances, je lis. J'ai étudié pendant deux heures.",note:"pendant = ongoing duration. Different from pour (planned future duration).",topic:"time-prep",diff:"intermediate"},
+{f:"depuis",e:"since / for (ongoing from past)",ex:"J'apprends le français depuis six mois. Il est à Paris depuis lundi.",note:"Used with PRESENT tense in French (not past!) — ongoing situation",topic:"time-prep",diff:"intermediate"},
+{f:"dans",e:"in / in ... time (future)",ex:"Le cours commence dans dix minutes. Je pars dans deux jours.",note:"dans = future countdown. Different from en (how long something takes).",topic:"time-prep",diff:"intermediate"},
+{f:"en",e:"in (a month/year/season) / in (duration)",ex:"En janvier il neige. En été on nage. Je fais ça en cinq minutes.",note:"en + months, seasons, years. Also: time taken to complete something.",topic:"time-prep",diff:"intermediate"},
+{f:"il y a",e:"ago",ex:"J'ai mangé il y a deux heures. Elle est arrivée il y a trois jours.",note:"il y a + time = ago. Used with passé composé.",topic:"time-prep",diff:"intermediate"},
+{f:"jusqu'à",e:"until",ex:"Je travaille jusqu'à dix-huit heures. Attends jusqu'à lundi.",note:"jusqu'à + noun / time. Elides before vowel: jusqu'à eight = jusqu'à huit heures.",topic:"time-prep",diff:"intermediate"},
+{f:"dès",e:"from / as soon as (time)",ex:"Dès lundi, je commence mon nouveau travail. Dès le matin, il lit.",note:"dès = from a specific point in time, immediately",topic:"time-prep",diff:"intermediate"},
+{f:"vers",e:"around / towards (time)",ex:"Je me lève vers sept heures. Elle arrive vers midi.",note:"vers = approximate time",topic:"time-prep",diff:"beginner"},
+{f:"à partir de",e:"from ... onwards",ex:"À partir de demain, je fais du sport. À partir de janvier, c'est différent.",note:"à partir de = starting from a point, continuing forward",topic:"time-prep",diff:"intermediate"},
+{f:"avant de + infinitive",e:"before doing (something)",ex:"Avant de manger, je me lave les mains. Avant de partir, il ferme la porte.",note:"avant de + infinitive — subject is the same for both verbs",topic:"time-prep",diff:"intermediate"},
+];
+
+let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
+
+function saveProgress(){
+  try{
+    localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));
+    localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));
+    localStorage.setItem('fc_cur_'+DECK_ID,String(cur));
+    localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');
+    localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);
+    showSaved();
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const t=localStorage.getItem('fc_topic_'+DECK_ID);
+    if(t) document.getElementById('ftopic').value=t;
+    const k=localStorage.getItem('fc_known_'+DECK_ID);
+    const a=localStorage.getItem('fc_again_'+DECK_ID);
+    const c=localStorage.getItem('fc_cur_'+DECK_ID);
+    const d=localStorage.getItem('fc_dir_'+DECK_ID);
+    if(k) known=new Set(JSON.parse(k));
+    if(a) again=new Set(JSON.parse(a));
+    if(c) cur=parseInt(c);
+    if(d!==null) showFR=d==='1';
+  }catch(e){}
+}
+function confirmClear(){
+  if(confirm('Clear all saved progress for this set?')){
+    try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}
+    known=new Set();again=new Set();cur=0;showFR=true;build();
+  }
+}
+let savedTimer=null;
+function showSaved(){
+  const b=document.getElementById('saved-badge');
+  if(b){b.style.display='inline';if(savedTimer)clearTimeout(savedTimer);savedTimer=setTimeout(()=>{b.style.display='none';},2000);}
+}
+function build(){
+  const t=document.getElementById('ftopic').value;
+  deck=ALL.filter(c=>t==='all'||c.topic===t);
+  if(cur>=deck.length) cur=0;
+  flipped=false;
+  updateReviewBtn();render();updateStats();
+}
+function shuffle(){
+  for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+  cur=0;flipped=false;saveProgress();render();updateStats();
+}
+function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
+function updateReviewBtn(){
+  const btn=document.getElementById('btn-review');
+  if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}
+}
+function reviewAgainCards(){
+  deck=ALL.filter(c=>again.has(ALL.indexOf(c)));
+  cur=0;flipped=false;render();updateStats();
+}
+function updateStats(){
+  document.getElementById('st').textContent=deck.length;
+  document.getElementById('sk').textContent=known.size;
+  document.getElementById('sa').textContent=again.size;
+  document.getElementById('sl').textContent=Math.max(0,deck.length-cur);
+  const p=deck.length?Math.round((cur/deck.length)*100):0;
+  document.getElementById('prog').style.width=p+'%';
+  document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';
+  updateReviewBtn();
+}
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards for this filter.</p>';return;}
+  if(cur>=deck.length){
+    const k=known.size,ag=again.size;
+    a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} marked for practice.</div><button onclick="build()">Restart</button></div>`;
+    return;
+  }
+  const c=deck[cur];
+  const front=showFR?c.f:c.e;
+  const back=showFR?c.e:c.f;
+  const idx=ALL.indexOf(c);
+  const isKnown=known.has(idx);
+  const isAgain=again.has(idx);
+  const statusDot=isKnown?'<span style="font-size:11px;color:#0F6E56">✓ know it</span>':isAgain?'<span style="font-size:11px;color:#993C1D">↻ practice</span>':'';
+  const diffClass=c.diff==='intermediate'?'b-int':'b-beg';
+  a.innerHTML=`<div class="card-wrap"><div class="card" id="card" onclick="flip()">
+    <div class="face front">
+      <div>
+        <div class="badges"><span class="badge b-topic">${c.topic}</span><span class="badge ${diffClass}">${c.diff}</span>${statusDot}</div>
+        <div class="card-word">${front}</div>
+        <div class="card-hint">tap to reveal</div>
+      </div>
+      <div class="dir-badge">${showFR?'FR → EN':'EN → FR'}</div>
+    </div>
+    <div class="face back">
+      <div>
+        <div class="badges"><span class="badge b-topic">${c.topic}</span></div>
+        <div class="card-trans">${back}</div>
+        ${c.note?`<div class="card-note">${c.note}</div>`:''}
+        <div class="card-ex">${c.ex}</div>
+      </div>
+    </div>
+  </div></div>
+  <div class="mark-row" id="mr">
+    <button class="btn-a" onclick="markA()">Practice again</button>
+    <button class="btn-k" onclick="markK()">Know it</button>
+  </div>
+  <div class="nav-row">
+    <button onclick="prev()">&#8592; Back</button>
+    <button onclick="next()">Next &#8594;</button>
+  </div>`;
+  updateStats();
+}
+function flip(){
+  flipped=!flipped;
+  document.getElementById('card').classList.toggle('flipped',flipped);
+  document.getElementById('mr').style.display=flipped?'flex':'none';
+}
+function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
+function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();
+build();
+let _modalMode='export';
+function openExport(){
+  _modalMode='export';
+  const data={known:[...known],again:[...again],cur,dir:showFR};
+  const code=btoa(JSON.stringify(data));
+  document.getElementById('modal-title').textContent='Export progress';
+  document.getElementById('modal-text').value=code;
+  document.getElementById('modal-text').readOnly=true;
+  document.getElementById('modal-action-btn').textContent='Copy code';
+  document.getElementById('modal-action-btn').className='';
+  document.getElementById('modal-bg').classList.add('open');
+}
+function openImport(){
+  _modalMode='import';
+  document.getElementById('modal-title').textContent='Import progress';
+  document.getElementById('modal-text').value='';
+  document.getElementById('modal-text').readOnly=false;
+  document.getElementById('modal-text').placeholder='Paste your code here...';
+  document.getElementById('modal-action-btn').textContent='Apply code';
+  document.getElementById('modal-action-btn').className='btn-import-apply';
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+function modalAction(){
+  if(_modalMode==='export'){
+    const t=document.getElementById('modal-text');
+    t.select();
+    try{navigator.clipboard.writeText(t.value).then(()=>{document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);});}catch(e){document.execCommand('copy');document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);}
+  } else {
+    const code=document.getElementById('modal-text').value.trim();
+    try{
+      const data=JSON.parse(atob(code));
+      if(data.known) known=new Set(data.known);
+      if(data.again) again=new Set(data.again);
+      if(typeof data.cur==='number') cur=data.cur;
+      if(typeof data.dir==='boolean') showFR=data.dir;
+      saveProgress();closeModal();build();
+    }catch(e){alert('Invalid code — please check and try again.');}
+  }
+}
+</script>
+</body>
+</html>

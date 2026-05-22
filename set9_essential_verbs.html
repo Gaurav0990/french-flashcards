@@ -20,11 +20,9 @@ h1{font-size:20px;font-weight:500;margin-bottom:4px}
 .prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
 .prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
 .counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
-.card-wrap{perspective:1000px;margin-bottom:10px}
-.card{width:100%;min-height:260px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform 0.4s ease}
-.card.flipped{transform:rotateY(180deg)}
-.face{position:absolute;width:100%;min-height:260px;backface-visibility:hidden;border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between}
-.back{transform:rotateY(180deg)}
+.card-wrap{margin-bottom:10px;cursor:pointer}
+.face{border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between;min-height:260px;transition:opacity 0.15s}
+.face.hidden{display:none}
 .badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
 .badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
 .b-beg{background:#EAF3DE;color:#27500A}
@@ -225,20 +223,20 @@ function render(){
   const diffClass=c.diff==='intermediate'?'b-int':'b-beg';
   const frontText=showFR?c.f:c.e;
   const backMeaning=showFR?c.e:c.f;
-  a.innerHTML=`<div class="card-wrap"><div class="card" id="card" onclick="flip()">
-    <div class="face front">
+  a.innerHTML=`<div class="card-wrap" onclick="flip()">
+    <div class="face front" id="face-front">
       <div><div class="badges"><span class="badge b-topic">${c.topic}</span><span class="badge ${diffClass}">${c.diff}</span>${statusDot}</div><div class="card-word">${frontText}</div><div class="card-hint">tap to see conjugation</div></div>
       <div class="dir-badge">${showFR?'FR → EN':'EN → FR'}</div>
     </div>
-    <div class="face back">
+    <div class="face back hidden" id="face-back">
       <div><div class="badges"><span class="badge b-topic">${c.topic}</span></div><div class="card-trans">${backMeaning}</div>${buildConjGrid(c.conj)}${c.note?`<div class="card-note">⚠ ${c.note}</div>`:''}<div class="card-ex">${c.ex}</div></div>
     </div>
-  </div></div>
+  </div>
   <div class="mark-row" id="mr"><button class="btn-a" onclick="markA()">Practice again</button><button class="btn-k" onclick="markK()">Know it</button></div>
   <div class="nav-row"><button onclick="prev()">&#8592; Back</button><button onclick="next()">Next &#8594;</button></div>`;
   updateStats();
 }
-function flip(){flipped=!flipped;document.getElementById('card').classList.toggle('flipped',flipped);document.getElementById('mr').style.display=flipped?'flex':'none';}
+function flip(){flipped=!flipped;document.getElementById('face-front').classList.toggle('hidden',flipped);document.getElementById('face-back').classList.toggle('hidden',!flipped);document.getElementById('mr').style.display=flipped?'flex':'none';}
 function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
 function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
 function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 11 — Irregular Verb Drill</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}.btn-clear:hover{background:#FAECE7}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{margin-bottom:10px;cursor:pointer}
+.face{border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;gap:12px}
+.face.hidden{display:none}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.b-beg{background:#EAF3DE;color:#27500A}
+.b-int{background:#FEF3C7;color:#92400E}
+.front-verb{font-size:32px;font-weight:600;color:#1a1a1a}
+.front-meaning{font-size:15px;color:#888}
+.front-prompt{font-size:13px;color:#aaa;padding-top:4px;border-top:1px solid #f0f0ee}
+.dir-badge{font-size:11px;color:#888;text-align:right}
+.back-meaning{font-size:15px;font-weight:500;color:#555}
+.conj-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;font-size:14px;border:1px solid #e8e8e5;border-radius:8px;overflow:hidden}
+.conj-cell{padding:6px 10px;border-bottom:1px solid #f0f0ee}
+.conj-cell:nth-child(odd){background:#fafaf8;color:#888}
+.conj-cell:nth-child(even){font-weight:600;color:#1a1a1a;border-left:1px solid #f0f0ee}
+.conj-cell:nth-last-child(-n+2){border-bottom:none}
+.examples{display:flex;flex-direction:column;gap:6px;padding-top:10px;border-top:1px solid #f0f0ee}
+.ex-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:#aaa}
+.ex-line{font-size:13px;color:#555;font-style:italic}
+.ex-line span{font-style:normal;font-weight:600;color:#1a1a1a}
+.warning{font-size:12px;color:#993C1D;background:#FAECE7;padding:6px 10px;border-radius:6px}
+.mark-row{display:none;gap:8px;margin-top:8px}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:100}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:20px;max-width:340px;width:90%;box-shadow:0 4px 24px rgba(0,0,0,0.12)}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:12px}
+.modal textarea{width:100%;height:80px;font-size:13px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;resize:none}
+.modal .modal-btns{display:flex;gap:8px;margin-top:10px}
+.modal .modal-btns button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.modal .modal-btns button:hover{background:#f0f0ee}
+.btn-import-apply{background:#EAF3DE!important;color:#27500A;border-color:#9FE1CB!important}
+</style>
+</head>
+<body>
+<h1>Set 11 — Irregular Verb Drill</h1>
+<p class="subtitle">See the infinitive · Recall all 6 forms · Flip to check table + examples</p>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Export progress</h3>
+    <textarea id="modal-text" placeholder="Paste your code here..."></textarea>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Cancel</button>
+      <button id="modal-action-btn" onclick="modalAction()">Copy code</button>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All verbs</option>
+    <option value="motion">Motion — sortir / partir / venir...</option>
+    <option value="modal">Modals — vouloir / pouvoir / devoir</option>
+    <option value="common">Common irregulars — prendre / dire / faire...</option>
+    <option value="tricky">Extra tricky — stem changes &amp; surprises</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="reviewAgain()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button onclick="openExport()">Export</button>
+  <button onclick="openImport()">Import</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+
+<script>
+const DECK_ID='set11';
+
+// Each card: verb, meaning, topic, conj [6 forms], examples [[fr, highlight-word, en]], warning
+const ALL=[
+
+// MOTION VERBS
+{verb:"sortir",meaning:"to go out",topic:"motion",
+ conj:[["je","sors"],["tu","sors"],["il/elle","sort"],["nous","sortons"],["vous","sortez"],["ils/elles","sortent"]],
+ ex:[["Je sors ce soir avec mes amis.","sors","I'm going out tonight with my friends."],
+     ["Elle sort du bureau à dix-huit heures.","sort","She leaves the office at 6pm."],
+     ["Nous sortons tous les vendredis.","sortons","We go out every Friday."],
+     ["Ils sortent rarement le week-end.","sortent","They rarely go out on weekends."]],
+ warning:"⚠ NOT nous sortissons — sortir is NOT a regular -IR verb. Stem drops the t in singular: sor-"},
+
+{verb:"partir",meaning:"to leave",topic:"motion",
+ conj:[["je","pars"],["tu","pars"],["il/elle","part"],["nous","partons"],["vous","partez"],["ils/elles","partent"]],
+ ex:[["Je pars à huit heures du matin.","pars","I leave at 8am."],
+     ["Elle part en vacances demain.","part","She's leaving on holiday tomorrow."],
+     ["Nous partons pour Paris ce week-end.","partons","We're leaving for Paris this weekend."],
+     ["Ils partent sans dire au revoir.","partent","They leave without saying goodbye."]],
+ warning:"⚠ NOT nous partissons — same pattern as sortir. Stem drops the t in singular: par-"},
+
+{verb:"venir",meaning:"to come",topic:"motion",
+ conj:[["je","viens"],["tu","viens"],["il/elle","vient"],["nous","venons"],["vous","venez"],["ils/elles","viennent"]],
+ ex:[["Tu viens avec moi au cinéma ?","viens","Are you coming with me to the cinema?"],
+     ["Il vient de Paris.","vient","He comes from Paris."],
+     ["Nous venons te voir demain.","venons","We're coming to see you tomorrow."],
+     ["Ils viennent souvent ici.","viennent","They often come here."]],
+ warning:"⚠ viennent has double-n · venons/venez have different stem than je/tu/il/ils"},
+
+{verb:"revenir",meaning:"to come back",topic:"motion",
+ conj:[["je","reviens"],["tu","reviens"],["il/elle","revient"],["nous","revenons"],["vous","revenez"],["ils/elles","reviennent"]],
+ ex:[["Je reviens dans cinq minutes.","reviens","I'll be back in five minutes."],
+     ["Elle revient de vacances lundi.","revient","She comes back from holiday on Monday."],
+     ["Ils reviennent toujours ici.","reviennent","They always come back here."]],
+ warning:"⚠ Exactly like venir with re- prefix — same stem changes apply"},
+
+{verb:"devenir",meaning:"to become",topic:"motion",
+ conj:[["je","deviens"],["tu","deviens"],["il/elle","devient"],["nous","devenons"],["vous","devenez"],["ils/elles","deviennent"]],
+ ex:[["Il devient médecin après six ans d'études.","devient","He's becoming a doctor after six years of study."],
+     ["Elle devient célèbre.","devient","She's becoming famous."],
+     ["Ils deviennent de bons amis.","deviennent","They're becoming good friends."]],
+ warning:"⚠ Same pattern as venir — devenons/devenez · deviennent (double-n)"},
+
+{verb:"dormir",meaning:"to sleep",topic:"motion",
+ conj:[["je","dors"],["tu","dors"],["il/elle","dort"],["nous","dormons"],["vous","dormez"],["ils/elles","dorment"]],
+ ex:[["Je dors huit heures par nuit.","dors","I sleep eight hours a night."],
+     ["Elle dort encore — ne la réveille pas.","dort","She's still sleeping — don't wake her."],
+     ["Nous dormons bien ici.","dormons","We sleep well here."],
+     ["Ils dorment jusqu'à midi le week-end.","dorment","They sleep until noon on weekends."]],
+ warning:"⚠ NOT nous dormissons — irregular -IR. Stem drops the m in singular: dor-"},
+
+{verb:"courir",meaning:"to run",topic:"motion",
+ conj:[["je","cours"],["tu","cours"],["il/elle","court"],["nous","courons"],["vous","courez"],["ils/elles","courent"]],
+ ex:[["Je cours tous les matins.","cours","I run every morning."],
+     ["Elle court très vite.","court","She runs very fast."],
+     ["Nous courons un marathon ce dimanche.","courons","We're running a marathon this Sunday."],
+     ["Ils courent après le bus.","courent","They're running after the bus."]],
+ warning:"⚠ Looks like a regular -RE verb in conjugation but infinitive ends in -ir"},
+
+// MODAL VERBS
+{verb:"vouloir",meaning:"to want",topic:"modal",
+ conj:[["je","veux"],["tu","veux"],["il/elle","veut"],["nous","voulons"],["vous","voulez"],["ils/elles","veulent"]],
+ ex:[["Je veux un café, s'il vous plaît.","veux","I want a coffee, please."],
+     ["Tu veux venir avec nous ?","veux","Do you want to come with us?"],
+     ["Elle veut apprendre le français.","veut","She wants to learn French."],
+     ["Ils veulent partir tôt.","veulent","They want to leave early."]],
+ warning:"⚠ veux / veut / veulent — three different forms · veulent has -eu- not -ou-"},
+
+{verb:"pouvoir",meaning:"to be able to / can",topic:"modal",
+ conj:[["je","peux"],["tu","peux"],["il/elle","peut"],["nous","pouvons"],["vous","pouvez"],["ils/elles","peuvent"]],
+ ex:[["Je peux t'aider si tu veux.","peux","I can help you if you want."],
+     ["Il peut venir demain.","peut","He can come tomorrow."],
+     ["Nous pouvons partir maintenant.","pouvons","We can leave now."],
+     ["Ils peuvent rester ici.","peuvent","They can stay here."]],
+ warning:"⚠ peux / peut / peuvent — peuvent has -eu- · pouvons/pouvez have -ou-"},
+
+{verb:"devoir",meaning:"to have to / must",topic:"modal",
+ conj:[["je","dois"],["tu","dois"],["il/elle","doit"],["nous","devons"],["vous","devez"],["ils/elles","doivent"]],
+ ex:[["Je dois finir mes devoirs avant de sortir.","dois","I must finish my homework before going out."],
+     ["Elle doit travailler ce week-end.","doit","She has to work this weekend."],
+     ["Nous devons partir à huit heures.","devons","We have to leave at eight."],
+     ["Ils doivent rendre le livre aujourd'hui.","doivent","They have to return the book today."]],
+ warning:"⚠ doivent NOT devont · devons/devez have different stem from je/tu/il/ils"},
+
+{verb:"savoir",meaning:"to know (fact / skill)",topic:"modal",
+ conj:[["je","sais"],["tu","sais"],["il/elle","sait"],["nous","savons"],["vous","savez"],["ils/elles","savent"]],
+ ex:[["Je sais nager depuis l'âge de six ans.","sais","I've known how to swim since age six."],
+     ["Tu sais où est la gare ?","sais","Do you know where the station is?"],
+     ["Elle sait parler trois langues.","sait","She knows how to speak three languages."],
+     ["Ils savent déjà la réponse.","savent","They already know the answer."]],
+ warning:"⚠ savent NOT savont · savoir = know a fact/skill. connaître = know a person/place"},
+
+// COMMON IRREGULARS
+{verb:"faire",meaning:"to do / to make",topic:"common",
+ conj:[["je","fais"],["tu","fais"],["il/elle","fait"],["nous","faisons"],["vous","faites"],["ils/elles","font"]],
+ ex:[["Qu'est-ce que tu fais ce soir ?","fais","What are you doing tonight?"],
+     ["Il fait du sport tous les jours.","fait","He does sport every day."],
+     ["Nous faisons la cuisine ensemble.","faisons","We cook together."],
+     ["Ils font leurs devoirs après l'école.","font","They do their homework after school."]],
+ warning:"⚠ vous faites — NOT vous faisez · ils font — NOT ils faisent"},
+
+{verb:"prendre",meaning:"to take",topic:"common",
+ conj:[["je","prends"],["tu","prends"],["il/elle","prend"],["nous","prenons"],["vous","prenez"],["ils/elles","prennent"]],
+ ex:[["Je prends le bus pour aller au travail.","prends","I take the bus to go to work."],
+     ["Tu prends un café ?","prends","Are you having a coffee?"],
+     ["Elle prend ses affaires et part.","prend","She takes her things and leaves."],
+     ["Ils prennent beaucoup de place.","prennent","They take up a lot of space."]],
+ warning:"⚠ prennent has double-n · prenons/prenez have single-n"},
+
+{verb:"dire",meaning:"to say / to tell",topic:"common",
+ conj:[["je","dis"],["tu","dis"],["il/elle","dit"],["nous","disons"],["vous","dites"],["ils/elles","disent"]],
+ ex:[["Je dis toujours la vérité.","dis","I always tell the truth."],
+     ["Qu'est-ce qu'il dit ?","dit","What is he saying?"],
+     ["Nous disons au revoir à nos amis.","disons","We say goodbye to our friends."],
+     ["Qu'est-ce que vous dites ?","dites","What are you saying?"]],
+ warning:"⚠ vous dites — NOT vous disez · this is one of only three -tes endings (être/faire/dire)"},
+
+{verb:"mettre",meaning:"to put / put on / wear",topic:"common",
+ conj:[["je","mets"],["tu","mets"],["il/elle","met"],["nous","mettons"],["vous","mettez"],["ils/elles","mettent"]],
+ ex:[["Je mets mon manteau — il fait froid.","mets","I'm putting on my coat — it's cold."],
+     ["Il met la table pour le dîner.","met","He sets the table for dinner."],
+     ["Nous mettons nos chaussures avant de sortir.","mettons","We put on our shoes before going out."],
+     ["Ils mettent du sucre dans leur café.","mettent","They put sugar in their coffee."]],
+ warning:"⚠ il met has no -s · mettons/mettez double-t"},
+
+{verb:"voir",meaning:"to see",topic:"common",
+ conj:[["je","vois"],["tu","vois"],["il/elle","voit"],["nous","voyons"],["vous","voyez"],["ils/elles","voient"]],
+ ex:[["Je vois mes amis tous les week-ends.","vois","I see my friends every weekend."],
+     ["Tu vois ce que je veux dire ?","vois","Do you see what I mean?"],
+     ["Nous voyons un film ce soir.","voyons","We're seeing a film tonight."],
+     ["Ils voient la situation différemment.","voient","They see the situation differently."]],
+ warning:"⚠ voyons / voyez — stem changes to voy- · voient NOT voont"},
+
+{verb:"boire",meaning:"to drink",topic:"common",
+ conj:[["je","bois"],["tu","bois"],["il/elle","boit"],["nous","buvons"],["vous","buvez"],["ils/elles","boivent"]],
+ ex:[["Je bois de l'eau toute la journée.","bois","I drink water all day."],
+     ["Elle boit un café le matin.","boit","She drinks a coffee in the morning."],
+     ["Nous buvons du jus d'orange au petit-déjeuner.","buvons","We drink orange juice at breakfast."],
+     ["Ils boivent du thé après le repas.","boivent","They drink tea after the meal."]],
+ warning:"⚠ buvons / buvez have completely different stem (buv-) from je/tu/il/ils (boi-)"},
+
+{verb:"lire",meaning:"to read",topic:"common",
+ conj:[["je","lis"],["tu","lis"],["il/elle","lit"],["nous","lisons"],["vous","lisez"],["ils/elles","lisent"]],
+ ex:[["Je lis un roman le soir avant de dormir.","lis","I read a novel in the evening before sleeping."],
+     ["Elle lit beaucoup — un livre par semaine.","lit","She reads a lot — a book a week."],
+     ["Nous lisons le même livre en ce moment.","lisons","We're reading the same book at the moment."],
+     ["Ils lisent les nouvelles le matin.","lisent","They read the news in the morning."]],
+ warning:"⚠ il lit — NOT il lis · lisons/lisez/lisent all regular from stem lis-"},
+
+{verb:"écrire",meaning:"to write",topic:"common",
+ conj:[["je","écris"],["tu","écris"],["il/elle","écrit"],["nous","écrivons"],["vous","écrivez"],["ils/elles","écrivent"]],
+ ex:[["J'écris une lettre à ma grand-mère.","écris","I'm writing a letter to my grandmother."],
+     ["Il écrit très bien en français.","écrit","He writes very well in French."],
+     ["Nous écrivons un projet ensemble.","écrivons","We're writing a project together."],
+     ["Ils écrivent leurs réponses en silence.","écrivent","They write their answers in silence."]],
+ warning:"⚠ écrivons / écrivez / écrivent — stem changes to écriv- in plural"},
+
+// TRICKY / STEM CHANGE
+{verb:"ouvrir",meaning:"to open",topic:"tricky",
+ conj:[["je","ouvre"],["tu","ouvres"],["il/elle","ouvre"],["nous","ouvrons"],["vous","ouvrez"],["ils/elles","ouvrent"]],
+ ex:[["J'ouvre la fenêtre — il fait chaud.","ouvre","I'm opening the window — it's hot."],
+     ["Il ouvre le magasin à neuf heures.","ouvre","He opens the shop at nine."],
+     ["Nous ouvrons les cadeaux après le dîner.","ouvrons","We open the presents after dinner."],
+     ["Ils ouvrent la réunion à dix heures.","ouvrent","They open the meeting at ten."]],
+ warning:"⚠ Irregular -IR verb that conjugates like a regular -ER verb — ouvre, ouvres, ouvre (no -s on il form is wrong — it DOES have -s on tu: ouvres)"},
+
+{verb:"tenir",meaning:"to hold / to keep",topic:"tricky",
+ conj:[["je","tiens"],["tu","tiens"],["il/elle","tient"],["nous","tenons"],["vous","tenez"],["ils/elles","tiennent"]],
+ ex:[["Je tiens la porte pour toi.","tiens","I'm holding the door for you."],
+     ["Tiens — voilà ton café !","Tiens","Here — here's your coffee!"],
+     ["Elle tient à ses amis.","tient","She cares about her friends."],
+     ["Ils tiennent leur promesse.","tiennent","They keep their promise."]],
+ warning:"⚠ tiennent double-n · same stem pattern as venir · Tiens ! = Here you go! (common expression)"},
+
+{verb:"suivre",meaning:"to follow",topic:"tricky",
+ conj:[["je","suis"],["tu","suis"],["il/elle","suit"],["nous","suivons"],["vous","suivez"],["ils/elles","suivent"]],
+ ex:[["Je suis un cours de français en ligne.","suis","I'm following an online French course."],
+     ["Suis-moi, je connais le chemin.","Suis","Follow me, I know the way."],
+     ["Elle suit les instructions attentivement.","suit","She follows the instructions carefully."],
+     ["Ils suivent le même programme.","suivent","They follow the same programme."]],
+ warning:"⚠ je suis = I follow OR I am (être) — context tells you which! · suit NOT suivt"},
+
+{verb:"recevoir",meaning:"to receive / to get",topic:"tricky",
+ conj:[["je","reçois"],["tu","reçois"],["il/elle","reçoit"],["nous","recevons"],["vous","recevez"],["ils/elles","reçoivent"]],
+ ex:[["Je reçois beaucoup d'e-mails chaque jour.","reçois","I receive a lot of emails every day."],
+     ["Elle reçoit des amis ce soir.","reçoit","She's having friends over tonight."],
+     ["Nous recevons les résultats demain.","recevons","We're getting the results tomorrow."],
+     ["Ils reçoivent une bonne note.","reçoivent","They receive a good grade."]],
+ warning:"⚠ cedilla: reçois / reçoit / reçoivent — but recevons / recevez (no cedilla)"},
+
+{verb:"connaître",meaning:"to know (person / place)",topic:"tricky",
+ conj:[["je","connais"],["tu","connais"],["il/elle","connaît"],["nous","connaissons"],["vous","connaissez"],["ils/elles","connaissent"]],
+ ex:[["Je connais bien cette ville.","connais","I know this city well."],
+     ["Tu connais Marie ?","connais","Do you know Marie?"],
+     ["Il connaît tous les restaurants du quartier.","connaît","He knows all the restaurants in the neighbourhood."],
+     ["Nous nous connaissons depuis longtemps.","connaissons","We've known each other for a long time."]],
+ warning:"⚠ il connaît has a circumflex (î) · connaître = know a person/place. savoir = know a fact"},
+
+{verb:"appeler",meaning:"to call",topic:"tricky",
+ conj:[["je","appelle"],["tu","appelles"],["il/elle","appelle"],["nous","appelons"],["vous","appelez"],["ils/elles","appellent"]],
+ ex:[["Je t'appelle ce soir.","appelle","I'll call you tonight."],
+     ["Comment tu t'appelles ?","appelles","What's your name?"],
+     ["Elle s'appelle Marie.","appelle","Her name is Marie."],
+     ["Ils appellent leurs parents tous les dimanches.","appellent","They call their parents every Sunday."]],
+ warning:"⚠ double-l in je/tu/il/ils forms · single-l in nous/vous: appelons / appelez"},
+
+{verb:"acheter",meaning:"to buy",topic:"tricky",
+ conj:[["je","achète"],["tu","achètes"],["il/elle","achète"],["nous","achetons"],["vous","achetez"],["ils/elles","achètent"]],
+ ex:[["J'achète du pain tous les matins.","achète","I buy bread every morning."],
+     ["Qu'est-ce que tu achètes ?","achètes","What are you buying?"],
+     ["Elle achète une nouvelle robe.","achète","She's buying a new dress."],
+     ["Ils achètent une maison en banlieue.","achètent","They're buying a house in the suburbs."]],
+ warning:"⚠ è spelling change in je/tu/il/ils — but NOT nous/vous: achetons / achetez (no accent)"},
+];
+
+let deck=[],cur=0,flipped=false,known=new Set(),again=new Set();
+function saveProgress(){try{localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));localStorage.setItem('fc_cur_'+DECK_ID,String(cur));localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);showSaved();}catch(e){}}
+function loadProgress(){try{const t=localStorage.getItem('fc_topic_'+DECK_ID);if(t)document.getElementById('ftopic').value=t;const k=localStorage.getItem('fc_known_'+DECK_ID);const a=localStorage.getItem('fc_again_'+DECK_ID);const c=localStorage.getItem('fc_cur_'+DECK_ID);if(k)known=new Set(JSON.parse(k));if(a)again=new Set(JSON.parse(a));if(c)cur=parseInt(c);}catch(e){}}
+function confirmClear(){if(confirm('Clear all saved progress for this set?')){try{['fc_known_','fc_again_','fc_cur_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}known=new Set();again=new Set();cur=0;build();}}
+let savedTimer=null;
+function showSaved(){const b=document.getElementById('saved-badge');if(b){b.style.display='inline';if(savedTimer)clearTimeout(savedTimer);savedTimer=setTimeout(()=>{b.style.display='none';},2000);}}
+function build(){const t=document.getElementById('ftopic').value;deck=ALL.filter(c=>t==='all'||c.topic===t);if(cur>=deck.length)cur=0;flipped=false;updateReviewBtn();render();updateStats();}
+function shuffle(){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}cur=0;flipped=false;saveProgress();render();updateStats();}
+function updateReviewBtn(){const btn=document.getElementById('btn-review');if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}}
+function reviewAgain(){deck=ALL.filter(c=>again.has(ALL.indexOf(c)));cur=0;flipped=false;render();updateStats();}
+function updateStats(){document.getElementById('st').textContent=deck.length;document.getElementById('sk').textContent=known.size;document.getElementById('sa').textContent=again.size;document.getElementById('sl').textContent=Math.max(0,deck.length-cur);const p=deck.length?Math.round((cur/deck.length)*100):0;document.getElementById('prog').style.width=p+'%';document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';updateReviewBtn();}
+
+function buildConjGrid(conj){return '<div class="conj-grid">'+conj.map(r=>`<div class="conj-cell">${r[0]}</div><div class="conj-cell">${r[1]}</div>`).join('')+'</div>';}
+function buildExamples(ex){return '<div class="examples"><div class="ex-label">Examples</div>'+ex.map(e=>`<div class="ex-line"><span>${e[0].replace(e[1],'<span>'+e[1]+'</span>')}</span> — ${e[2]}</div>`).join('')+'</div>';}
+
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards for this filter.</p>';return;}
+  if(cur>=deck.length){const k=known.size,ag=again.size;a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} marked for practice.</div><button onclick="build()">Restart</button></div>`;return;}
+  const c=deck[cur];
+  const idx=ALL.indexOf(c);
+  const isKnown=known.has(idx);const isAgain=again.has(idx);
+  const statusDot=isKnown?'<span style="font-size:11px;color:#0F6E56">✓ know it</span>':isAgain?'<span style="font-size:11px;color:#993C1D">↻ practice</span>':'';
+  const topicLabel=c.topic;
+
+  a.innerHTML=`<div class="card-wrap" onclick="flip()">
+    <div class="face front" id="face-front">
+      <div class="badges"><span class="badge b-topic">${topicLabel}</span>${statusDot}</div>
+      <div class="front-verb">${c.verb}</div>
+      <div class="front-meaning">${c.meaning}</div>
+      <div class="front-prompt">Mentally conjugate all 6 forms, then tap to check</div>
+    </div>
+    <div class="face back hidden" id="face-back">
+      <div class="badges"><span class="badge b-topic">${topicLabel}</span></div>
+      <div class="back-meaning">${c.verb} — ${c.meaning}</div>
+      ${buildConjGrid(c.conj)}
+      ${c.warning?`<div class="warning">${c.warning}</div>`:''}
+      ${buildExamples(c.ex)}
+    </div>
+  </div>
+  <div class="mark-row" id="mr"><button class="btn-a" onclick="markA()">Practice again</button><button class="btn-k" onclick="markK()">Know it</button></div>
+  <div class="nav-row"><button onclick="prev()">&#8592; Back</button><button onclick="next()">Next &#8594;</button></div>`;
+  updateStats();
+}
+function flip(){flipped=!flipped;document.getElementById('face-front').classList.toggle('hidden',flipped);document.getElementById('face-back').classList.toggle('hidden',!flipped);document.getElementById('mr').style.display=flipped?'flex':'none';}
+function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
+function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();build();
+let _modalMode='export';
+function openExport(){_modalMode='export';const data={known:[...known],again:[...again],cur};const code=btoa(JSON.stringify(data));document.getElementById('modal-title').textContent='Export progress';document.getElementById('modal-text').value=code;document.getElementById('modal-text').readOnly=true;document.getElementById('modal-action-btn').textContent='Copy code';document.getElementById('modal-action-btn').className='';document.getElementById('modal-bg').classList.add('open');}
+function openImport(){_modalMode='import';document.getElementById('modal-title').textContent='Import progress';document.getElementById('modal-text').value='';document.getElementById('modal-text').readOnly=false;document.getElementById('modal-text').placeholder='Paste your code here...';document.getElementById('modal-action-btn').textContent='Apply code';document.getElementById('modal-action-btn').className='btn-import-apply';document.getElementById('modal-bg').classList.add('open');}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+function modalAction(){
+  if(_modalMode==='export'){const t=document.getElementById('modal-text');t.select();try{navigator.clipboard.writeText(t.value).then(()=>{document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);});}catch(e){document.execCommand('copy');document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);}}
+  else{const code=document.getElementById('modal-text').value.trim();try{const data=JSON.parse(atob(code));if(data.known)known=new Set(data.known);if(data.again)again=new Set(data.again);if(typeof data.cur==='number')cur=data.cur;saveProgress();closeModal();build();}catch(e){alert('Invalid code — please check and try again.');}}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 12 — Connectors & Prepositions</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}.btn-clear:hover{background:#FAECE7}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{margin-bottom:10px;cursor:pointer}
+.face{border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between;min-height:260px;transition:opacity 0.15s}
+.face.hidden{display:none}
+.badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-beg{background:#EAF3DE;color:#27500A}
+.b-int{background:#FEF3C7;color:#92400E}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.card-word{font-size:26px;font-weight:500;color:#1a1a1a;flex:1;display:flex;align-items:center;line-height:1.3}
+.card-hint{font-size:12px;color:#aaa;margin-top:8px}
+.card-trans{font-size:17px;font-weight:600;color:#1a1a1a;margin-bottom:8px}
+.card-ex{font-size:13px;color:#888;font-style:italic;margin-top:8px;padding-top:8px;border-top:1px solid #f0f0ee}
+.card-note{font-size:12px;color:#993C1D;background:#FAECE7;padding:4px 8px;border-radius:6px;margin-top:6px}
+.card-structure{font-size:13px;background:#f0f6ff;border:1px solid #cce0ff;border-radius:8px;padding:8px 12px;margin-top:8px;color:#1a3a6b;line-height:1.6}
+.card-structure strong{font-weight:600}
+.mark-row{display:none;gap:8px;margin-top:8px}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.dir-badge{font-size:11px;color:#888;text-align:right}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:100}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:20px;max-width:340px;width:90%;box-shadow:0 4px 24px rgba(0,0,0,0.12)}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:12px}
+.modal textarea{width:100%;height:80px;font-size:13px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;resize:none}
+.modal .modal-btns{display:flex;gap:8px;margin-top:10px}
+.modal .modal-btns button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.modal .modal-btns button:hover{background:#f0f0ee}
+.btn-import-apply{background:#EAF3DE!important;color:#27500A;border-color:#9FE1CB!important}
+</style>
+</head>
+<body>
+<h1>Set 12 — Connectors & Prepositions</h1>
+<p class="subtitle">A2 glue words · Prepositions · Verbal phrases · Location & time connectors</p>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Export progress</h3>
+    <textarea id="modal-text" placeholder="Paste your code here..."></textarea>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Cancel</button>
+      <button id="modal-action-btn" onclick="modalAction()">Copy code</button>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All cards</option>
+    <option value="verbal-phrase">Verbal phrases (s'occuper de, manquer...)</option>
+    <option value="preposition">Prepositions (dans, sur, entre...)</option>
+    <option value="location">Location & direction (dehors, dedans...)</option>
+    <option value="time">Time connectors (ensuite, pendant...)</option>
+    <option value="connector">Sentence connectors (donc, pourtant...)</option>
+    <option value="quantity">Quantity & article (du, de la, des, de...)</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="toggleDir()">Flip direction</button>
+  <button onclick="reviewAgain()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button onclick="openExport()">Export</button>
+  <button onclick="openImport()">Import</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+
+<script>
+const DECK_ID='set12';
+const ALL=[
+
+// VERBAL PHRASES
+{f:"s'occuper de",e:"to take care of / to deal with",topic:"verbal-phrase",diff:"intermediate",
+structure:"s'occuper de + noun",
+ex:"Elle s'occupe du jardin. Je m'occupe de mes enfants. Tu t'occupes de quoi ?",
+note:"de + le = du / de + les = des. This is reflexive: m'/t'/s'/nous/vous/s'"},
+
+{f:"avoir besoin de",e:"to need",topic:"verbal-phrase",diff:"intermediate",
+structure:"avoir besoin de + noun / infinitive",
+ex:"J'ai besoin d'aide. Il a besoin de dormir. Nous avons besoin de temps.",
+note:"Very common. 'besoin de' never changes — only 'avoir' is conjugated."},
+
+{f:"avoir envie de",e:"to feel like / to want",topic:"verbal-phrase",diff:"intermediate",
+structure:"avoir envie de + noun / infinitive",
+ex:"J'ai envie de pizza. Elle a envie de sortir. Tu as envie de quoi ?",
+note:"More casual than 'vouloir'. Natural in everyday speech."},
+
+{f:"avoir peur de",e:"to be afraid of",topic:"verbal-phrase",diff:"intermediate",
+structure:"avoir peur de + noun / infinitive",
+ex:"Il a peur des chiens. J'ai peur de rater l'examen.",
+note:"de + les = des. 'avoir peur' alone = to be scared (no object)."},
+
+{f:"manquer à",e:"to miss (someone/something)",topic:"verbal-phrase",diff:"intermediate",
+structure:"[thing/person missed] manque/manquent à [person who misses]",
+ex:"Tu me manques. Mes parents me manquent. Paris lui manque.",
+note:"FLIPPED from English: 'tu me manques' = you are missing to me = I miss you. The thing missed is the SUBJECT."},
+
+{f:"se souvenir de",e:"to remember",topic:"verbal-phrase",diff:"intermediate",
+structure:"se souvenir de + noun / infinitive",
+ex:"Je me souviens de toi. Il ne se souvient pas de son nom.",
+note:"Reflexive verb. de + le = du / de + les = des."},
+
+{f:"se rendre compte de",e:"to realize",topic:"verbal-phrase",diff:"intermediate",
+structure:"se rendre compte de + noun / que + clause",
+ex:"Je me rends compte de mon erreur. Elle se rend compte que c'est difficile.",
+note:"Very common in written and spoken French. Always reflexive."},
+
+{f:"avoir du mal à",e:"to have difficulty / to struggle with",topic:"verbal-phrase",diff:"intermediate",
+structure:"avoir du mal à + infinitive",
+ex:"J'ai du mal à comprendre. Il a du mal à dormir. Tu as du mal à quoi ?",
+note:"'du mal' never changes. Only 'avoir' is conjugated."},
+
+{f:"être en train de",e:"to be in the middle of / currently doing",topic:"verbal-phrase",diff:"intermediate",
+structure:"être en train de + infinitive",
+ex:"Je suis en train de manger. Elle est en train de travailler.",
+note:"The French equivalent of the English present continuous (-ing). Very frequently used."},
+
+{f:"être sur le point de",e:"to be about to",topic:"verbal-phrase",diff:"intermediate",
+structure:"être sur le point de + infinitive",
+ex:"Je suis sur le point de partir. Il est sur le point de finir.",
+note:"Expresses immediate future. Very useful alternative to 'aller + infinitive'."},
+
+{f:"se passer de",e:"to do without",topic:"verbal-phrase",diff:"intermediate",
+structure:"se passer de + noun",
+ex:"Je ne peux pas me passer de café. Il se passe de télévision.",
+note:"Don't confuse with 'se passer' (to happen): 'Qu'est-ce qui se passe ?' = What's happening?"},
+
+{f:"tenir à",e:"to care about / to be keen on",topic:"verbal-phrase",diff:"intermediate",
+structure:"tenir à + noun / infinitive",
+ex:"Je tiens à toi. Il tient à venir avec nous. Elle tient à sa famille.",
+note:"Expresses emotional attachment or strong desire. Warmer than 'vouloir'."},
+
+{f:"faire attention à",e:"to pay attention to / to be careful with",topic:"verbal-phrase",diff:"intermediate",
+structure:"faire attention à + noun",
+ex:"Fais attention à la voiture ! Je fais attention à ma santé.",
+note:"à + le = au / à + les = aux. Common in warnings and instructions."},
+
+{f:"se mettre à",e:"to start / begin (suddenly)",topic:"verbal-phrase",diff:"intermediate",
+structure:"se mettre à + infinitive",
+ex:"Il s'est mis à pleuvoir. Elle se met à rire. Je me mets à travailler.",
+note:"Implies a sudden or decisive start. More vivid than 'commencer à'."},
+
+{f:"penser à",e:"to think about (someone/something)",topic:"verbal-phrase",diff:"intermediate",
+structure:"penser à + noun / infinitive",
+ex:"Je pense à toi. Tu penses à quoi ? N'oublie pas de penser à réserver.",
+note:"Different from 'penser de': penser de = to think of (opinion). 'Qu'est-ce que tu penses de ça ?' = What do you think of that?"},
+
+// PREPOSITIONS
+{f:"dans",e:"in / inside (enclosed space)",topic:"preposition",diff:"beginner",
+structure:"dans + noun",
+ex:"Il est dans la voiture. Je suis dans ma chambre. Le chat est dans la boîte.",
+note:"Use 'dans' for enclosed or specific spaces. Don't confuse with 'en' (general, no article)."},
+
+{f:"sur",e:"on / on top of",topic:"preposition",diff:"beginner",
+structure:"sur + noun",
+ex:"Le livre est sur la table. J'habite sur cette rue. Sur la droite.",
+note:"Also used for streets, floors, and directions."},
+
+{f:"sous",e:"under / beneath",topic:"preposition",diff:"beginner",
+structure:"sous + noun",
+ex:"Le chat est sous le lit. Mes chaussures sont sous la chaise.",
+note:"Opposite of 'sur'. Easy to remember: sous = under."},
+
+{f:"entre",e:"between",topic:"preposition",diff:"beginner",
+structure:"entre + noun + et + noun",
+ex:"La poste est entre la banque et le café. Entre toi et moi...",
+note:"Used for physical position and figurative expressions."},
+
+{f:"derrière",e:"behind",topic:"preposition",diff:"beginner",
+structure:"derrière + noun",
+ex:"Le jardin est derrière la maison. Il se cache derrière l'arbre.",
+note:"Opposite of 'devant'."},
+
+{f:"devant",e:"in front of",topic:"preposition",diff:"beginner",
+structure:"devant + noun",
+ex:"Je t'attends devant le cinéma. La voiture est devant la maison.",
+note:"Opposite of 'derrière'. Also means 'ahead of'."},
+
+{f:"en face de",e:"opposite / facing",topic:"preposition",diff:"beginner",
+structure:"en face de + noun",
+ex:"La boulangerie est en face de la pharmacie. Assieds-toi en face de moi.",
+note:"Don't drop 'de'. It's a fixed three-word phrase."},
+
+{f:"à côté de",e:"next to / beside",topic:"preposition",diff:"beginner",
+structure:"à côté de + noun",
+ex:"Je m'assieds à côté de toi. La gare est à côté de l'hôtel.",
+note:"de + le = du / de + les = des. 'côté' = side."},
+
+{f:"près de",e:"near / close to",topic:"preposition",diff:"beginner",
+structure:"près de + noun",
+ex:"J'habite près de l'université. Il y a un café près d'ici.",
+note:"Opposite of 'loin de'. de + le = du."},
+
+{f:"loin de",e:"far from",topic:"preposition",diff:"beginner",
+structure:"loin de + noun",
+ex:"C'est loin d'ici. Elle habite loin de sa famille.",
+note:"Opposite of 'près de'."},
+
+{f:"en dehors de",e:"outside of / beyond",topic:"preposition",diff:"intermediate",
+structure:"en dehors de + noun",
+ex:"Il habite en dehors de la ville. En dehors du travail, il joue de la guitare.",
+note:"'dehors' alone = outside (adverb). 'en dehors de' = outside of (preposition). Don't mix them up."},
+
+{f:"au milieu de",e:"in the middle of",topic:"preposition",diff:"intermediate",
+structure:"au milieu de + noun",
+ex:"La table est au milieu de la pièce. Au milieu de la nuit.",
+note:"au = à + le. 'milieu' = middle/center."},
+
+{f:"autour de",e:"around",topic:"preposition",diff:"intermediate",
+structure:"autour de + noun",
+ex:"Les enfants sont assis autour de la table. Autour de la maison.",
+note:"de + le = du / de + les = des."},
+
+{f:"grâce à",e:"thanks to",topic:"preposition",diff:"intermediate",
+structure:"grâce à + noun",
+ex:"Grâce à toi, j'ai réussi. Elle parle bien français grâce à ses cours.",
+note:"à + le = au / à + les = aux. Positive connotation only. For negative use 'à cause de'."},
+
+{f:"à cause de",e:"because of (negative)",topic:"preposition",diff:"intermediate",
+structure:"à cause de + noun",
+ex:"Il est en retard à cause de la circulation. À cause de la pluie, on reste à la maison.",
+note:"Negative connotation. For positive use 'grâce à'."},
+
+{f:"malgré",e:"despite / in spite of",topic:"preposition",diff:"intermediate",
+structure:"malgré + noun",
+ex:"Malgré la pluie, il est sorti. Elle sourit malgré ses problèmes.",
+note:"No article contraction needed. 'malgré' goes directly before noun."},
+
+{f:"selon",e:"according to",topic:"preposition",diff:"intermediate",
+structure:"selon + noun",
+ex:"Selon lui, c'est faux. Selon la météo, il va pleuvoir.",
+note:"Used for citing a source or someone's opinion."},
+
+// LOCATION & DIRECTION
+{f:"dehors",e:"outside (adverb)",topic:"location",diff:"beginner",
+structure:"dehors (standalone) / sortir dehors",
+ex:"Il fait beau dehors. Les enfants jouent dehors. Va dehors !",
+note:"This is an adverb, not a preposition. To say 'outside of somewhere' use 'en dehors de'."},
+
+{f:"dedans / à l'intérieur",e:"inside (adverb)",topic:"location",diff:"beginner",
+structure:"dedans / à l'intérieur (standalone)",
+ex:"Il fait froid dehors, reste dedans. Les chats dorment à l'intérieur.",
+note:"'dedans' is more casual. 'à l'intérieur' is slightly more formal. Both are correct."},
+
+{f:"en haut",e:"upstairs / at the top",topic:"location",diff:"beginner",
+structure:"en haut (de + noun)",
+ex:"Ma chambre est en haut. Le chat est en haut de l'arbre.",
+note:"Opposite of 'en bas'. Can stand alone or be followed by 'de'."},
+
+{f:"en bas",e:"downstairs / at the bottom",topic:"location",diff:"beginner",
+structure:"en bas (de + noun)",
+ex:"La cuisine est en bas. Je t'attends en bas.",
+note:"Opposite of 'en haut'."},
+
+{f:"tout droit",e:"straight ahead",topic:"location",diff:"beginner",
+structure:"aller tout droit",
+ex:"Allez tout droit, puis tournez à gauche. Continuez tout droit.",
+note:"Essential for giving directions. 'tout' here intensifies 'droit'."},
+
+{f:"à gauche / à droite",e:"to the left / to the right",topic:"location",diff:"beginner",
+structure:"tourner à gauche / à droite",
+ex:"Tournez à gauche après la poste. C'est à droite.",
+note:"Can also be 'sur la gauche / sur la droite'."},
+
+{f:"en face",e:"opposite / across",topic:"location",diff:"beginner",
+structure:"en face (de + noun)",
+ex:"Je suis assis en face. La pharmacie est en face.",
+note:"Without 'de', it means 'across the way / facing'. With 'de': en face de la banque."},
+
+{f:"quelque part",e:"somewhere",topic:"location",diff:"intermediate",
+structure:"quelque part (in sentence)",
+ex:"Je l'ai vu quelque part. Tu veux aller quelque part ce soir ?",
+note:"Opposite: 'nulle part' = nowhere. 'partout' = everywhere."},
+
+// TIME CONNECTORS
+{f:"ensuite",e:"then / next (sequence)",topic:"time",diff:"beginner",
+structure:"ensuite + clause",
+ex:"Je mange, ensuite je travaille. D'abord le café, ensuite la douche.",
+note:"Use for sequential actions. Synonyms: 'puis', 'après'."},
+
+{f:"puis",e:"then / and then",topic:"time",diff:"beginner",
+structure:"puis + clause",
+ex:"Je lis, puis je dors. Il mange, puis il sort.",
+note:"Interchangeable with 'ensuite' in most cases. Slightly more literary."},
+
+{f:"d'abord",e:"first / firstly",topic:"time",diff:"beginner",
+structure:"d'abord + clause",
+ex:"D'abord je prends un café, puis je travaille.",
+note:"Usually paired with 'ensuite' or 'puis'. Opens a sequence."},
+
+{f:"enfin",e:"finally / at last",topic:"time",diff:"beginner",
+structure:"enfin + clause",
+ex:"D'abord le travail, ensuite le sport, enfin le dîner.",
+note:"Closes a sequence. Also used as an expression: 'Enfin !' = At last! / Well..."},
+
+{f:"pendant",e:"during / for (duration)",topic:"time",diff:"intermediate",
+structure:"pendant + noun / pendant que + clause",
+ex:"J'étudie pendant deux heures. Pendant le film, il dort. Pendant que tu travailles...",
+note:"'pendant' = for a completed duration. 'depuis' = since/for (ongoing). Don't mix them up."},
+
+{f:"depuis",e:"since / for (ongoing)",topic:"time",diff:"intermediate",
+structure:"depuis + time expression",
+ex:"J'habite ici depuis trois ans. Elle travaille depuis ce matin.",
+note:"Key rule: use PRESENT tense in French where English uses past. 'J'étudie le français depuis six mois.'"},
+
+{f:"il y a",e:"ago / there is / there are",topic:"time",diff:"intermediate",
+structure:"il y a + time = ago / il y a + noun = there is",
+ex:"Il y a deux jours. (two days ago) · Il y a un café ici. (there is a café here)",
+note:"Two very different uses. Context makes it clear. Very high frequency."},
+
+{f:"tout à l'heure",e:"in a little while / a little while ago",topic:"time",diff:"intermediate",
+structure:"tout à l'heure (future or past)",
+ex:"À tout à l'heure ! Je l'ai vu tout à l'heure.",
+note:"Works for both near past AND near future. Context decides. Very French expression."},
+
+{f:"dès que",e:"as soon as",topic:"time",diff:"intermediate",
+structure:"dès que + clause",
+ex:"Je t'appelle dès que j'arrive. Dès qu'il rentre, on mange.",
+note:"Triggers present tense in French even for future meaning (same as 'quand' in this use)."},
+
+{f:"avant de",e:"before (doing something)",topic:"time",diff:"intermediate",
+structure:"avant de + infinitive",
+ex:"Je me lave avant de manger. Réfléchis avant de répondre.",
+note:"FIXED rule: avant de + infinitive always. You've seen this in practice. This is the card to drill it."},
+
+{f:"après avoir / être",e:"after (doing something)",topic:"time",diff:"intermediate",
+structure:"après avoir/être + past participle",
+ex:"Après avoir mangé, il dort. Après être arrivée, elle appelle sa mère.",
+note:"This is the past infinitive. avoir for most verbs, être for DR MRS VANDERTRAMP + reflexives."},
+
+// SENTENCE CONNECTORS
+{f:"donc",e:"so / therefore",topic:"connector",diff:"beginner",
+structure:"clause + donc + clause",
+ex:"Il pleut, donc je reste à la maison. Tu es fatigué, donc dors !",
+note:"One of the most used connectors. Can go mid-sentence or at the start."},
+
+{f:"pourtant",e:"yet / however / still",topic:"connector",diff:"intermediate",
+structure:"pourtant + clause",
+ex:"Il est fatigué, pourtant il travaille. C'est simple, pourtant je n'y arrive pas.",
+note:"Expresses a surprising contrast. Stronger than 'mais'."},
+
+{f:"quand même",e:"still / anyway / even so",topic:"connector",diff:"intermediate",
+structure:"clause + quand même",
+ex:"Il fait froid, mais je sors quand même. Merci quand même.",
+note:"Very common in speech. Can express persistence, resignation, or slight surprise."},
+
+{f:"par contre",e:"on the other hand",topic:"connector",diff:"intermediate",
+structure:"par contre + clause",
+ex:"J'aime le café. Par contre, je n'aime pas le thé.",
+note:"More common in French than 'mais'. Introduces a contrasting point cleanly."},
+
+{f:"c'est-à-dire",e:"that is to say / I mean",topic:"connector",diff:"intermediate",
+structure:"c'est-à-dire + clarification",
+ex:"Je rentre tard, c'est-à-dire vers vingt-deux heures.",
+note:"Used to clarify or rephrase. Common in both writing and speech. Often shortened to 'c'est-à-dire que'."},
+
+{f:"en effet",e:"indeed / in fact",topic:"connector",diff:"intermediate",
+structure:"en effet + clause",
+ex:"C'est difficile. En effet, j'ai du mal à comprendre.",
+note:"Confirms or reinforces what was just said. Formal equivalent of 'oui, c'est vrai'."},
+
+{f:"par exemple",e:"for example",topic:"connector",diff:"beginner",
+structure:"par exemple + example",
+ex:"J'aime les sports, par exemple le tennis et le football.",
+note:"Abbreviated as 'p. ex.' in writing. Very frequent in explanations."},
+
+{f:"surtout",e:"especially / above all",topic:"connector",diff:"beginner",
+structure:"surtout + clause / surtout + noun",
+ex:"J'aime la France, surtout Paris. Surtout ne dis rien !",
+note:"Also used as a warning: 'surtout pas' = especially not / whatever you do, don't."},
+
+{f:"quand / lorsque",e:"when",topic:"connector",diff:"beginner",
+structure:"quand / lorsque + clause",
+ex:"Quand il pleut, je reste à la maison. Lorsque j'étais jeune...",
+note:"'lorsque' is more formal/written. Both mean 'when'. Future meaning uses present tense after 'quand'."},
+
+{f:"si",e:"if",topic:"connector",diff:"beginner",
+structure:"si + present, + present or future",
+ex:"Si tu veux, on peut sortir. Si j'ai le temps, je viendrai.",
+note:"si + present = real/possible condition. s' before il/ils only (not elle/elles)."},
+
+// QUANTITY & ARTICLES
+{f:"du / de la / de l' / des",e:"some (partitive article)",topic:"quantity",diff:"beginner",
+structure:"du (masc) / de la (fem) / de l' (vowel) / des (plural)",
+ex:"Je mange du pain. Elle boit de l'eau. Il achète des légumes. Tu veux de la soupe ?",
+note:"Used for food, drink, and uncountable things. Means 'some' but is often not translated in English."},
+
+{f:"de (after negative)",e:"no / not any (replaces du/de la/des after negation)",topic:"quantity",diff:"intermediate",
+structure:"ne + verb + pas de + noun",
+ex:"Je n'ai pas de voiture. Il n'y a pas de pain. Elle ne mange pas de viande.",
+note:"After negation, ALL partitive and indefinite articles (du/de la/des/un/une) become just 'de' (or 'd' before vowel)."},
+
+{f:"de (after quantity)",e:"of (after quantity expressions)",topic:"quantity",diff:"intermediate",
+structure:"quantity word + de + noun",
+ex:"Un kilo de pommes. Beaucoup de travail. Peu de temps. Une tasse de café. Assez d'argent.",
+note:"After beaucoup, peu, assez, trop, un peu, une bouteille de, etc. — always 'de', never 'du/des'."},
+
+{f:"des vs de (adjective + noun)",e:"des becomes de before adjective + noun",topic:"quantity",diff:"intermediate",
+structure:"de + adjective + noun (plural)",
+ex:"Je cuisine de nouvelles recettes. Il a de bons amis. Elle fait de petits gâteaux.",
+note:"This is the rule that tripped you up: 'des recettes' but 'de nouvelles recettes'. Adjective before noun triggers 'de'."},
+
+{f:"en tant que",e:"as / in the capacity of",topic:"quantity",diff:"intermediate",
+structure:"en tant que + noun (no article)",
+ex:"Elle travaille en tant que médecin. En tant qu'étudiant, j'ai une réduction.",
+note:"No article after 'en tant que'. Used for roles, jobs, identities. You used this well in practice."},
+
+{f:"en + transport",e:"by (transport)",topic:"quantity",diff:"beginner",
+structure:"en + vehicle (no article)",
+ex:"Je vais au travail en voiture. Elle voyage en train. Il vient en vélo.",
+note:"Exception: à vélo / à pied (walking) use 'à' not 'en'. All others: en bus, en avion, en métro."},
+
+];
+
+let deck=[],cur=0,flipped=false,showFR=true,known=new Set(),again=new Set();
+function saveProgress(){try{localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));localStorage.setItem('fc_cur_'+DECK_ID,String(cur));localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);showSaved();}catch(e){}}
+function loadProgress(){try{const t=localStorage.getItem('fc_topic_'+DECK_ID);if(t)document.getElementById('ftopic').value=t;const k=localStorage.getItem('fc_known_'+DECK_ID);const a=localStorage.getItem('fc_again_'+DECK_ID);const c=localStorage.getItem('fc_cur_'+DECK_ID);const d=localStorage.getItem('fc_dir_'+DECK_ID);if(k)known=new Set(JSON.parse(k));if(a)again=new Set(JSON.parse(a));if(c)cur=parseInt(c);if(d!==null)showFR=d==='1';}catch(e){}}
+function confirmClear(){if(confirm('Clear all saved progress for this set?')){try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}known=new Set();again=new Set();cur=0;showFR=true;build();}}
+let savedTimer=null;
+function showSaved(){const b=document.getElementById('saved-badge');if(b){b.style.display='inline';if(savedTimer)clearTimeout(savedTimer);savedTimer=setTimeout(()=>{b.style.display='none';},2000);}}
+function build(){const t=document.getElementById('ftopic').value;deck=ALL.filter(c=>t==='all'||c.topic===t);if(cur>=deck.length)cur=0;flipped=false;updateReviewBtn();render();updateStats();}
+function shuffle(){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}cur=0;flipped=false;saveProgress();render();updateStats();}
+function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
+function updateReviewBtn(){const btn=document.getElementById('btn-review');if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}}
+function reviewAgain(){deck=ALL.filter(c=>again.has(ALL.indexOf(c)));cur=0;flipped=false;render();updateStats();}
+function updateStats(){document.getElementById('st').textContent=deck.length;document.getElementById('sk').textContent=known.size;document.getElementById('sa').textContent=again.size;document.getElementById('sl').textContent=Math.max(0,deck.length-cur);const p=deck.length?Math.round((cur/deck.length)*100):0;document.getElementById('prog').style.width=p+'%';document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';updateReviewBtn();}
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards for this filter.</p>';return;}
+  if(cur>=deck.length){const k=known.size,ag=again.size;a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} marked for practice.</div><button onclick="build()">Restart</button></div>`;return;}
+  const c=deck[cur];
+  const idx=ALL.indexOf(c);
+  const isKnown=known.has(idx);const isAgain=again.has(idx);
+  const statusDot=isKnown?'<span style="font-size:11px;color:#0F6E56">✓ know it</span>':isAgain?'<span style="font-size:11px;color:#993C1D">↻ practice</span>':'';
+  const diffClass=c.diff==='intermediate'?'b-int':'b-beg';
+  const frontText=showFR?c.f:c.e;
+  const backMeaning=showFR?c.e:c.f;
+  a.innerHTML=`<div class="card-wrap" onclick="flip()">
+    <div class="face front" id="face-front">
+      <div><div class="badges"><span class="badge b-topic">${c.topic}</span><span class="badge ${diffClass}">${c.diff}</span>${statusDot}</div><div class="card-word">${frontText}</div><div class="card-hint">tap to see usage & examples</div></div>
+      <div class="dir-badge">${showFR?'FR → EN':'EN → FR'}</div>
+    </div>
+    <div class="face back hidden" id="face-back">
+      <div>
+        <div class="badges"><span class="badge b-topic">${c.topic}</span></div>
+        <div class="card-trans">${backMeaning}</div>
+        <div class="card-structure"><strong>Structure:</strong> ${c.structure}</div>
+        ${c.note?`<div class="card-note">⚠ ${c.note}</div>`:''}
+        <div class="card-ex">${c.ex}</div>
+      </div>
+    </div>
+  </div>
+  <div class="mark-row" id="mr"><button class="btn-a" onclick="markA()">Practice again</button><button class="btn-k" onclick="markK()">Know it</button></div>
+  <div class="nav-row"><button onclick="prev()">&#8592; Back</button><button onclick="next()">Next &#8594;</button></div>`;
+  updateStats();
+}
+function flip(){flipped=!flipped;document.getElementById('face-front').classList.toggle('hidden',flipped);document.getElementById('face-back').classList.toggle('hidden',!flipped);document.getElementById('mr').style.display=flipped?'flex':'none';}
+function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
+function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();build();
+let _modalMode='export';
+function openExport(){_modalMode='export';const data={known:[...known],again:[...again],cur,dir:showFR};const code=btoa(JSON.stringify(data));document.getElementById('modal-title').textContent='Export progress';document.getElementById('modal-text').value=code;document.getElementById('modal-text').readOnly=true;document.getElementById('modal-action-btn').textContent='Copy code';document.getElementById('modal-action-btn').className='';document.getElementById('modal-bg').classList.add('open');}
+function openImport(){_modalMode='import';document.getElementById('modal-title').textContent='Import progress';document.getElementById('modal-text').value='';document.getElementById('modal-text').readOnly=false;document.getElementById('modal-text').placeholder='Paste your code here...';document.getElementById('modal-action-btn').textContent='Apply code';document.getElementById('modal-action-btn').className='btn-import-apply';document.getElementById('modal-bg').classList.add('open');}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+function modalAction(){
+  if(_modalMode==='export'){const t=document.getElementById('modal-text');t.select();try{navigator.clipboard.writeText(t.value).then(()=>{document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);});}catch(e){document.execCommand('copy');document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);}}
+  else{const code=document.getElementById('modal-text').value.trim();try{const data=JSON.parse(atob(code));if(data.known)known=new Set(data.known);if(data.again)again=new Set(data.again);if(typeof data.cur==='number')cur=data.cur;if(typeof data.dir==='boolean')showFR=data.dir;saveProgress();closeModal();build();}catch(e){alert('Invalid code — please check and try again.');}}
+}
+</script>
+</body>
+</html>

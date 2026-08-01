@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 14 — Direct & Indirect Object Pronouns</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}.btn-clear:hover{background:#FAECE7}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{margin-bottom:10px;cursor:pointer}
+.face{border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between;min-height:210px;transition:opacity 0.15s}
+.face.hidden{display:none}
+.badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-beg{background:#EAF3DE;color:#27500A}
+.b-int{background:#FEF3C7;color:#92400E}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.card-word{font-size:22px;font-weight:500;color:#1a1a1a;flex:1;display:flex;align-items:center;line-height:1.3}
+.card-hint{font-size:12px;color:#aaa;margin-top:8px}
+.card-trans{font-size:18px;font-weight:500;color:#1a1a1a}
+.card-note{font-size:13px;color:#555;margin-top:6px}
+.card-note-red{font-size:12px;color:#993C1D;background:#FAECE7;padding:4px 8px;border-radius:6px;margin-top:6px}
+.card-ex{font-size:13px;color:#888;font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ee}
+.mark-row{display:none;gap:8px;margin-top:8px}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.dir-badge{font-size:11px;color:#888;text-align:right}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:100}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:20px;max-width:340px;width:90%;box-shadow:0 4px 24px rgba(0,0,0,0.12)}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:12px}
+.modal textarea{width:100%;height:80px;font-size:13px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;resize:none}
+.modal .modal-btns{display:flex;gap:8px;margin-top:10px}
+.modal .modal-btns button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.modal .modal-btns button:hover{background:#f0f0ee}
+.btn-import-apply{background:#EAF3DE!important;color:#27500A;border-color:#9FE1CB!important}
+</style>
+</head>
+<body>
+<h1>Set 14 — Direct & Indirect Object Pronouns</h1>
+<p class="subtitle">COD (me/te/le/la/nous/vous/les) · COI (me/te/lui/nous/vous/leur) · Position rules</p>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Export progress</h3>
+    <textarea id="modal-text" placeholder="Paste your code here..."></textarea>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Cancel</button>
+      <button id="modal-action-btn" onclick="modalAction()">Copy code</button>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All topics</option>
+    <option value="direct">Direct object pronouns (COD)</option>
+    <option value="indirect">Indirect object pronouns (COI)</option>
+    <option value="position">Position rules</option>
+    <option value="sentences">Full sentence practice</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="toggleDir()">Flip direction</button>
+  <button onclick="reviewAgain()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button onclick="openExport()">Export</button>
+  <button onclick="openImport()">Import</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+
+<script>
+const DECK_ID='set14';
+const ALL=[
+// DIRECT OBJECT PRONOUNS
+{f:"me / m'",e:"me (direct object, 1st person singular)",ex:"Il me voit. Elle m'aime. Tu me comprends.",note:"me → m' before vowel or h. Replaces a direct object (who? what?).",topic:"direct",diff:"beginner"},
+{f:"te / t'",e:"you (direct object, 2nd person singular)",ex:"Je te vois. Il t'écoute. Elle t'attend.",note:"te → t' before vowel or h. Informal singular.",topic:"direct",diff:"beginner"},
+{f:"le / l'",e:"him / it (direct object, masculine singular)",ex:"Je le vois. Il l'aime. Tu le cherches.",note:"le → l' before vowel or h. Replaces a masc. noun: Je cherche Paul → Je le cherche.",topic:"direct",diff:"beginner"},
+{f:"la / l'",e:"her / it (direct object, feminine singular)",ex:"Je la connais. Il l'admire. Tu la trouves.",note:"la → l' before vowel or h. Replaces a fem. noun: Je cherche Marie → Je la cherche.",topic:"direct",diff:"beginner"},
+{f:"nous",e:"us (direct object, 1st person plural)",ex:"Il nous invite. Elle nous regarde. Tu nous aides.",note:"Replaces a direct object referring to 'us'.",topic:"direct",diff:"beginner"},
+{f:"vous",e:"you (direct object, 2nd person plural / formal)",ex:"Je vous appelle. Elle vous félicite. Il vous attend.",note:"Formal or plural 'you' as direct object.",topic:"direct",diff:"beginner"},
+{f:"les",e:"them (direct object, plural)",ex:"Je les invite. Il les cherche. Tu les comprends.",note:"Replaces any plural direct object (masc. or fem.): Je cherche mes clés → Je les cherche.",topic:"direct",diff:"beginner"},
+// INDIRECT OBJECT PRONOUNS
+{f:"me / m' (indirect)",e:"to me (indirect object, 1st person singular)",ex:"Il me parle. Elle m'écrit. Tu me téléphones.",note:"Replaces à + person: Il parle à moi → Il me parle. Used with verbs taking à.",topic:"indirect",diff:"intermediate"},
+{f:"te / t' (indirect)",e:"to you (indirect object, 2nd person singular)",ex:"Je te parle. Il t'écrit. Elle te répond.",note:"Informal singular indirect object. te → t' before vowel.",topic:"indirect",diff:"intermediate"},
+{f:"lui",e:"to him / to her (indirect object, singular)",ex:"Je lui parle. Il lui écrit. Elle lui téléphone.",note:"lui replaces à + masc. OR fem. singular person: Je parle à Paul/Marie → Je lui parle.",topic:"indirect",diff:"intermediate"},
+{f:"nous (indirect)",e:"to us (indirect object, 1st person plural)",ex:"Il nous parle. Elle nous écrit. Tu nous expliques.",note:"Same form as direct. Context tells you which it is.",topic:"indirect",diff:"intermediate"},
+{f:"vous (indirect)",e:"to you (indirect object, 2nd person plural/formal)",ex:"Je vous parle. Il vous répond. Elle vous explique.",note:"Formal or plural indirect object.",topic:"indirect",diff:"intermediate"},
+{f:"leur",e:"to them (indirect object, plural)",ex:"Je leur parle. Il leur écrit. Elle leur téléphone.",note:"leur replaces à + plural people: Je parle à mes amis → Je leur parle. Never leur's — no apostrophe.",topic:"indirect",diff:"intermediate"},
+// POSITION RULES
+{f:"⚠ Pronoun position — present tense",e:"Pronoun goes BEFORE the verb: Je le vois. NOT: Je vois le.",ex:"Je le mange. Tu lui parles. Il nous aide. Elle les invite.",note:"In all simple tenses, pronoun comes directly before the conjugated verb.",topic:"position",diff:"intermediate"},
+{f:"⚠ Pronoun position — infinitive",e:"Pronoun goes before the INFINITIVE: Je veux le voir.",ex:"Je veux le voir. Il aime lui parler. Nous allons les inviter.",note:"With two verbs, pronoun attaches to the infinitive (the verb it logically belongs to).",topic:"position",diff:"intermediate"},
+{f:"⚠ Pronoun position — passé composé",e:"Pronoun goes before the AUXILIARY: Je l'ai vu.",ex:"Je l'ai vu. Il lui a parlé. Nous les avons invités.",note:"In compound tenses, pronoun goes before avoir/être (the auxiliary).",topic:"position",diff:"intermediate"},
+{f:"⚠ Direct vs Indirect — how to choose",e:"Direct (COD): no preposition needed. Indirect (COI): verb takes à.",ex:"Je vois Marie → Je la vois. (direct) / Je parle à Marie → Je lui parle. (indirect)",note:"Ask 'who?' or 'what?' for direct. Ask 'to whom?' for indirect. If the verb uses à before a person, use indirect.",topic:"position",diff:"intermediate"},
+// FULL SENTENCE PRACTICE
+{f:"Je vois Marie. → Je _____ vois.",e:"Je la vois.",ex:"la = direct object pronoun replacing a feminine singular noun",note:"Marie is feminine → la",topic:"sentences",diff:"beginner"},
+{f:"Je parle à Paul. → Je _____ parle.",e:"Je lui parle.",ex:"lui = indirect object pronoun replacing à + singular person",note:"parler à = indirect → lui",topic:"sentences",diff:"beginner"},
+{f:"Il regarde les films. → Il _____ regarde.",e:"Il les regarde.",ex:"les = direct object pronoun replacing a plural noun",note:"les films is plural → les",topic:"sentences",diff:"beginner"},
+{f:"Elle téléphone à ses amis. → Elle _____ téléphone.",e:"Elle leur téléphone.",ex:"leur = indirect object pronoun replacing à + plural people",note:"téléphoner à = indirect, plural → leur",topic:"sentences",diff:"intermediate"},
+{f:"Tu m'attends. → You are waiting for ______.",e:"You are waiting for me.",ex:"m' = me (direct object before vowel)",note:"attendre quelqu'un = direct object (no à needed)",topic:"sentences",diff:"beginner"},
+{f:"Nous lui avons écrit. → We wrote ______.",e:"We wrote to him/her.",ex:"lui = indirect (écrire à quelqu'un)",note:"Past tense: pronoun still goes before the auxiliary avons",topic:"sentences",diff:"intermediate"},
+];
+
+let deck=[],cur=0,flipped=false,showFR=false,known=new Set(),again=new Set();
+function saveProgress(){try{localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));localStorage.setItem('fc_cur_'+DECK_ID,String(cur));localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);showSaved();}catch(e){}}
+function loadProgress(){try{const t=localStorage.getItem('fc_topic_'+DECK_ID);if(t)document.getElementById('ftopic').value=t;const k=localStorage.getItem('fc_known_'+DECK_ID);const a=localStorage.getItem('fc_again_'+DECK_ID);const c=localStorage.getItem('fc_cur_'+DECK_ID);const d=localStorage.getItem('fc_dir_'+DECK_ID);if(k)known=new Set(JSON.parse(k));if(a)again=new Set(JSON.parse(a));if(c)cur=parseInt(c);if(d!==null)showFR=d==='1';}catch(e){}}
+function confirmClear(){if(confirm('Clear all saved progress for this set?')){try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}known=new Set();again=new Set();cur=0;showFR=false;build();}}
+let savedTimer=null;
+function showSaved(){const b=document.getElementById('saved-badge');if(b){b.style.display='inline';if(savedTimer)clearTimeout(savedTimer);savedTimer=setTimeout(()=>{b.style.display='none';},2000);}}
+function build(){const t=document.getElementById('ftopic').value;deck=ALL.filter(c=>t==='all'||c.topic===t);if(cur>=deck.length)cur=0;flipped=false;updateReviewBtn();render();updateStats();}
+function shuffle(){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}cur=0;flipped=false;saveProgress();render();updateStats();}
+function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
+function updateReviewBtn(){const btn=document.getElementById('btn-review');if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}}
+function reviewAgain(){deck=ALL.filter(c=>again.has(ALL.indexOf(c)));cur=0;flipped=false;render();updateStats();}
+function updateStats(){document.getElementById('st').textContent=deck.length;document.getElementById('sk').textContent=known.size;document.getElementById('sa').textContent=again.size;document.getElementById('sl').textContent=Math.max(0,deck.length-cur);const p=deck.length?Math.round((cur/deck.length)*100):0;document.getElementById('prog').style.width=p+'%';document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';updateReviewBtn();}
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards for this filter.</p>';return;}
+  if(cur>=deck.length){const k=known.size,ag=again.size;a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} marked for practice.</div><button onclick="build()">Restart</button></div>`;return;}
+  const c=deck[cur];
+  const idx=ALL.indexOf(c);
+  const isKnown=known.has(idx);const isAgain=again.has(idx);
+  const statusDot=isKnown?'<span style="font-size:11px;color:#0F6E56">✓ know it</span>':isAgain?'<span style="font-size:11px;color:#993C1D">↻ practice</span>':'';
+  const diffClass=c.diff==='intermediate'?'b-int':'b-beg';
+  const frontText=showFR?c.f:c.e;
+  const backMeaning=showFR?c.e:c.f;
+  const isWarning=c.f.startsWith('⚠');
+  a.innerHTML=`<div class="card-wrap" onclick="flip()">
+    <div class="face front" id="face-front">
+      <div><div class="badges"><span class="badge b-topic">${c.topic}</span><span class="badge ${diffClass}">${c.diff}</span>${statusDot}</div><div class="card-word">${frontText}</div><div class="card-hint">tap to reveal</div></div>
+      <div class="dir-badge">${showFR?'FR → EN':'EN → FR'}</div>
+    </div>
+    <div class="face back hidden" id="face-back">
+      <div><div class="badges"><span class="badge b-topic">${c.topic}</span></div><div class="card-trans">${backMeaning}</div>${c.note?`<div class="${isWarning?'card-note-red':'card-note'}">${c.note}</div>`:''}<div class="card-ex">${c.ex}</div></div>
+    </div>
+  </div>
+  <div class="mark-row" id="mr"><button class="btn-a" onclick="markA()">Practice again</button><button class="btn-k" onclick="markK()">Know it</button></div>
+  <div class="nav-row"><button onclick="prev()">&#8592; Back</button><button onclick="next()">Next &#8594;</button></div>`;
+  updateStats();
+}
+function flip(){flipped=!flipped;document.getElementById('face-front').classList.toggle('hidden',flipped);document.getElementById('face-back').classList.toggle('hidden',!flipped);document.getElementById('mr').style.display=flipped?'flex':'none';}
+function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
+function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();build();
+let _modalMode='export';
+function openExport(){_modalMode='export';const data={known:[...known],again:[...again],cur,dir:showFR};const code=btoa(JSON.stringify(data));document.getElementById('modal-title').textContent='Export progress';document.getElementById('modal-text').value=code;document.getElementById('modal-text').readOnly=true;document.getElementById('modal-action-btn').textContent='Copy code';document.getElementById('modal-action-btn').className='';document.getElementById('modal-bg').classList.add('open');}
+function openImport(){_modalMode='import';document.getElementById('modal-title').textContent='Import progress';document.getElementById('modal-text').value='';document.getElementById('modal-text').readOnly=false;document.getElementById('modal-text').placeholder='Paste your code here...';document.getElementById('modal-action-btn').textContent='Apply code';document.getElementById('modal-action-btn').className='btn-import-apply';document.getElementById('modal-bg').classList.add('open');}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+function modalAction(){
+  if(_modalMode==='export'){const t=document.getElementById('modal-text');t.select();try{navigator.clipboard.writeText(t.value).then(()=>{document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);});}catch(e){document.execCommand('copy');document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);}}
+  else{const code=document.getElementById('modal-text').value.trim();try{const data=JSON.parse(atob(code));if(data.known)known=new Set(data.known);if(data.again)again=new Set(data.again);if(typeof data.cur==='number')cur=data.cur;if(typeof data.dir==='boolean')showFR=data.dir;saveProgress();closeModal();build();}catch(e){alert('Invalid code — please check and try again.');}}
+}
+</script>
+</body>
+</html>

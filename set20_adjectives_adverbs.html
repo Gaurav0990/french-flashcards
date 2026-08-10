@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set 20 — Adjectives & Adverbs</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f8f8f6;color:#1a1a1a;padding:16px;max-width:680px;margin:0 auto}
+h1{font-size:20px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:#888;margin-bottom:16px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.controls select,.controls button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.controls button:hover{background:#f0f0ee}
+.btn-clear{color:#993C1D;border-color:#F5C4B3}.btn-clear:hover{background:#FAECE7}
+.stats{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.stat{background:#f0f0ee;border-radius:8px;padding:6px 12px;font-size:12px;color:#666}
+.stat span{font-weight:500;color:#1a1a1a;font-size:14px;display:block}
+.saved-badge{font-size:11px;color:#0F6E56;background:#E1F5EE;padding:3px 10px;border-radius:20px;display:none}
+.prog-bg{background:#e8e8e5;border-radius:4px;height:4px;margin-bottom:8px}
+.prog-fill{background:#1D9E75;height:4px;border-radius:4px;transition:width 0.3s}
+.counter{font-size:12px;color:#888;text-align:center;margin-bottom:10px}
+.card-wrap{margin-bottom:10px;cursor:pointer}
+.face{border-radius:12px;border:1px solid #e0e0dd;background:#fff;padding:20px;display:flex;flex-direction:column;justify-content:space-between;min-height:200px}
+.face.hidden{display:none}
+.badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.b-adjective{background:#EAF3DE;color:#27500A}
+.b-adverb{background:#E8F0FE;color:#1a3a8f}
+.b-topic{background:#f0f0ee;color:#555;font-weight:400}
+.card-word{font-size:24px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
+.card-hint{font-size:12px;color:#aaa;margin-top:8px}
+.card-trans{font-size:18px;font-weight:500;color:#1a1a1a}
+.card-note{font-size:13px;color:#555;margin-top:6px}
+.card-ex{font-size:13px;color:#888;font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ee}
+.dir-badge{font-size:11px;color:#888;text-align:right;margin-top:6px}
+.mark-row{display:none;gap:8px;margin-top:8px}
+.mark-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.btn-k{color:#0F6E56;border-color:#9FE1CB}.btn-k:hover{background:#E1F5EE}
+.btn-a{color:#993C1D;border-color:#F5C4B3}.btn-a:hover{background:#FAECE7}
+.nav-row{display:flex;gap:8px;margin-top:8px}
+.nav-row button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#1a1a1a;cursor:pointer}
+.nav-row button:hover{background:#f0f0ee}
+.done{text-align:center;padding:2rem 1rem;background:#fff;border-radius:12px;border:1px solid #e0e0dd}
+.done .big{font-size:44px;font-weight:500}
+.done .sub{font-size:14px;color:#888;margin:8px 0 20px}
+.done button{padding:8px 20px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;margin:4px}
+.done button:hover{background:#f0f0ee}
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:100}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:20px;max-width:340px;width:90%;box-shadow:0 4px 24px rgba(0,0,0,0.12)}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:12px}
+.modal textarea{width:100%;height:80px;font-size:13px;padding:8px;border:1px solid #ddd;border-radius:8px;font-family:monospace;resize:none}
+.modal .modal-btns{display:flex;gap:8px;margin-top:10px}
+.modal .modal-btns button{flex:1;padding:7px;font-size:13px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+.modal .modal-btns button:hover{background:#f0f0ee}
+.btn-import-apply{background:#EAF3DE!important;color:#27500A;border-color:#9FE1CB!important}
+</style>
+</head>
+<body>
+<h1>Set 20 — Adjectives & Adverbs</h1>
+<p class="subtitle">30 essential adjectives · 30 essential adverbs · Example sentences</p>
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3 id="modal-title">Export progress</h3>
+    <textarea id="modal-text"></textarea>
+    <div class="modal-btns">
+      <button onclick="closeModal()">Cancel</button>
+      <button id="modal-action-btn" onclick="modalAction()">Copy code</button>
+    </div>
+  </div>
+</div>
+<div class="controls">
+  <select id="ftopic">
+    <option value="all">All (adjectives + adverbs)</option>
+    <option value="adjective">Adjectives only</option>
+    <option value="adverb">Adverbs only</option>
+  </select>
+  <button onclick="shuffle()">Shuffle</button>
+  <button onclick="toggleDir()">Flip direction</button>
+  <button onclick="reviewAgain()" id="btn-review" style="display:none">Review practice (0)</button>
+  <button onclick="openExport()">Export</button>
+  <button onclick="openImport()">Import</button>
+  <button class="btn-clear" onclick="confirmClear()">Clear progress</button>
+</div>
+<span class="saved-badge" id="saved-badge">Progress saved</span>
+<div class="stats">
+  <div class="stat"><span id="st">0</span>total</div>
+  <div class="stat"><span id="sk">0</span>know it</div>
+  <div class="stat"><span id="sa">0</span>practice</div>
+  <div class="stat"><span id="sl">0</span>left</div>
+</div>
+<div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+<div class="counter" id="ctr">—</div>
+<div id="area"></div>
+<script>
+const DECK_ID='set20';
+const ALL=[
+// ADJECTIVES
+{f:"important(e)",e:"important",topic:"adjective",ex:"C'est une décision importante. Il joue un rôle important.",note:"Agree with noun: important (m) / importante (f)"},
+{f:"essentiel(le)",e:"essential",topic:"adjective",ex:"Il est essentiel de bien dormir. C'est une étape essentielle.",note:"essentiel (m) / essentielle (f)"},
+{f:"bénéfique",e:"beneficial",topic:"adjective",ex:"Le sport est bénéfique pour la santé.",note:"Same form for m and f: bénéfique"},
+{f:"nécessaire",e:"necessary",topic:"adjective",ex:"Il est nécessaire de travailler dur.",note:"Same form for m and f: nécessaire"},
+{f:"efficace",e:"effective",topic:"adjective",ex:"Cette méthode est très efficace.",note:"Same form for m and f: efficace"},
+{f:"utile",e:"useful",topic:"adjective",ex:"Ce cours est très utile. Un outil utile.",note:"Same form for m and f: utile"},
+{f:"positif / positive",e:"positive",topic:"adjective",ex:"Il a une attitude positive. Un résultat positif.",note:"positif (m) / positive (f)"},
+{f:"négatif / négative",e:"negative",topic:"adjective",ex:"Cette décision a des effets négatifs.",note:"négatif (m) / négative (f)"},
+{f:"dangereux / dangereuse",e:"dangerous",topic:"adjective",ex:"Ce produit est dangereux. Une situation dangereuse.",note:"dangereux (m) / dangereuse (f)"},
+{f:"responsable",e:"responsible",topic:"adjective",ex:"Il est responsable de l'équipe. Une décision responsable.",note:"Same form for m and f: responsable"},
+{f:"indispensable",e:"indispensable",topic:"adjective",ex:"L'eau est indispensable à la vie.",note:"Same form for m and f: indispensable"},
+{f:"accessible",e:"accessible",topic:"adjective",ex:"Ce logement est accessible à tous.",note:"Same form for m and f: accessible"},
+{f:"abordable",e:"affordable",topic:"adjective",ex:"Ce produit est abordable. Un prix abordable.",note:"Same form for m and f: abordable"},
+{f:"coûteux / coûteuse",e:"expensive / costly",topic:"adjective",ex:"Ce voyage est coûteux. Une solution coûteuse.",note:"coûteux (m) / coûteuse (f)"},
+{f:"gratuit(e)",e:"free (of charge)",topic:"adjective",ex:"L'entrée est gratuite. Un service gratuit.",note:"gratuit (m) / gratuite (f)"},
+{f:"moderne",e:"modern",topic:"adjective",ex:"Un appartement moderne. Une ville moderne.",note:"Same form for m and f: moderne"},
+{f:"traditionnel(le)",e:"traditional",topic:"adjective",ex:"Un repas traditionnel. Une fête traditionnelle.",note:"traditionnel (m) / traditionnelle (f)"},
+{f:"écologique",e:"ecological",topic:"adjective",ex:"Un mode de vie écologique. Une solution écologique.",note:"Same form for m and f: écologique"},
+{f:"durable",e:"sustainable",topic:"adjective",ex:"Un développement durable. Une énergie durable.",note:"Same form for m and f: durable"},
+{f:"polluant(e)",e:"polluting",topic:"adjective",ex:"Ce carburant est polluant. Une industrie polluante.",note:"polluant (m) / polluante (f)"},
+{f:"pratique",e:"practical",topic:"adjective",ex:"Cette solution est pratique. Un outil pratique.",note:"Same form for m and f: pratique"},
+{f:"compliqué(e)",e:"complicated",topic:"adjective",ex:"C'est compliqué. Une situation compliquée.",note:"compliqué (m) / compliquée (f)"},
+{f:"simple",e:"simple",topic:"adjective",ex:"Une solution simple. C'est très simple.",note:"Same form for m and f: simple"},
+{f:"flexible",e:"flexible",topic:"adjective",ex:"Un horaire flexible. Elle est très flexible.",note:"Same form for m and f: flexible"},
+{f:"autonome",e:"independent / autonomous",topic:"adjective",ex:"Il est très autonome. Un système autonome.",note:"Same form for m and f: autonome"},
+{f:"créatif / créative",e:"creative",topic:"adjective",ex:"Il est très créatif. Une idée créative.",note:"créatif (m) / créative (f)"},
+{f:"stressant(e)",e:"stressful",topic:"adjective",ex:"Ce travail est stressant. Une journée stressante.",note:"stressant (m) / stressante (f)"},
+{f:"enrichissant(e)",e:"enriching",topic:"adjective",ex:"Cette expérience est très enrichissante.",note:"enrichissant (m) / enrichissante (f)"},
+{f:"individuel(le)",e:"individual",topic:"adjective",ex:"Un effort individuel. Une liberté individuelle.",note:"individuel (m) / individuelle (f)"},
+{f:"collectif / collective",e:"collective",topic:"adjective",ex:"Un projet collectif. Une décision collective.",note:"collectif (m) / collective (f)"},
+// ADVERBS
+{f:"souvent",e:"often",topic:"adverb",ex:"Je fais souvent du sport. Elle vient souvent ici."},
+{f:"toujours",e:"always",topic:"adverb",ex:"Il est toujours en retard. Je pense toujours à toi."},
+{f:"jamais",e:"never",topic:"adverb",ex:"Je ne mange jamais de viande. Il n'est jamais là.",note:"Used with ne: ne...jamais"},
+{f:"parfois",e:"sometimes",topic:"adverb",ex:"Je vais parfois au cinéma. Parfois, c'est difficile."},
+{f:"rarement",e:"rarely",topic:"adverb",ex:"Il sort rarement. Je mange rarement au restaurant."},
+{f:"généralement",e:"generally",topic:"adverb",ex:"Généralement, je me lève à 7h. C'est généralement vrai."},
+{f:"normalement",e:"normally",topic:"adverb",ex:"Normalement, il vient le lundi. Ça se passe normalement."},
+{f:"habituellement",e:"usually",topic:"adverb",ex:"Habituellement, je mange à midi. Elle travaille habituellement le matin."},
+{f:"actuellement",e:"currently / at the moment",topic:"adverb",ex:"Actuellement, je travaille à Montréal.",note:"False friend! Does NOT mean 'actually' — that's en fait."},
+{f:"récemment",e:"recently",topic:"adverb",ex:"Il a récemment changé de travail. J'ai récemment appris le français."},
+{f:"déjà",e:"already",topic:"adverb",ex:"J'ai déjà mangé. Tu es déjà venu ici ?"},
+{f:"encore",e:"still / again",topic:"adverb",ex:"Il est encore là. Tu veux encore du café ?",note:"encore = still (ongoing) or again (repetition). ne...plus = no longer"},
+{f:"bientôt",e:"soon",topic:"adverb",ex:"Je reviens bientôt. À bientôt !"},
+{f:"maintenant",e:"now",topic:"adverb",ex:"Je fais ça maintenant. Qu'est-ce que tu fais maintenant ?"},
+{f:"autrefois",e:"formerly / in the past",topic:"adverb",ex:"Autrefois, les gens écrivaient des lettres."},
+{f:"rapidement",e:"quickly",topic:"adverb",ex:"Il parle rapidement. Elle a rapidement compris."},
+{f:"lentement",e:"slowly",topic:"adverb",ex:"Parle lentement, s'il te plaît. Il marchait lentement."},
+{f:"facilement",e:"easily",topic:"adverb",ex:"Elle apprend facilement. On peut facilement trouver ça."},
+{f:"difficilement",e:"with difficulty",topic:"adverb",ex:"Il supporte difficilement le bruit."},
+{f:"sérieusement",e:"seriously",topic:"adverb",ex:"Il travaille sérieusement. Prends ça sérieusement."},
+{f:"heureusement",e:"fortunately / luckily",topic:"adverb",ex:"Heureusement, il n'a pas plu. Heureusement, elle était là."},
+{f:"malheureusement",e:"unfortunately",topic:"adverb",ex:"Malheureusement, je ne peux pas venir.",note:"Very useful for speaking — shows nuance and disappointment"},
+{f:"probablement",e:"probably",topic:"adverb",ex:"Il viendra probablement demain. C'est probablement vrai."},
+{f:"certainement",e:"certainly",topic:"adverb",ex:"Il viendra certainement. C'est certainement possible."},
+{f:"vraiment",e:"really / truly",topic:"adverb",ex:"C'est vraiment bien ! Je suis vraiment fatigué."},
+{f:"particulièrement",e:"particularly",topic:"adverb",ex:"C'est particulièrement efficace. Je l'aime particulièrement."},
+{f:"principalement",e:"mainly / primarily",topic:"adverb",ex:"Il travaille principalement le soir."},
+{f:"également",e:"also / equally",topic:"adverb",ex:"Il est également possible de... Elle travaille et étudie également."},
+{f:"finalement",e:"finally / ultimately",topic:"adverb",ex:"Finalement, il a décidé de rester. Finalement, tout va bien."},
+{f:"notamment",e:"notably / in particular",topic:"adverb",ex:"Il aime les sports, notamment le tennis.",note:"Useful for listing examples in spoken French"},
+];
+
+let deck=[],cur=0,flipped=false,showFR=false,known=new Set(),again=new Set();
+function saveProgress(){try{localStorage.setItem('fc_known_'+DECK_ID,JSON.stringify([...known]));localStorage.setItem('fc_again_'+DECK_ID,JSON.stringify([...again]));localStorage.setItem('fc_cur_'+DECK_ID,String(cur));localStorage.setItem('fc_dir_'+DECK_ID,showFR?'1':'0');localStorage.setItem('fc_topic_'+DECK_ID,document.getElementById('ftopic').value);showSaved();}catch(e){}}
+function loadProgress(){try{const t=localStorage.getItem('fc_topic_'+DECK_ID);if(t)document.getElementById('ftopic').value=t;const k=localStorage.getItem('fc_known_'+DECK_ID);const a=localStorage.getItem('fc_again_'+DECK_ID);const c=localStorage.getItem('fc_cur_'+DECK_ID);const d=localStorage.getItem('fc_dir_'+DECK_ID);if(k)known=new Set(JSON.parse(k));if(a)again=new Set(JSON.parse(a));if(c)cur=parseInt(c);if(d!==null)showFR=d==='1';}catch(e){}}
+function confirmClear(){if(confirm('Clear all saved progress for this set?')){try{['fc_known_','fc_again_','fc_cur_','fc_dir_','fc_topic_'].forEach(k=>localStorage.removeItem(k+DECK_ID));}catch(e){}known=new Set();again=new Set();cur=0;showFR=false;build();}}
+let savedTimer=null;
+function showSaved(){const b=document.getElementById('saved-badge');if(b){b.style.display='inline';if(savedTimer)clearTimeout(savedTimer);savedTimer=setTimeout(()=>{b.style.display='none';},2000);}}
+function build(){const t=document.getElementById('ftopic').value;deck=ALL.filter(c=>t==='all'||c.topic===t);if(cur>=deck.length)cur=0;flipped=false;updateReviewBtn();render();updateStats();}
+function shuffle(){for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}cur=0;flipped=false;saveProgress();render();updateStats();}
+function toggleDir(){showFR=!showFR;flipped=false;saveProgress();render();}
+function updateReviewBtn(){const btn=document.getElementById('btn-review');if(btn){if(again.size>0){btn.style.display='inline';btn.textContent='Review practice ('+again.size+')';}else{btn.style.display='none';}}}
+function reviewAgain(){deck=ALL.filter(c=>again.has(ALL.indexOf(c)));cur=0;flipped=false;render();updateStats();}
+function updateStats(){document.getElementById('st').textContent=deck.length;document.getElementById('sk').textContent=known.size;document.getElementById('sa').textContent=again.size;document.getElementById('sl').textContent=Math.max(0,deck.length-cur);const p=deck.length?Math.round((cur/deck.length)*100):0;document.getElementById('prog').style.width=p+'%';document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';updateReviewBtn();}
+function render(){
+  const a=document.getElementById('area');
+  if(!deck.length){a.innerHTML='<p style="color:#888;padding:1rem 0">No cards for this filter.</p>';return;}
+  if(cur>=deck.length){const k=known.size,ag=again.size;a.innerHTML=`<div class="done"><div class="big">${k}/${deck.length}</div><div class="sub">You knew ${k} — ${ag} marked for practice.</div><button onclick="build()">Restart</button></div>`;return;}
+  const c=deck[cur];
+  const idx=ALL.indexOf(c);
+  const isKnown=known.has(idx);const isAgain=again.has(idx);
+  const statusDot=isKnown?'<span style="font-size:11px;color:#0F6E56">✓ know it</span>':isAgain?'<span style="font-size:11px;color:#993C1D">↻ practice</span>':'';
+  const tclass='b-'+c.topic;
+  const frontText=showFR?c.f:c.e;
+  const backMeaning=showFR?c.e:c.f;
+  a.innerHTML=`<div class="card-wrap" onclick="flip()">
+    <div class="face front" id="face-front">
+      <div><div class="badges"><span class="badge ${tclass}">${c.topic}</span>${statusDot}</div>
+      <div class="card-word">${frontText}</div>
+      <div class="card-hint">tap to reveal</div></div>
+      <div class="dir-badge">${showFR?'FR → EN':'EN → FR'}</div>
+    </div>
+    <div class="face back hidden" id="face-back">
+      <div><div class="badges"><span class="badge ${tclass}">${c.topic}</span></div>
+      <div class="card-trans">${backMeaning}</div>
+      ${c.note?`<div class="card-note">${c.note}</div>`:''}
+      <div class="card-ex">${c.ex}</div></div>
+    </div>
+  </div>
+  <div class="mark-row" id="mr"><button class="btn-a" onclick="markA()">Practice again</button><button class="btn-k" onclick="markK()">Know it</button></div>
+  <div class="nav-row"><button onclick="prev()">&#8592; Back</button><button onclick="next()">Next &#8594;</button></div>`;
+  updateStats();
+}
+function flip(){flipped=!flipped;document.getElementById('face-front').classList.toggle('hidden',flipped);document.getElementById('face-back').classList.toggle('hidden',!flipped);document.getElementById('mr').style.display=flipped?'flex':'none';}
+function markK(){const idx=ALL.indexOf(deck[cur]);known.add(idx);again.delete(idx);saveProgress();next();}
+function markA(){const idx=ALL.indexOf(deck[cur]);again.add(idx);known.delete(idx);saveProgress();next();}
+function next(){flipped=false;cur=Math.min(cur+1,deck.length);saveProgress();render();}
+function prev(){flipped=false;cur=Math.max(cur-1,0);saveProgress();render();}
+document.getElementById('ftopic').addEventListener('change',()=>{known=new Set();again=new Set();cur=0;saveProgress();build();});
+loadProgress();build();
+let _modalMode='export';
+function openExport(){_modalMode='export';const data={known:[...known],again:[...again],cur,dir:showFR};const code=btoa(JSON.stringify(data));document.getElementById('modal-title').textContent='Export progress';document.getElementById('modal-text').value=code;document.getElementById('modal-text').readOnly=true;document.getElementById('modal-action-btn').textContent='Copy code';document.getElementById('modal-action-btn').className='';document.getElementById('modal-bg').classList.add('open');}
+function openImport(){_modalMode='import';document.getElementById('modal-title').textContent='Import progress';document.getElementById('modal-text').value='';document.getElementById('modal-text').readOnly=false;document.getElementById('modal-text').placeholder='Paste your code here...';document.getElementById('modal-action-btn').textContent='Apply code';document.getElementById('modal-action-btn').className='btn-import-apply';document.getElementById('modal-bg').classList.add('open');}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+function modalAction(){
+  if(_modalMode==='export'){const t=document.getElementById('modal-text');t.select();try{navigator.clipboard.writeText(t.value).then(()=>{document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);});}catch(e){document.execCommand('copy');document.getElementById('modal-action-btn').textContent='Copied!';setTimeout(closeModal,1000);}}
+  else{const code=document.getElementById('modal-text').value.trim();try{const data=JSON.parse(atob(code));if(data.known)known=new Set(data.known);if(data.again)again=new Set(data.again);if(typeof data.cur==='number')cur=data.cur;if(typeof data.dir==='boolean')showFR=data.dir;saveProgress();closeModal();build();}catch(e){alert('Invalid code.');}}
+}
+</script>
+</body>
+</html>

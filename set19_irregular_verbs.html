@@ -36,8 +36,9 @@ h1{font-size:20px;font-weight:500;margin-bottom:4px}
 .conj-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
 .tense-block{background:#f8f8f6;border-radius:8px;padding:8px 10px}
 .tense-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#aaa;margin-bottom:4px}
-.conj-row{font-size:12px;color:#333;line-height:1.7}
-.conj-row span{color:#888;min-width:24px;display:inline-block}
+.conj-row{font-size:12px;color:#333;display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;}
+.conj-row .cr{display:flex;gap:4px;align-items:baseline;}
+.conj-row .cr span{color:#888;min-width:28px;flex-shrink:0;font-size:11px}
 .card-note{font-size:12px;color:#993C1D;background:#FAECE7;padding:4px 8px;border-radius:6px;margin-top:8px}
 .card-ex{font-size:13px;color:#888;font-style:italic;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ee}
 .dir-badge{font-size:11px;color:#888;text-align:right;margin-top:6px}
@@ -119,7 +120,10 @@ function updateReviewBtn(){const btn=document.getElementById('btn-review');if(bt
 function reviewAgain(){deck=ALL.filter(c=>again.has(ALL.indexOf(c)));cur=0;flipped=false;render();updateStats();}
 function updateStats(){document.getElementById('st').textContent=deck.length;document.getElementById('sk').textContent=known.size;document.getElementById('sa').textContent=again.size;document.getElementById('sl').textContent=Math.max(0,deck.length-cur);const p=deck.length?Math.round((cur/deck.length)*100):0;document.getElementById('prog').style.width=p+'%';document.getElementById('ctr').textContent=deck.length?'Card '+(cur+1)+' of '+deck.length:'No cards';updateReviewBtn();}
 function renderConjBlock(label, lines){
-  return `<div class="tense-block"><div class="tense-label">${label}</div><div class="conj-row">${lines}</div></div>`;
+  // Convert "<span>je</span>parle <span>tu</span>parles ..." into grid rows
+  const formatted = lines.replace(/<span>([^<]*)<\/span>([^ ]*)/g, 
+    '<div class="cr"><span>$1</span>$2</div>');
+  return `<div class="tense-block"><div class="tense-label">${label}</div><div class="conj-row">${formatted}</div></div>`;
 }
 function render(){
   const a=document.getElementById('area');
